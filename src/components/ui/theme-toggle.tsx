@@ -12,30 +12,20 @@ export default function ThemeToggle() {
   React.useEffect(() => setMounted(true), []);
   if (!mounted) return null;
 
+  const isDark = theme === "dark";
+  const toggle = () => setTheme(isDark ? "light" : "dark");
+
   return (
-    <div className="flex items-center gap-2">
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label="Switch to light theme"
-        className={`size-8 rounded-md ${theme === "light" ? "bg-secondary" : ""}`}
-        onClick={() => setTheme("light")}
-        title="Light"
-      >
-        <Sun className="size-4" />
-      </Button>
-      <Button
-        type="button"
-        variant="ghost"
-        size="icon"
-        aria-label="Switch to dark theme"
-        className={`size-8 rounded-md ${theme === "dark" ? "bg-secondary" : ""}`}
-        onClick={() => setTheme("dark")}
-        title="Dark"
-      >
-        <Moon className="size-4" />
-      </Button>
-    </div>
+    <Button
+      type="button"
+      variant="ghost"
+      size="icon"
+      aria-label="Toggle theme"
+      className="size-8 rounded-md"
+      onClick={toggle}
+      title={isDark ? "Switch to light" : "Switch to dark"}
+    >
+      {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+    </Button>
   );
 }

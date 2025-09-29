@@ -1,10 +1,11 @@
 import React from 'react';
 import Header from '@/components/sections/header';
 import HeroSection from '@/components/sections/hero';
-import ApproachSection from '@/components/sections/approach';
-import PortfolioSection from '@/components/sections/portfolio';
-import TestimonialSection from '@/components/sections/testimonial';
-import CtaSection from '@/components/sections/cta';
+import AboutSection from '@/components/sections/about';
+import CurrentWorkSection from '@/components/sections/current-work';
+import OpenSourceSection from '@/components/sections/open-source';
+import SkillsSection from '@/components/sections/skills';
+import ContactSection from '@/components/sections/contact';
 import Footer from '@/components/sections/footer';
 
 export default function HomePage() {
@@ -15,10 +16,11 @@ export default function HomePage() {
         
         <main className="space-y-20">
           <HeroSection />
-          <ApproachSection />
-          <PortfolioSection />
-          <TestimonialSection />
-          <CtaSection />
+          <AboutSection />
+          <CurrentWorkSection />
+          <OpenSourceSection />
+          <SkillsSection />
+          <ContactSection />
         </main>
         
         <Footer />

@@ -5,6 +5,9 @@ import React, { useEffect, useState } from 'react';
 import { CommitsModal } from '@/components/commits/commits-modal';
 import ThemeToggle from '@/components/ui/theme-toggle';
 import { useRouter } from 'next/navigation';
+import { Linkedin } from 'lucide-react';
+import { FaXTwitter } from 'react-icons/fa6';
+import { twitterUsername, linkedinUrl } from '@/lib/site-config';
 
 /**
  * A minimalist header component for the website.
@@ -58,8 +61,34 @@ const Header = () => {
           </Link>
         </div>
 
-        {/* Right: theme toggle */}
-        <ThemeToggle />
+        {/* Right: socials + theme toggle */}
+        <div className="flex items-center gap-2">
+          {twitterUsername && (
+            <a
+              href={`https://x.com/${twitterUsername}`}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center size-8 rounded-md border hover:bg-[var(--color-secondary)]"
+              aria-label="X (Twitter)"
+              title="X"
+            >
+              <FaXTwitter className="size-4" />
+            </a>
+          )}
+          {linkedinUrl && (
+            <a
+              href={linkedinUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center size-8 rounded-md border hover:bg-[var(--color-secondary)]"
+              aria-label="LinkedIn"
+              title="LinkedIn"
+            >
+              <Linkedin className="size-4" />
+            </a>
+          )}
+          <ThemeToggle />
+        </div>
       </div>
 
       {/* Modal */}
