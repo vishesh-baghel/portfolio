@@ -33,61 +33,83 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
     setLoading(true);
     setError(null);
     try {
-      // Fetch up to 100 recent public events (10 pages of 10 events each)
+      // 1) Primary: use Search Commits API to fetch latest 30 commits by author
+      // Docs: https://docs.github.com/en/rest/search/search?apiVersion=2022-11-28#search-commits
+      const searchParams = new URLSearchParams({
+        q: `author:${effectiveUsername}`,
+        sort: "author-date",
+        order: "desc",
+        per_page: "30",
+        page: "1",
+      });
+
+      const searchRes = await fetch(`https://api.github.com/search/commits?${searchParams.toString()}`, {
+        headers: {
+          Accept: "application/vnd.github+json",
+          "X-GitHub-Api-Version": "2022-11-28",
+          "User-Agent": "basecase-portfolio-app",
+        },
+        cache: "no-store",
+      });
+
       const commits: CommitItem[] = [];
-      const pages = 10; // Fetch 10 pages to get more historical data
-      
-      for (let page = 1; page <= pages; page++) {
-        const res = await fetch(
-          `https://api.github.com/users/${effectiveUsername}/events/public?per_page=10&page=${page}`,
-          {
-            headers: {
-              Accept: "application/vnd.github+json",
-            },
-            cache: "no-store",
-          }
-        );
 
-        if (!res.ok) {
-          const rateReset = res.headers.get("x-ratelimit-reset");
-          const resetAt = rateReset ? new Date(Number(rateReset) * 1000) : null;
-          throw new Error(
-            `Failed to fetch events (${res.status}). ${resetAt ? `Rate limit resets at ${resetAt.toLocaleTimeString()}.` : ""}`
-          );
+      if (searchRes.ok) {
+        const data = (await searchRes.json()) as any;
+        const items = Array.isArray(data?.items) ? data.items : [];
+        for (const it of items) {
+          const repo = it?.repository?.full_name ?? "";
+          const message = it?.commit?.message ?? "";
+          const url = it?.html_url ?? (repo && it?.sha ? `https://github.com/${repo}/commit/${it.sha}` : "");
+          const createdAt = it?.commit?.author?.date ?? it?.commit?.committer?.date ?? new Date().toISOString();
+          const id = `${it?.sha}-${repo}`;
+          commits.push({ id, repo, message, url, created_at: createdAt });
         }
-
-        const events = (await res.json()) as any[];
-        
-        // If we get an empty page, stop fetching
-        if (events.length === 0) break;
-
-        for (const ev of events) {
-          if (ev?.type === "PushEvent" && Array.isArray(ev?.payload?.commits)) {
-            for (const c of ev.payload.commits) {
+      } else {
+        // 2) Fallback: User Events API (iterate pages)
+        const pages = 3; // fewer pages to be gentle on rate limits
+        for (let page = 1; page <= pages; page++) {
+          const res = await fetch(
+            `https://api.github.com/users/${effectiveUsername}/events/public?per_page=100&page=${page}`,
+            {
+              headers: {
+                Accept: "application/vnd.github+json",
+                "X-GitHub-Api-Version": "2022-11-28",
+                "User-Agent": "basecase-portfolio-app",
+              },
+              cache: "no-store",
+            }
+          );
+          if (!res.ok) break;
+          const events = (await res.json()) as any[];
+          if (events.length === 0) break;
+          for (const ev of events) {
+            if (ev?.type === "PushEvent" && Array.isArray(ev?.payload?.commits)) {
+              for (const c of ev.payload.commits) {
+                commits.push({
+                  id: `${ev.id}-${c.sha}`,
+                  repo: ev?.repo?.name ?? "",
+                  message: c?.message ?? "",
+                  url: `https://github.com/${ev?.repo?.name}/commit/${c?.sha}`,
+                  created_at: ev?.created_at ?? new Date().toISOString(),
+                });
+              }
+            }
+            if (ev?.type === "PullRequestEvent" && ev?.payload?.pull_request) {
+              const pr = ev.payload.pull_request;
               commits.push({
-                id: `${ev.id}-${c.sha}`,
+                id: `${ev.id}-pr`,
                 repo: ev?.repo?.name ?? "",
-                message: c?.message ?? "",
-                url: `https://github.com/${ev?.repo?.name}/commit/${c?.sha}`,
+                message: `${ev.payload.action} pull request #${pr.number} from ${pr.head.ref} ${pr.title}`,
+                url: pr.html_url,
                 created_at: ev?.created_at ?? new Date().toISOString(),
               });
             }
           }
-          // Also include merge PR titles from PullRequestEvent if present
-          if (ev?.type === "PullRequestEvent" && ev?.payload?.pull_request) {
-            const pr = ev.payload.pull_request;
-            commits.push({
-              id: `${ev.id}-pr`,
-              repo: ev?.repo?.name ?? "",
-              message: `${ev.payload.action} pull request #${pr.number} from ${pr.head.ref} ${pr.title}`,
-              url: pr.html_url,
-              created_at: ev?.created_at ?? new Date().toISOString(),
-            });
-          }
         }
       }
 
-      // Sort by time desc and take latest 50 items (more than 20 to ensure we have enough after filtering)
+      // Sort newest first and keep a healthy window (at least 30)
       commits.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
       setItems(commits.slice(0, 50));
       setUpdatedAt(Date.now());
@@ -119,38 +141,65 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
 
   const lastUpdated = useMemo(() => (updatedAt ? new Date(updatedAt).toLocaleTimeString() : null), [updatedAt]);
 
+  // Group commits by date (YYYY-MM-DD)
+  const grouped = useMemo(() => {
+    const groups: Record<string, CommitItem[]> = {};
+    for (const it of items) {
+      const d = new Date(it.created_at);
+      const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+      if (!groups[key]) groups[key] = [];
+      groups[key].push(it);
+    }
+    const ordered = Object.keys(groups)
+      .sort((a, b) => new Date(b).getTime() - new Date(a).getTime())
+      .map((k) => ({ dateKey: k, items: groups[k] }));
+    return ordered;
+  }, [items]);
+
+  const relativeTime = (iso: string) => {
+    const diff = Date.now() - new Date(iso).getTime();
+    const s = Math.floor(diff / 1000);
+    if (s < 60) return `${s}s ago`;
+    const m = Math.floor(s / 60);
+    if (m < 60) return `${m}m ago`;
+    const h = Math.floor(m / 60);
+    if (h < 24) return `${h}h ago`;
+    const d = Math.floor(h / 24);
+    return `${d}d ago`;
+  };
+
   if (!open) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
       {/* Backdrop */}
-      <div className="absolute inset-0 bg-black/20" onClick={onClose} />
+      <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal window */}
-      <div className="relative z-10 w-[90vw] max-w-[800px] bg-[var(--color-card)] text-[var(--color-foreground)] border border-[var(--color-border)] shadow-none">
+      <div className="relative z-10 w-[92vw] max-w-[860px] bg-[var(--color-card)] text-[var(--color-foreground)] border border-[var(--color-border)] shadow-lg">
         {/* Title bar */}
-        <div className="flex items-center justify-between px-4 py-2 border-b border-[var(--color-border)]">
-          <div className="flex items-center gap-2">
-            <span>↻</span>
+        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 border-b border-[var(--color-border)] bg-[var(--color-card)]/95">
+          <div className="flex items-center gap-3">
+            <span className="opacity-70">↻</span>
             <span className="font-mono">git commit history</span>
             <span className="text-[var(--color-muted-foreground)] text-sm">{lastUpdated ? `(last updated: ${lastUpdated})` : null}</span>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-3">
             <button
-              className="font-mono text-sm underline text-[var(--color-accent-red)]"
+              className="font-mono text-sm underline text-[var(--color-accent-red)] hover:opacity-80"
               onClick={fetchCommits}
               title="Refresh (Cmd/Ctrl+R)"
             >
               refresh
             </button>
-            <button className="px-2" onClick={onClose} aria-label="Close commits modal">
+            <button className="px-2 text-lg" onClick={onClose} aria-label="Close commits modal">
               ×
             </button>
           </div>
         </div>
 
         {/* Content */}
-        <div className="max-h-[70vh] overflow-y-auto p-4">
+        <div className="max-h-[72vh] overflow-y-auto pt-0 pb-5 px-5 nice-scroll">
           {loading && <p className="font-mono">loading recent commits…</p>}
           {error && (
             <p className="font-mono text-[var(--color-text-secondary)]">
@@ -161,30 +210,58 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
             <p className="font-mono text-[var(--color-text-secondary)]">no recent commits found.</p>
           )}
 
-          <ul className="space-y-4">
-            {items.map((c) => (
-              <li key={c.id} className="font-mono leading-relaxed">
-                <div className="mb-1">
-                  <span className="text-[var(--color-accent-red)]">{c.repo}</span>
-                  <span className="text-[var(--color-text-secondary)] ml-2 text-sm">
-                    {new Date(c.created_at).toLocaleDateString('en-US', { 
-                      month: '2-digit', 
-                      day: '2-digit', 
-                      year: 'numeric' 
-                    })}, {new Date(c.created_at).toLocaleTimeString('en-US', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                      second: '2-digit',
-                      hour12: false
-                    })}
-                  </span>
-                </div>
-                <div className="text-[var(--color-text-primary)] pl-4">
-                  {c.message}
-                </div>
-              </li>
-            ))}
-          </ul>
+          <div className="space-y-8">
+            {grouped.map(({ dateKey, items: groupItems }) => {
+              const dateLabel = new Date(dateKey).toLocaleDateString('en-US', {
+                month: 'short', day: '2-digit', year: 'numeric'
+              });
+              return (
+                <section key={dateKey}>
+                  {/* Sticky date header */}
+                  <div className="sticky top-0 z-10 -mx-5 px-5 py-2 bg-[var(--color-card)]/95 border-b border-[var(--color-border)]">
+                    <span className="font-mono text-sm text-[var(--color-text-secondary)]">{dateLabel}</span>
+                  </div>
+
+                  <div className="mt-4 grid gap-3">
+                    {groupItems.map((c) => (
+                      <article
+                        key={c.id}
+                        className="border border-[var(--color-border)] bg-[var(--color-card)]/60 hover:bg-[var(--color-card)] transition-colors p-3"
+                      >
+                        <header className="mb-1 flex items-center gap-2 flex-wrap">
+                          <span className="px-1.5 py-[1px] text-xs border border-[var(--color-border)] rounded-sm text-[var(--color-accent-red)]">
+                            {c.repo}
+                          </span>
+                          <time
+                            className="text-[var(--color-text-secondary)] text-xs"
+                            title={new Date(c.created_at).toLocaleString()}
+                          >
+                            {new Date(c.created_at).toLocaleString('en-US', {
+                              month: 'short', day: '2-digit', year: 'numeric',
+                              hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
+                            })}
+                          </time>
+                          {c.url ? (
+                            <a
+                              href={c.url}
+                              target="_blank"
+                              rel="noreferrer"
+                              className="ml-auto text-xs underline text-[var(--color-accent-red)]"
+                            >
+                              view on github
+                            </a>
+                          ) : null}
+                        </header>
+                        <p className="font-mono text-[var(--color-text-primary)] leading-relaxed whitespace-pre-line">
+                          {c.message}
+                        </p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              );
+            })}
+          </div>
         </div>
       </div>
     </div>

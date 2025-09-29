@@ -152,6 +152,62 @@
     --sidebar-ring: var(--color-sidebar-ring);
   }
 
+  /* Dark theme overrides - applied when `.dark` class is present on html */
+  .dark {
+    /* Base tokens */
+    --color-background: #0f0f0f;
+    --color-foreground: #faf8f6;
+
+    --color-card: #121212;
+    --color-card-foreground: #faf8f6;
+
+    --color-popover: #121212;
+    --color-popover-foreground: #faf8f6;
+
+    --color-primary: #faf8f6;
+    --color-primary-foreground: #0f0f0f;
+
+    --color-secondary: #1f1f1f;
+    --color-secondary-foreground: #faf8f6;
+
+    --color-muted: #1a1a1a;
+    --color-muted-foreground: #a3a3a3;
+
+    --color-accent: #ff0000;
+    --color-accent-foreground: #0f0f0f;
+
+    --color-destructive: #ff3b3b;
+    --color-destructive-foreground: #0f0f0f;
+
+    --color-border: #2a2a2a;
+    --color-input: #2a2a2a;
+    --color-ring: #ffffff;
+
+    --color-chart-1: #f59e0b;
+    --color-chart-2: #10b981;
+    --color-chart-3: #60a5fa;
+    --color-chart-4: #eab308;
+    --color-chart-5: #ef4444;
+
+    /* App-specific tokens */
+    --color-background-primary: #0f0f0f;
+    --color-text-primary: #faf8f6;
+    --color-text-secondary: #a3a3a3;
+    --color-accent-red: #ff4d4d;
+    --color-border-divider: #2a2a2a;
+    --color-testimonial-border: #ff4d4d;
+
+    /* Sidebar tokens */
+    --color-sidebar: #0f0f0f;
+    --color-sidebar-foreground: #faf8f6;
+    --color-sidebar-primary: #ff4d4d;
+    --color-sidebar-primary-foreground: #0f0f0f;
+    --color-sidebar-accent: #1f1f1f;
+    --color-sidebar-accent-foreground: #faf8f6;
+    --color-sidebar-border: #2a2a2a;
+    --color-sidebar-ring: #ff4d4d;
+  }
+
   body {
     background-color: var(--color-background-primary);
     color: var(--color-text-primary);
@@ -224,8 +280,8 @@
   }
 
   li::before {
-    content: "+ "; /* Simple "+" bullet points */
-    color: var(--color-text-primary);
+    content: "• "; /* Subtle bullet */
+    color: var(--color-text-secondary);
   }
 
   blockquote {
@@ -259,4 +315,48 @@
 /* Hide Next.js error overlay portal */
 nextjs-portal {
   display: none !important;
+}
+
+/* Global smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Modern, minimal scrollbars (Chromium/WebKit) */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: var(--color-border);
+  border: 2px solid transparent;
+  background-clip: content-box;
+  border-radius: 8px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-muted);
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+/* Opt-in stronger styling for specific containers */
+.nice-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-secondary);
+}
+.nice-scroll {
+  scrollbar-color: var(--color-secondary) transparent;
+}
+
+.dark .nice-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--color-secondary-foreground);
+}
+.dark .nice-scroll {
+  scrollbar-color: var(--color-secondary-foreground) transparent;
 }
