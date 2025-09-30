@@ -47,7 +47,7 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
         headers: {
           Accept: "application/vnd.github+json",
           "X-GitHub-Api-Version": "2022-11-28",
-          "User-Agent": "basecase-portfolio-app",
+          "User-Agent": "portfolio-app",
         },
         cache: "no-store",
       });
@@ -75,7 +75,7 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
               headers: {
                 Accept: "application/vnd.github+json",
                 "X-GitHub-Api-Version": "2022-11-28",
-                "User-Agent": "basecase-portfolio-app",
+                "User-Agent": "portfolio-app",
               },
               cache: "no-store",
             }

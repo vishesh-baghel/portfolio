@@ -12,7 +12,7 @@ import { twitterUsername, linkedinUrl, githubUsername } from '@/lib/site-config'
 
 /**
  * A minimalist header component for the website.
- * It displays the site title "basecase" as a link to the homepage.
+ * It displays the site title link to the homepage.
  * The styling is consistent with the site's minimalist, monospace-driven design system.
  */
 const Header = () => {
@@ -173,8 +173,11 @@ const Header = () => {
         </div>
       </div>
 
-      {/* Modal */}
-      <CommitsModal open={openCommits} onClose={() => setOpenCommits(false)} />
+      {/* Modal (portal to body to avoid stacking/containing-block issues) */}
+      {mounted && createPortal(
+        <CommitsModal open={openCommits} onClose={() => setOpenCommits(false)} />,
+        document.body
+      )}
     </header>
   );
 };
