@@ -25,8 +25,8 @@ const items = [
 
 const CurrentWorkSection = () => {
   return (
-    <section className="py-10 font-mono">
-      <h2 className="text-lg font-bold cursor-default text-text-primary mb-6">current work</h2>
+    <section className="py-6 font-mono">
+      <h2 className="text-lg font-bold cursor-default text-text-primary mt-0 mb-2">current work</h2>
       <div className="grid gap-3">
         {items.map((it) => (
           <article key={it.title} className="border border-border bg-card/60 hover:bg-card transition-colors p-3">

@@ -5,9 +5,9 @@ import React, { useEffect, useState } from 'react';
 import { CommitsModal } from '@/components/commits/commits-modal';
 import ThemeToggle from '@/components/ui/theme-toggle';
 import { useRouter } from 'next/navigation';
-import { Linkedin } from 'lucide-react';
+import { Linkedin, Github, Code2 } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
-import { twitterUsername, linkedinUrl } from '@/lib/site-config';
+import { twitterUsername, linkedinUrl, githubUsername } from '@/lib/site-config';
 
 /**
  * A minimalist header component for the website.
@@ -35,19 +35,20 @@ const Header = () => {
   return (
     <header className="mb-20">
       <div className="flex items-center justify-between">
-        {/* Left: logo and quick links */}
+        {/* Left: minimal home logo + quick links */}
         <div className="flex items-center gap-3">
           <Link
             href="/"
-            className="font-mono text-2xl font-bold text-foreground no-underline hover:no-underline"
+            aria-label="Home"
+            className="inline-flex items-center justify-center rounded-lg border px-3 py-1 hover:bg-[var(--color-secondary)]"
+            title="Home"
           >
-            basecase
+            <Code2 className="size-4" />
           </Link>
-
           <button
             type="button"
             onClick={() => setOpenCommits(true)}
-            className="font-mono text-xs text-foreground no-underline rounded-md border px-3 py-1 hover:bg-[var(--color-secondary)]"
+            className="font-mono text-xs text-foreground no-underline rounded-lg border px-3 py-1 hover:bg-[var(--color-secondary)]"
             aria-label="Open commits modal"
           >
             [c] commits
@@ -55,7 +56,7 @@ const Header = () => {
 
           <Link
             href="/blog"
-            className="font-mono text-xs text-foreground no-underline rounded-md border px-3 py-1 hover:bg-[var(--color-secondary)]"
+            className="font-mono text-xs text-foreground no-underline rounded-lg border px-3 py-1 hover:bg-[var(--color-secondary)]"
           >
             [b] blog
           </Link>
@@ -63,12 +64,22 @@ const Header = () => {
 
         {/* Right: socials + theme toggle */}
         <div className="flex items-center gap-2">
+          <a
+            href={`https://github.com/${githubUsername}`}
+            target="_blank"
+            rel="noreferrer"
+            className="inline-flex items-center justify-center rounded-lg border px-3 py-1 hover:bg-[var(--color-secondary)]"
+            aria-label="GitHub"
+            title="GitHub"
+          >
+            <Github className="size-4" />
+          </a>
           {twitterUsername && (
             <a
               href={`https://x.com/${twitterUsername}`}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center size-8 rounded-md border hover:bg-[var(--color-secondary)]"
+              className="inline-flex items-center justify-center rounded-lg border px-3 py-1 hover:bg-[var(--color-secondary)]"
               aria-label="X (Twitter)"
               title="X"
             >
@@ -80,7 +91,7 @@ const Header = () => {
               href={linkedinUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center size-8 rounded-md border hover:bg-[var(--color-secondary)]"
+              className="inline-flex items-center justify-center rounded-lg border px-3 py-1 hover:bg-[var(--color-secondary)]"
               aria-label="LinkedIn"
               title="LinkedIn"
             >

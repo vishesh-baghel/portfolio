@@ -14,7 +14,7 @@ export default function HomePage() {
       <div className="max-w-[800px] mx-auto">
         <Header />
         
-        <main className="space-y-20">
+        <main className="space-y-6">
           <HeroSection />
           <AboutSection />
           <CurrentWorkSection />
