@@ -360,3 +360,8 @@ html {
 .dark .nice-scroll {
   scrollbar-color: var(--color-secondary-foreground) transparent;
 }
+
+/* Mobile menu overflow control */
+body:has(.mobile-menu-open) {
+  overflow: hidden;
+}

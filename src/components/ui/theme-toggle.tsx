@@ -21,7 +21,7 @@ export default function ThemeToggle() {
       variant="ghost"
       size="sm"
       aria-label="Toggle theme"
-      className="h-auto rounded-lg border px-3 py-1 hover:bg-[var(--color-secondary)]"
+      className="h-8 rounded-lg border px-3 hover:bg-[var(--color-secondary)]"
       onClick={toggle}
       title={isDark ? "Switch to light" : "Switch to dark"}
     >

@@ -21,16 +21,16 @@ const items = [
 const OpenSourceSection = () => {
   return (
     <section className="py-6 font-mono">
-      <h2 className="text-lg font-bold cursor-default text-text-primary mt-0 mb-2">open source</h2>
+      <h2 className="text-base sm:text-lg font-bold cursor-default text-text-primary mt-0 mb-2">open source</h2>
       <div className="grid gap-3">
         {items.map((it) => (
-          <article key={it.title} className="border border-border bg-card/60 hover:bg-card transition-colors p-3">
+          <article key={it.title} className="border border-border bg-card/60 hover:bg-card transition-colors p-3 sm:p-4">
             <header className="mb-1 flex items-center gap-2">
-              <a className="underline text-accent-red" href={it.href} target="_blank" rel="noreferrer">
+              <a className="underline text-accent-red text-sm sm:text-base" href={it.href} target="_blank" rel="noreferrer">
                 {it.title}
               </a>
             </header>
-            <p className="text-sm">{it.desc}</p>
+            <p className="text-xs sm:text-sm">{it.desc}</p>
           </article>
         ))}
       </div>

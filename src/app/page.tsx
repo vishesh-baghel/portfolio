@@ -11,7 +11,7 @@ import Footer from '@/components/sections/footer';
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-background-primary font-mono">
-      <div className="max-w-[800px] mx-auto">
+      <div className="max-w-[800px] mx-auto px-4 sm:px-6">
         <Header />
         
         <main className="space-y-6">
