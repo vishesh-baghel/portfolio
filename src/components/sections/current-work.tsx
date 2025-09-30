@@ -23,10 +23,10 @@ const items = [
   },
 ];
 
-const CurrentWorkSection = () => {
+const CurrentProjectsSection = () => {
   return (
     <section className="py-6 font-mono">
-      <h2 className="text-base sm:text-lg font-bold cursor-default text-text-primary mt-0 mb-2">current work</h2>
+      <h2 className="text-base sm:text-lg font-bold cursor-default text-text-primary mt-0 mb-2">noteworthy projects</h2>
       <div className="grid gap-3">
         {items.map((it) => (
           <article key={it.title} className="border border-border bg-card/60 hover:bg-card transition-colors p-3 sm:p-4">
@@ -43,4 +43,4 @@ const CurrentWorkSection = () => {
   );
 };
 
-export default CurrentWorkSection;
+export default CurrentProjectsSection;

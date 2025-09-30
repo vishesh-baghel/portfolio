@@ -1,28 +1,30 @@
+"use client";
+
 import React from 'react';
+import Link from 'next/link';
+import { ArrowUp } from 'lucide-react';
 
 const Footer = () => {
-  const websiteUrl = "https://alanagoyal.com";
-  const twitterUrl = "https://x.com/alanaagoyal";
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="mx-auto px-2 py-10 text-center font-mono">
-      <div className="flex justify-center space-x-1">
-        <a
-          href={websiteUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center p-1 text-xs text-muted-foreground no-underline hover:text-foreground"
+    <footer className="mx-auto px-0 py-0 font-mono">
+      {/* Quick links removed as requested */}
+
+      {/* Divider */}
+      <div className="my-6 h-px bg-border" />
+
+      {/* Bottom row */}
+      <div className="flex items-center justify-between text-xs text-muted-foreground">
+        <span>© {year} vishesh baghel • built with next.js and deployed on vercel</span>
+        <button
+          type="button"
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className="inline-flex items-center justify-center gap-1 rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)]"
+          aria-label="Back to top"
         >
-          [w] website
-        </a>
-        <a
-          href={twitterUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center p-1 text-xs text-muted-foreground no-underline hover:text-foreground"
-        >
-          [t] twitter
-        </a>
+          <ArrowUp className="size-3.5" /> top
+        </button>
       </div>
     </footer>
   );

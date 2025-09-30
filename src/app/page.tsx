@@ -2,7 +2,7 @@ import React from 'react';
 import Header from '@/components/sections/header';
 import HeroSection from '@/components/sections/hero';
 import AboutSection from '@/components/sections/about';
-import CurrentWorkSection from '@/components/sections/current-work';
+import CurrentProjectsSection from '@/components/sections/current-work';
 import OpenSourceSection from '@/components/sections/open-source';
 import SkillsSection from '@/components/sections/skills';
 import ContactSection from '@/components/sections/contact';
@@ -17,8 +17,8 @@ export default function HomePage() {
         <main className="space-y-6">
           <HeroSection />
           <AboutSection />
-          <CurrentWorkSection />
           <OpenSourceSection />
+          <CurrentProjectsSection />
           <SkillsSection />
           <ContactSection />
         </main>

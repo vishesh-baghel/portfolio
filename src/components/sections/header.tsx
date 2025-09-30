@@ -46,7 +46,7 @@ const Header = () => {
   }, [drawerOpen]);
 
   return (
-    <header className="mb-10">
+    <header className="sticky top-0 z-40 mb-10 bg-background supports-[backdrop-filter]:bg-background/80 backdrop-blur">
       <div className="flex h-12 items-center justify-between">
         {/* Left: mobile menu + desktop quick links */}
         <div className="flex items-center gap-3">

@@ -2,11 +2,11 @@ import React from 'react';
 
 const HeroSection = () => {
   return (
-    <div className="max-w-xl py-5">
+    <div className="py-5">
       <h1 className="text-2xl sm:text-3xl font-bold mb-4 cursor-default">
         <span className="inline-block">
           <span className="whitespace-pre-wrap">
-            first check to open source
+            open source + freelance
           </span>
         </span>
       </h1>
