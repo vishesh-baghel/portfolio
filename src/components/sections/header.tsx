@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { CommitsModal } from '@/components/commits/commits-modal';
 import ThemeToggle from '@/components/ui/theme-toggle';
 import { useRouter } from 'next/navigation';
@@ -18,6 +19,8 @@ const Header = () => {
   const [openCommits, setOpenCommits] = useState(false);
   const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   // keyboard shortcut: press "c" to open commits
   useEffect(() => {
@@ -55,29 +58,28 @@ const Header = () => {
             type="button"
             onClick={() => setDrawerOpen(!drawerOpen)}
             className="sm:hidden inline-flex items-center justify-center rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)]"
-            aria-label="Toggle menu"
             title="Menu"
           >
             <Menu className="size-4" />
           </button>
 
-          {/* Mobile slide-out menu */}
-          {drawerOpen && (
+          {/* Mobile slide-out menu (portal to escape sticky header stacking context) */}
+          {drawerOpen && mounted && createPortal(
             <>
               {/* Overlay */}
               <div
-                className="fixed inset-0 bg-black/50 z-40 sm:hidden"
+                className="fixed inset-0 z-[100] bg-black/50 sm:hidden"
                 onClick={() => setDrawerOpen(false)}
               />
-              {/* Menu panel */}
-              <div className="fixed left-0 top-0 h-full w-64 bg-background border-r border-border z-50 sm:hidden animate-in slide-in-from-left duration-200">
+              {/* Panel */}
+              <div className="fixed left-0 top-0 z-[110] h-full w-64 bg-background sm:hidden border-r border-border shadow-lg animate-in slide-in-from-left duration-200">
                 <div className="p-4 space-y-3">
                   <Link
                     href="/"
                     onClick={() => setDrawerOpen(false)}
-                    className="flex w-full items-center rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
+                    className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
                   >
-                    <Code2 className="size-4 mr-2" /> home
+                    [h] home
                   </Link>
                   <button
                     type="button"
@@ -93,7 +95,7 @@ const Header = () => {
                   >
                     [b] blog
                   </Link>
-                  <button 
+                  <button
                     onClick={() => setDrawerOpen(false)}
                     className="block w-full rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] text-left"
                   >
@@ -101,10 +103,9 @@ const Header = () => {
                   </button>
                 </div>
               </div>
-            </>
+            </>,
+            document.body
           )}
-
-          {/* Desktop: inline quick links */}
           <div className="hidden sm:flex items-center gap-3">
             <Link
               href="/"
