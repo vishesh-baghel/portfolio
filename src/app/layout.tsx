@@ -3,6 +3,7 @@ import "./globals.css";
 import ErrorReporter from "@/components/ErrorReporter";
 import { ThemeProvider } from "next-themes";
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 export const metadata: Metadata = {
   title: "Vishesh Baghel — open source & agents",
@@ -26,6 +27,7 @@ export default function RootLayout({
           <ErrorReporter />
           {children}
           <Analytics />
+          <SpeedInsights />
         </ThemeProvider>
       </body>
     </html>

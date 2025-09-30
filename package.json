@@ -49,6 +49,7 @@
         "@tsparticles/react": "^3.0.0",
         "@tsparticles/slim": "^3.8.1",
         "@vercel/analytics": "^1.5.0",
+        "@vercel/speed-insights": "^1.2.0",
         "atmn": "^0.0.24",
         "autumn-js": "^0.1.34",
         "bcrypt": "^6.0.0",
