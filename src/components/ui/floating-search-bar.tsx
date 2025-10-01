@@ -65,7 +65,7 @@ export function FloatingSearchBar({ onClick, className }: FloatingSearchBarProps
         </div>
       </div>
       <div className="hidden sm:flex items-center gap-1 text-xs text-muted-foreground font-mono">
-        <span>{isMac ? '⌘K' : 'Ctrl K'}</span>
+        <span>{isMac ? 'Cmd K' : 'Ctrl K'}</span>
       </div>
     </button>
     {/* No transitions; simple 10s text swap */}

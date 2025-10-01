@@ -94,9 +94,20 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     };
     setChatMessages(prev => [...prev, userMessage]);
     setSearchQuery('');
+    setChatInput('');
+
+    // Create assistant message placeholder for streaming
+    const assistantMessageId = (Date.now() + 1).toString();
+    const assistantMessage: ChatMessage = {
+      id: assistantMessageId,
+      type: 'assistant',
+      content: '',
+      timestamp: new Date()
+    };
+    setChatMessages(prev => [...prev, assistantMessage]);
 
     try {
-      // Call the portfolio agent API
+      // Call the portfolio agent API with streaming
       const response = await fetch('/api/portfolio-agent', {
         method: 'POST',
         headers: {
@@ -109,25 +120,73 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
         throw new Error('Failed to get response');
       }
 
-      const data = await response.json();
+      // Handle streaming response
+      const reader = response.body?.getReader();
+      const decoder = new TextDecoder();
 
-      // Add assistant message
-      const assistantMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        type: 'assistant',
-        content: data.response,
-        timestamp: new Date()
-      };
-      setChatMessages(prev => [...prev, assistantMessage]);
+      if (!reader) {
+        throw new Error('No reader available');
+      }
+
+      let buffer = '';
+      let accumulatedContent = '';
+
+      while (true) {
+        const { done, value } = await reader.read();
+        
+        if (done) break;
+
+        // Decode the chunk and add to buffer
+        buffer += decoder.decode(value, { stream: true });
+        
+        // Process complete lines from buffer
+        const lines = buffer.split('\n');
+        buffer = lines.pop() || ''; // Keep incomplete line in buffer
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const jsonStr = line.slice(6); // Remove 'data: ' prefix
+              const data = JSON.parse(jsonStr);
+              
+              if (data.type === 'chunk') {
+                // Accumulate content and update the assistant message
+                accumulatedContent += data.content;
+                setChatMessages(prev => 
+                  prev.map(msg => 
+                    msg.id === assistantMessageId 
+                      ? { ...msg, content: accumulatedContent }
+                      : msg
+                  )
+                );
+              } else if (data.type === 'done') {
+                // Streaming complete
+                setIsLoading(false);
+                break;
+              } else if (data.type === 'error') {
+                throw new Error(data.error || 'Unknown error');
+              }
+            } catch (parseError) {
+              console.error('Error parsing SSE data:', parseError);
+            }
+          }
+        }
+      }
+
     } catch (error) {
-      // Add error message
-      const errorMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        type: 'assistant',
-        content: "Sorry, I'm having trouble connecting right now. Please try again later or contact Vishesh directly.",
-        timestamp: new Date()
-      };
-      setChatMessages(prev => [...prev, errorMessage]);
+      console.error('Streaming error:', error);
+      
+      // Update the assistant message with error content
+      setChatMessages(prev => 
+        prev.map(msg => 
+          msg.id === assistantMessageId 
+            ? { 
+                ...msg, 
+                content: "Sorry, I'm having trouble connecting right now. Please try again later or contact Vishesh directly." 
+              }
+            : msg
+        )
+      );
     } finally {
       setIsLoading(false);
     }
