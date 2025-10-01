@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { Search, Send, ArrowLeft, Zap } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
+import { QUIRKY_PLACEHOLDERS } from '@/lib/searchPlaceholders';
 
 interface SearchModalProps {
   open: boolean;
@@ -28,6 +29,7 @@ const PREDEFINED_QUESTIONS = [
   "What's Vishesh's expertise in AI and agents?"
 ];
 
+
 export function SearchModal({ open, onClose }: SearchModalProps) {
   const [mounted, setMounted] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -36,6 +38,8 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [chatInput, setChatInput] = useState('');
+  const [placeholder, setPlaceholder] = useState<string>(QUIRKY_PLACEHOLDERS[0]);
 
   useEffect(() => {
     setMounted(true);
@@ -46,12 +50,18 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
       // Focus input when modal opens
       setTimeout(() => inputRef.current?.focus(), 100);
     }
+    // Set a random placeholder on open (only matters in search mode)
+    if (open) {
+      const next = QUIRKY_PLACEHOLDERS[Math.floor(Math.random() * QUIRKY_PLACEHOLDERS.length)];
+      setPlaceholder(next);
+    }
   }, [open]);
 
   useEffect(() => {
     // Reset state when modal closes
     if (!open) {
       setSearchQuery('');
+    setChatInput('');
       setIsInChatMode(false);
       setChatMessages([]);
       setIsLoading(false);
@@ -69,7 +79,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
   };
 
   const handleSubmit = async (query?: string) => {
-    const finalQuery = query || searchQuery;
+    const finalQuery = query || (isInChatMode ? chatInput : searchQuery);
     if (!finalQuery.trim()) return;
 
     setIsInChatMode(true);
@@ -156,56 +166,71 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
       {/* Modal */}
       <div
         className={cn(
-          "fixed left-1/2 top-[15%] z-50 w-full max-w-2xl -translate-x-1/2",
-          "mx-4 transition-all duration-200",
+          // Fixed positioning and dimensions
+          "fixed top-[10%] z-50",
+          // Mobile: safe inset positioning, Desktop: fixed width centered
+          "left-4 right-4 max-w-2xl",
+          "sm:left-1/2 sm:right-auto sm:w-[32rem] sm:-translate-x-1/2",
+          "transition-all duration-200",
           open 
             ? "opacity-100 scale-100 translate-y-0" 
             : "opacity-0 scale-95 translate-y-2 pointer-events-none"
         )}
       >
-        <div className="bg-background border border-border rounded-lg shadow-2xl max-h-[70vh] flex flex-col">
+        <div className="bg-background border border-border rounded-lg shadow-2xl h-[70vh] flex flex-col">
           {/* Header */}
-          <div className="flex items-center gap-3 p-4 border-b border-border">
-            {isInChatMode && (
+          <div className="flex items-center gap-3 p-4 border-b border-border flex-shrink-0">
+            {isInChatMode ? (
+              /* Chat mode - only show back button */
               <button
                 type="button"
                 onClick={handleBackToSearch}
-                className="p-1 hover:bg-[var(--color-secondary)] rounded transition-colors"
+                className="flex items-center gap-2 p-1 hover:bg-[var(--color-secondary)] rounded transition-colors"
                 aria-label="Back to search"
               >
                 <ArrowLeft className="size-4" />
+                <span className="font-mono text-sm text-muted-foreground">Back to search</span>
               </button>
+            ) : (
+              /* Search mode - show search input */
+              <div className="flex items-center gap-2 flex-1">
+                <Search className="size-4 text-muted-foreground" />
+                <input
+                  ref={inputRef}
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                  placeholder={placeholder}
+                  className="flex-1 bg-transparent border-none outline-none font-mono text-sm leading-[1.4] placeholder:text-muted-foreground relative top-[2px]"
+                  onFocus={() => {
+                    // Rotate placeholder if user focuses without typing
+                    if (!searchQuery.trim()) {
+                      const next = QUIRKY_PLACEHOLDERS[Math.floor(Math.random() * QUIRKY_PLACEHOLDERS.length)];
+                      setPlaceholder(next);
+                    }
+                  }}
+                />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => handleSubmit()}
+                    disabled={isLoading}
+                    className="p-1 hover:bg-[var(--color-secondary)] rounded transition-colors disabled:opacity-50"
+                    aria-label="Send message"
+                  >
+                    <Send className="size-4" />
+                  </button>
+                )}
+              </div>
             )}
-            <div className="flex items-center gap-2 flex-1">
-              <Search className="size-4 text-muted-foreground" />
-              <input
-                ref={inputRef}
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyDown={handleKeyDown}
-                placeholder={isInChatMode ? "Ask me anything..." : "Search or ask AI..."}
-                className="flex-1 bg-transparent border-none outline-none font-mono text-sm placeholder:text-muted-foreground"
-              />
-              {searchQuery && (
-                <button
-                  type="button"
-                  onClick={() => handleSubmit()}
-                  disabled={isLoading}
-                  className="p-1 hover:bg-[var(--color-secondary)] rounded transition-colors disabled:opacity-50"
-                  aria-label="Send message"
-                >
-                  <Send className="size-4" />
-                </button>
-              )}
-            </div>
           </div>
 
           {/* Content */}
           <div className="flex-1 overflow-hidden">
             {!isInChatMode ? (
               /* Initial search state with predefined questions */
-              <div className="p-4 space-y-4">
+              <div className="p-4 space-y-4 h-full overflow-y-auto">
                 <div className="text-sm text-muted-foreground font-mono">
                   Ask me anything about Vishesh
                 </div>
@@ -227,7 +252,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               </div>
             ) : (
               /* Chat mode */
-              <div className="flex flex-col h-full max-h-96">
+              <div className="flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
                   {chatMessages.map((message) => (
                     <div
@@ -264,6 +289,30 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                     </div>
                   )}
                   <div ref={messagesEndRef} />
+                </div>
+                {/* Chat input bar */}
+                <div className="border-t border-border p-3 bg-background flex-shrink-0">
+                  <form
+                    onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}
+                    className="flex items-center gap-2"
+                  >
+                    <input
+                      type="text"
+                      value={chatInput}
+                      onChange={(e) => setChatInput(e.target.value)}
+                      onKeyDown={handleKeyDown}
+                      placeholder="Enter your message..."
+                      className="flex-1 bg-transparent border rounded px-3 py-2 font-mono text-sm outline-none focus:ring-2 focus:ring-ring"
+                    />
+                    <button
+                      type="submit"
+                      disabled={isLoading || !chatInput.trim()}
+                      className="inline-flex items-center gap-2 border rounded px-3 h-9 hover:bg-[var(--color-secondary)] disabled:opacity-50"
+                    >
+                      <Send className="size-4" />
+                      <span className="hidden sm:inline font-mono text-xs">Send</span>
+                    </button>
+                  </form>
                 </div>
               </div>
             )}

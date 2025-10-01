@@ -1,7 +1,9 @@
 "use client";
 
+import { useEffect, useRef, useState } from 'react';
 import { Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { QUIRKY_PLACEHOLDERS } from '@/lib/searchPlaceholders';
 
 interface FloatingSearchBarProps {
   onClick?: () => void;
@@ -9,7 +11,28 @@ interface FloatingSearchBarProps {
 }
 
 export function FloatingSearchBar({ onClick, className }: FloatingSearchBarProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const intervalRef = useRef<number | null>(null);
+  const [isMac, setIsMac] = useState(false);
+
+  useEffect(() => {
+    const tick = () => setCurrentIndex((i) => (i + 1) % QUIRKY_PLACEHOLDERS.length);
+    intervalRef.current = window.setInterval(tick, 10000);
+    return () => {
+      if (intervalRef.current) window.clearInterval(intervalRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    // Lightweight platform detection for displaying keyboard hint
+    const ua = navigator.userAgent || "";
+    const platform = (navigator as any).platform || "";
+    const mac = /Mac|Macintosh|MacIntel|MacPPC|Mac68K/i.test(platform) || /Mac OS X/i.test(ua);
+    setIsMac(mac);
+  }, []);
+
   return (
+    <>
     <button
       type="button"
       onClick={onClick}
@@ -20,7 +43,8 @@ export function FloatingSearchBar({ onClick, className }: FloatingSearchBarProps
         "bg-background supports-[backdrop-filter]:bg-background/80 backdrop-blur",
         // Border and sizing
         "border border-border rounded-lg",
-        "h-12 px-4 min-w-[280px] sm:min-w-[320px]",
+        // Fixed widths for stable UX
+        "h-12 px-4 w-[320px] sm:w-[420px]",
         // Flex layout
         "flex items-center gap-3",
         // Hover effects
@@ -34,13 +58,17 @@ export function FloatingSearchBar({ onClick, className }: FloatingSearchBarProps
       aria-label="Open search"
     >
       <Search className="size-4 text-muted-foreground flex-shrink-0" />
-      <span className="font-mono text-sm text-muted-foreground flex-1 text-left">
-        Search or ask AI...
-      </span>
-      <div className="flex items-center gap-1 text-xs text-muted-foreground font-mono">
-        <span className="hidden sm:inline">⌘K</span>
-        <span className="sm:hidden">Ctrl K</span>
+      {/* Simple, no-transition placeholder line with truncation */}
+      <div className="flex-1 h-[1.4rem] overflow-hidden">
+        <div className="whitespace-nowrap truncate font-mono text-sm text-muted-foreground text-left relative top-[2px]">
+          {QUIRKY_PLACEHOLDERS[currentIndex]}
+        </div>
+      </div>
+      <div className="hidden sm:flex items-center gap-1 text-xs text-muted-foreground font-mono">
+        <span>{isMac ? '⌘K' : 'Ctrl K'}</span>
       </div>
     </button>
+    {/* No transitions; simple 10s text swap */}
+    </>
   );
 }
