@@ -1,5 +1,6 @@
 "use client";
 
+import type React from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { Search, Send, ArrowLeft, Zap } from 'lucide-react';
 import { createPortal } from 'react-dom';
@@ -209,7 +210,9 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
+  // Avoid SSR access to `document` and only portal on client after mount
   if (!mounted) return null;
+  if (typeof document === 'undefined') return null;
 
   return createPortal(
     <>
@@ -244,11 +247,11 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               <button
                 type="button"
                 onClick={handleBackToSearch}
-                className="flex items-center gap-2 p-1 hover:bg-[var(--color-secondary)] rounded transition-colors"
+                className="inline-flex items-center gap-2 h-8 px-2 hover:bg-[var(--color-secondary)] rounded transition-colors"
                 aria-label="Back to search"
               >
                 <ArrowLeft className="size-4" />
-                <span className="font-mono text-sm text-muted-foreground">Back to search</span>
+                <span className="font-mono text-sm leading-4 relative top-[1px] text-muted-foreground">Back to search</span>
               </button>
             ) : (
               /* Search mode - show search input */
@@ -314,38 +317,19 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               <div className="flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
                   {chatMessages.map((message) => (
-                    <div
-                      key={message.id}
-                      className={cn(
-                        "flex gap-3",
-                        message.type === 'user' ? "justify-end" : "justify-start"
-                      )}
-                    >
-                      <div
+                    <div key={message.id} className="w-full">
+                      <p
                         className={cn(
-                          "max-w-[80%] p-3 rounded font-mono text-sm",
-                          message.type === 'user'
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-[var(--color-secondary)] text-foreground border border-border"
+                          "font-mono text-sm whitespace-pre-wrap",
+                          message.type === 'user' ? "text-muted-foreground" : "text-foreground"
                         )}
                       >
                         {message.content}
-                      </div>
+                      </p>
                     </div>
                   ))}
                   {isLoading && (
-                    <div className="flex justify-start">
-                      <div className="bg-[var(--color-secondary)] border border-border p-3 rounded font-mono text-sm">
-                        <div className="flex items-center gap-2">
-                          <div className="flex gap-1">
-                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                            <div className="w-2 h-2 bg-muted-foreground rounded-full animate-bounce"></div>
-                          </div>
-                          <span className="text-muted-foreground">Thinking...</span>
-                        </div>
-                      </div>
-                    </div>
+                    <p className="font-mono text-sm text-muted-foreground">Thinking...</p>
                   )}
                   <div ref={messagesEndRef} />
                 </div>
