@@ -74,6 +74,8 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages]);
 
+  // Removed placeholder typewriter effect per request
+
   const handleQuestionClick = async (question: string) => {
     setSearchQuery(question);
     await handleSubmit(question);
@@ -130,7 +132,38 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
       }
 
       let buffer = '';
-      let accumulatedContent = '';
+      // Character-by-character reveal state
+      let displayedContent = '';
+      let charQueue: string[] = [];
+      let revealTimer: number | undefined;
+      let sourceDone = false;
+
+      const updateAssistantMessage = (content: string) => {
+        setChatMessages(prev => 
+          prev.map(msg => 
+            msg.id === assistantMessageId 
+              ? { ...msg, content }
+              : msg
+          )
+        );
+      };
+
+      const ensureTimer = () => {
+        if (revealTimer) return;
+        revealTimer = window.setInterval(() => {
+          if (charQueue.length > 0) {
+            const ch = charQueue.shift() as string;
+            displayedContent += ch;
+            updateAssistantMessage(displayedContent);
+          } else if (sourceDone) {
+            if (revealTimer) {
+              clearInterval(revealTimer);
+              revealTimer = undefined;
+            }
+            setIsLoading(false);
+          }
+        }, 10);
+      };
 
       while (true) {
         const { done, value } = await reader.read();
@@ -151,19 +184,14 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               const data = JSON.parse(jsonStr);
               
               if (data.type === 'chunk') {
-                // Accumulate content and update the assistant message
-                accumulatedContent += data.content;
-                setChatMessages(prev => 
-                  prev.map(msg => 
-                    msg.id === assistantMessageId 
-                      ? { ...msg, content: accumulatedContent }
-                      : msg
-                  )
-                );
+                // Queue characters for smooth reveal
+                const chars = String(data.content).split('');
+                charQueue.push(...chars);
+                ensureTimer();
               } else if (data.type === 'done') {
-                // Streaming complete
-                setIsLoading(false);
-                break;
+                // Mark source as done; timer will finish flushing the queue
+                sourceDone = true;
+                // Do not break here to allow remaining SSE lines (if any) to be processed
               } else if (data.type === 'error') {
                 throw new Error(data.error || 'Unknown error');
               }
@@ -174,6 +202,13 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
         }
       }
 
+      // Reader finished; if no more queued chars, stop loading
+      if (!charQueue.length) {
+        setIsLoading(false);
+      } else {
+        // Ensure timer is running to flush remaining characters
+        ensureTimer();
+      }
     } catch (error) {
       console.error('Streaming error:', error);
       
@@ -188,7 +223,6 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
             : msg
         )
       );
-    } finally {
       setIsLoading(false);
     }
   };
@@ -317,11 +351,19 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               <div className="flex flex-col h-full">
                 <div className="flex-1 overflow-y-auto p-4 space-y-4">
                   {chatMessages.map((message) => (
-                    <div key={message.id} className="w-full">
+                    <div
+                      key={message.id}
+                      className={cn(
+                        "w-full flex",
+                        message.type === 'user' ? "justify-end" : "justify-start"
+                      )}
+                    >
                       <p
                         className={cn(
-                          "font-mono text-sm whitespace-pre-wrap",
-                          message.type === 'user' ? "text-muted-foreground" : "text-foreground"
+                          "font-mono text-sm whitespace-pre-wrap inline-block max-w-[85%]",
+                          message.type === 'user'
+                            ? "text-right text-muted-foreground"
+                            : "text-left text-foreground"
                         )}
                       >
                         {message.content}
