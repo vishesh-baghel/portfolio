@@ -6,14 +6,17 @@
         "dev": "next dev --turbopack",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "mastra:dev": "mastra dev"
     },
     "dependencies": {
+        "@ai-sdk/openai": "^2.0.42",
         "@babel/parser": "^7.28.4",
         "@headlessui/react": "^2.2.8",
         "@heroicons/react": "^2.2.0",
         "@hookform/resolvers": "^5.1.1",
         "@libsql/client": "^0.15.15",
+        "@mastra/core": "^0.19.1",
         "@number-flow/react": "^0.5.10",
         "@radix-ui/react-accordion": "^1.2.11",
         "@radix-ui/react-alert-dialog": "^1.1.14",
@@ -102,6 +105,7 @@
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3.3.1",
+        "mastra": "latest",
         "@tailwindcss/postcss": "^4",
         "@types/node": "^20",
         "@types/react": "^19",

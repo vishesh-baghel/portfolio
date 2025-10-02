@@ -7,6 +7,7 @@ import OpenSourceSection from '@/components/sections/open-source';
 import SkillsSection from '@/components/sections/skills';
 import ContactSection from '@/components/sections/contact';
 import Footer from '@/components/sections/footer';
+import { PortfolioSearch } from '@/components/ui/portfolio-search';
 
 export default function HomePage() {
   return (
@@ -25,6 +26,9 @@ export default function HomePage() {
         
         <Footer />
       </div>
+      
+      {/* Portfolio Search - Only show on homepage */}
+      <PortfolioSearch />
     </div>
   );
 }

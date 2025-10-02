@@ -4,6 +4,7 @@ import ErrorReporter from "@/components/ErrorReporter";
 import { ThemeProvider } from "next-themes";
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
+import { SearchProvider } from "@/components/providers/search-provider";
 
 export const metadata: Metadata = {
   title: "Vishesh Baghel — open source & agents",
@@ -23,11 +24,13 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
-          <ErrorReporter />
-          {children}
-          <Analytics />
-          <SpeedInsights />
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
+          <SearchProvider>
+            <ErrorReporter />
+            {children}
+            <Analytics />
+            <SpeedInsights />
+          </SearchProvider>
         </ThemeProvider>
       </body>
     </html>

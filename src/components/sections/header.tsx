@@ -22,20 +22,6 @@ const Header = () => {
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
 
-  // keyboard shortcut: press "c" to open commits
-  useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key.toLowerCase() === 'c') {
-        setOpenCommits(true);
-      }
-      if (e.key.toLowerCase() === 'b') {
-        router.push('/blog');
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, []);
-
   // Handle body scroll lock for mobile menu
   useEffect(() => {
     if (drawerOpen) {
@@ -79,21 +65,21 @@ const Header = () => {
                     onClick={() => setDrawerOpen(false)}
                     className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
                   >
-                    [h] home
+                    home
                   </Link>
                   <button
                     type="button"
                     onClick={() => { setOpenCommits(true); setDrawerOpen(false); }}
                     className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] text-left"
                   >
-                    [c] commits
+                    commits
                   </button>
                   <Link
                     href="/blog"
                     onClick={() => setDrawerOpen(false)}
                     className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
                   >
-                    [b] blog
+                    experiments
                   </Link>
                   <button
                     onClick={() => setDrawerOpen(false)}
@@ -121,14 +107,14 @@ const Header = () => {
               className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)]"
               aria-label="Open commits modal"
             >
-              [c] commits
+              commits
             </button>
 
             <Link
-              href="/blog"
+              href="/experiments"
               className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
             >
-              [b] blog
+              experiments
             </Link>
           </div>
         </div>
