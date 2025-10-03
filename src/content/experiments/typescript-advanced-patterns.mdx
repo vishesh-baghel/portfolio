@@ -1,0 +1,184 @@
+# TypeScript Advanced Patterns
+
+Deep dive into advanced TypeScript patterns for building type-safe, maintainable applications.
+
+## Type-Level Programming
+
+TypeScript's type system is Turing complete. Here are some powerful patterns:
+
+### Conditional Types
+
+```typescript
+type IsString<T> = T extends string ? true : false;
+
+type A = IsString<"hello">; // true
+type B = IsString<42>; // false
+```
+
+### Mapped Types
+
+```typescript
+type Readonly<T> = {
+  readonly [P in keyof T]: T[P];
+};
+
+type Partial<T> = {
+  [P in keyof T]?: T[P];
+};
+```
+
+<Callout type="info">
+Mapped types are the foundation of many utility types in TypeScript.
+</Callout>
+
+## Template Literal Types
+
+Building type-safe route handlers:
+
+```typescript
+type HTTPMethod = 'GET' | 'POST' | 'PUT' | 'DELETE';
+type Route = '/users' | '/posts' | '/comments';
+
+type Endpoint = `${HTTPMethod} ${Route}`;
+// Results in: 'GET /users' | 'GET /posts' | 'POST /users' | ...
+
+function handleRequest(endpoint: Endpoint) {
+  // Fully type-safe!
+}
+
+handleRequest('GET /users'); // ✓
+handleRequest('GET /invalid'); // ✗ Type error
+```
+
+## Branded Types
+
+Preventing type confusion with nominal typing:
+
+```typescript
+type UserId = string & { readonly brand: unique symbol };
+type PostId = string & { readonly brand: unique symbol };
+
+function getUserId(id: string): UserId {
+  return id as UserId;
+}
+
+function getPost(postId: PostId) {
+  // Implementation
+}
+
+const userId = getUserId("user123");
+const postId = getUserId("post456") as unknown as PostId;
+
+getPost(userId); // ✗ Type error - cannot pass UserId where PostId expected
+getPost(postId); // ✓
+```
+
+<Callout type="success">
+Branded types caught 12 type confusion bugs in our codebase before production.
+</Callout>
+
+## Builder Pattern with Fluent API
+
+Type-safe builder with method chaining:
+
+```typescript
+class QueryBuilder<T extends object> {
+  private filters: Array<(item: T) => boolean> = [];
+  
+  where<K extends keyof T>(
+    key: K,
+    value: T[K]
+  ): QueryBuilder<T> {
+    this.filters.push(item => item[key] === value);
+    return this;
+  }
+  
+  execute(data: T[]): T[] {
+    return data.filter(item => 
+      this.filters.every(filter => filter(item))
+    );
+  }
+}
+
+// Usage
+const users = new QueryBuilder<User>()
+  .where('age', 25)
+  .where('status', 'active')
+  .execute(userList);
+```
+
+## Recursive Types
+
+Handling deeply nested structures:
+
+```typescript
+type DeepPartial<T> = {
+  [P in keyof T]?: T[P] extends object
+    ? DeepPartial<T[P]>
+    : T[P];
+};
+
+interface Config {
+  database: {
+    host: string;
+    port: number;
+    credentials: {
+      username: string;
+      password: string;
+    };
+  };
+}
+
+// All properties optional at any depth
+const partialConfig: DeepPartial<Config> = {
+  database: {
+    credentials: {
+      username: "admin"
+      // password is optional
+    }
+  }
+};
+```
+
+## Type Guards with Type Predicates
+
+```typescript
+interface Dog {
+  type: 'dog';
+  bark(): void;
+}
+
+interface Cat {
+  type: 'cat';
+  meow(): void;
+}
+
+type Animal = Dog | Cat;
+
+function isDog(animal: Animal): animal is Dog {
+  return animal.type === 'dog';
+}
+
+function handleAnimal(animal: Animal) {
+  if (isDog(animal)) {
+    animal.bark(); // TypeScript knows it's a Dog
+  } else {
+    animal.meow(); // TypeScript knows it's a Cat
+  }
+}
+```
+
+<Callout type="warning">
+Complex type-level programming can slow down the TypeScript compiler. Balance type safety with build performance.
+</Callout>
+
+## Key Takeaways
+
+1. **Type Safety**: Advanced patterns catch bugs at compile time
+2. **Developer Experience**: Better autocomplete and IntelliSense
+3. **Refactoring**: Changes propagate through type system
+4. **Documentation**: Types serve as inline documentation
+
+---
+
+*Placeholder content - replace with your actual TypeScript experiments.*

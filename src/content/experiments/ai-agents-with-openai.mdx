@@ -1,0 +1,141 @@
+# AI Agents with OpenAI
+
+Building intelligent AI agents using OpenAI's GPT-4 and function calling capabilities for real-world applications.
+
+## Overview
+
+This experiment explores:
+- Function calling patterns
+- Multi-step agent workflows
+- Tool integration
+- Production considerations
+
+## Basic Agent Setup
+
+```typescript
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+const tools = [
+  {
+    type: "function",
+    function: {
+      name: "get_weather",
+      description: "Get current weather for a location",
+      parameters: {
+        type: "object",
+        properties: {
+          location: { type: "string" },
+          unit: { type: "string", enum: ["celsius", "fahrenheit"] },
+        },
+        required: ["location"],
+      },
+    },
+  },
+];
+```
+
+## Implementing Function Calls
+
+<Callout type="info">
+Function calling allows the model to structured data extraction and tool use.
+</Callout>
+
+```typescript
+async function runAgent(userMessage: string) {
+  const messages = [
+    { role: "system", content: "You are a helpful assistant." },
+    { role: "user", content: userMessage },
+  ];
+
+  const response = await openai.chat.completions.create({
+    model: "gpt-4-turbo-preview",
+    messages,
+    tools,
+    tool_choice: "auto",
+  });
+
+  const toolCalls = response.choices[0].message.tool_calls;
+  
+  if (toolCalls) {
+    for (const toolCall of toolCalls) {
+      const functionName = toolCall.function.name;
+      const functionArgs = JSON.parse(toolCall.function.arguments);
+      
+      // Execute the function and get results
+      const result = await executeFunction(functionName, functionArgs);
+      
+      // Add function response to messages
+      messages.push({
+        role: "tool",
+        tool_call_id: toolCall.id,
+        content: JSON.stringify(result),
+      });
+    }
+  }
+  
+  return response;
+}
+```
+
+## Multi-Agent Patterns
+
+Building complex workflows with multiple specialized agents:
+
+1. **Router Agent**: Determines which specialist agent to use
+2. **Specialist Agents**: Handle specific tasks
+3. **Coordinator**: Combines results
+
+<Callout type="warning" title="Cost Consideration">
+Multi-agent systems can increase API costs significantly. Implement caching and optimize prompts.
+</Callout>
+
+## Production Lessons
+
+Key insights from deploying agents in production:
+
+### Rate Limiting
+```typescript
+import pLimit from 'p-limit';
+
+const limit = pLimit(10); // Max 10 concurrent requests
+
+const results = await Promise.all(
+  tasks.map(task => limit(() => processWithAgent(task)))
+);
+```
+
+### Error Handling
+Always implement robust retry logic:
+
+```typescript
+async function callWithRetry(fn: () => Promise<any>, maxRetries = 3) {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      if (i === maxRetries - 1) throw error;
+      await sleep(Math.pow(2, i) * 1000); // Exponential backoff
+    }
+  }
+}
+```
+
+## Performance Metrics
+
+From our production deployment:
+- **Avg Response Time**: 2.3s
+- **Success Rate**: 97.8%
+- **Cost per Request**: $0.012
+- **User Satisfaction**: 4.6/5
+
+<Callout type="success">
+AI agents reduced manual processing time by 85% while maintaining quality.
+</Callout>
+
+---
+
+*Placeholder content - replace with your actual AI agent experiments.*

@@ -65,7 +65,14 @@ const Header = () => {
                     onClick={() => setDrawerOpen(false)}
                     className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
                   >
-                    home
+                    about
+                  </Link>
+                  <Link
+                    href="/work"
+                    onClick={() => setDrawerOpen(false)}
+                    className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
+                  >
+                    work
                   </Link>
                   <button
                     type="button"
@@ -75,11 +82,18 @@ const Header = () => {
                     commits
                   </button>
                   <Link
-                    href="/blog"
+                    href="/experiments"
                     onClick={() => setDrawerOpen(false)}
                     className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
                   >
                     experiments
+                  </Link>
+                  <Link
+                    href="/lessons"
+                    onClick={() => setDrawerOpen(false)}
+                    className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
+                  >
+                    lessons
                   </Link>
                   <button
                     onClick={() => setDrawerOpen(false)}
@@ -95,11 +109,17 @@ const Header = () => {
           <div className="hidden sm:flex items-center gap-3">
             <Link
               href="/"
-              aria-label="Home"
+              aria-label="About"
               className="inline-flex items-center justify-center rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
-              title="Home"
+              title="About"
             >
-              <Code2 className="size-4" />
+              about
+            </Link>
+            <Link
+              href="/work"
+              className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
+            >
+              work
             </Link>
             <button
               type="button"
@@ -109,12 +129,17 @@ const Header = () => {
             >
               commits
             </button>
-
             <Link
               href="/experiments"
               className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
             >
               experiments
+            </Link>
+            <Link
+              href="/lessons"
+              className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
+            >
+              lessons
             </Link>
           </div>
         </div>

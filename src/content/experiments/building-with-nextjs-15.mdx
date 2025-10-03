@@ -1,0 +1,77 @@
+# Building with Next.js 15
+
+Exploring the latest features and improvements in Next.js 15, including the new turbopack compiler and enhanced app router capabilities.
+
+## What's New in Next.js 15?
+
+Next.js 15 introduces several groundbreaking features:
+
+- **Turbopack**: Lightning-fast bundler (now stable!)
+- **Enhanced React 19 support**: Server actions and improved streaming
+- **Partial Prerendering**: Combine static and dynamic content seamlessly
+- **Improved caching**: Better control over data fetching
+
+<Callout type="info" title="Performance Gains">
+Turbopack showed 76.7% faster cold starts compared to Webpack in our tests.
+</Callout>
+
+## Setting Up a Project
+
+```bash
+npx create-next-app@latest my-app
+cd my-app
+pnpm dev
+```
+
+## App Router Deep Dive
+
+The app router continues to evolve with better patterns:
+
+```typescript
+// app/posts/[id]/page.tsx
+export default async function PostPage({ 
+  params 
+}: { 
+  params: Promise<{ id: string }> 
+}) {
+  const { id } = await params;
+  const post = await getPost(id);
+  
+  return <article>{post.content}</article>;
+}
+```
+
+## Server Actions
+
+Server actions simplify form handling:
+
+```typescript
+async function createPost(formData: FormData) {
+  'use server';
+  
+  const title = formData.get('title');
+  await db.posts.create({ title });
+  revalidatePath('/posts');
+}
+```
+
+<Callout type="success">
+Server actions eliminated ~200 lines of API route boilerplate in our production app.
+</Callout>
+
+## Key Learnings
+
+1. **Migration Path**: Incremental adoption from Pages to App router is smooth
+2. **Type Safety**: Better TypeScript integration with async params
+3. **Performance**: Real-world improvements align with benchmarks
+4. **Developer Experience**: Hot reload is noticeably faster
+
+## Trade-offs
+
+<Callout type="warning">
+Be cautious with client-side state management when mixing server and client components.
+</Callout>
+
+---
+
+*Placeholder content - replace with your actual Next.js 15 experiments.*
