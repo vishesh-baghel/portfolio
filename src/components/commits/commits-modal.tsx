@@ -176,7 +176,7 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal window */}
-      <div className="relative z-10 w-[96vw] sm:w-[92vw] max-w-[860px] rounded-lg overflow-hidden bg-[var(--color-card)] text-[var(--color-foreground)] border border-[var(--color-border)] shadow-lg">
+      <div className="relative z-10 w-[calc(100vw-2rem)] sm:w-[32rem] max-w-2xl h-[70vh] flex flex-col rounded-lg overflow-hidden bg-[var(--color-card)] supports-[backdrop-filter]:bg-[var(--color-card)]/80 backdrop-blur text-[var(--color-foreground)] border border-[var(--color-border)] shadow-lg">
         {/* Title bar */}
         <div className="sticky top-0 z-10 flex items-center justify-between px-4 sm:px-5 py-2 sm:py-3 border-b border-[var(--color-border)] bg-[var(--color-card)]/95">
           <div className="flex items-center gap-2 sm:gap-3">
@@ -197,7 +197,7 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
         </div>
 
         {/* Content */}
-        <div className="max-h-[72vh] overflow-y-auto pt-0 pb-4 sm:pb-5 px-2 sm:px-5 nice-scroll">
+        <div className="flex-1 overflow-y-auto pt-0 pb-4 sm:pb-5 px-2 sm:px-5 nice-scroll">
           {loading && <p className="font-mono text-sm sm:text-base">loading recent commits…</p>}
           {error && (
             <p className="font-mono text-sm sm:text-base text-[var(--color-text-secondary)]">

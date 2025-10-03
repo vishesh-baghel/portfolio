@@ -2,7 +2,7 @@
 
 import type React from 'react';
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Search, Send, ArrowLeft, Zap } from 'lucide-react';
+import { Search, ArrowUp, ArrowLeft, Zap } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import { QUIRKY_PLACEHOLDERS } from '@/lib/searchPlaceholders';
@@ -341,7 +341,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
             : "opacity-0 scale-95 translate-y-2 pointer-events-none"
         )}
       >
-        <div className="bg-background border border-border rounded-lg shadow-2xl h-[70vh] flex flex-col">
+        <div className="bg-background supports-[backdrop-filter]:bg-background/80 backdrop-blur border border-border rounded-lg shadow-2xl h-[70vh] flex flex-col">
           {/* Header */}
           <div className="flex items-center gap-3 p-4 border-b border-border flex-shrink-0">
             {isInChatMode ? (
@@ -349,11 +349,11 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               <button
                 type="button"
                 onClick={handleBackToSearch}
-                className="inline-flex items-center gap-2 h-8 px-2 hover:bg-[var(--color-secondary)] rounded transition-colors"
+                className="group inline-flex items-center gap-2 h-8 px-2 hover:bg-white hover:text-foreground rounded transition-colors cursor-pointer"
                 aria-label="Back to search"
               >
-                <ArrowLeft className="size-4" />
-                <span className="font-mono text-sm leading-4 relative top-[1px] text-muted-foreground">Back to search</span>
+                <ArrowLeft className="size-4 group-hover:text-foreground" />
+                <span className="font-mono text-sm leading-4 relative top-[1px] text-muted-foreground group-hover:text-foreground">Back to search</span>
               </button>
             ) : (
               /* Search mode - show search input */
@@ -383,7 +383,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                     className="p-1 hover:bg-[var(--color-secondary)] rounded transition-colors disabled:opacity-50"
                     aria-label="Send message"
                   >
-                    <Send className="size-4" />
+                    <ArrowUp className="size-4" />
                   </button>
                 )}
               </div>
@@ -404,7 +404,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                       key={index}
                       type="button"
                       onClick={() => handleQuestionClick(question)}
-                      className="w-full text-left p-3 rounded border border-border hover:bg-[var(--color-secondary)] transition-colors group"
+                      className="w-full text-left p-3 rounded border border-border hover:border-foreground/40 hover:bg-[var(--color-secondary)] transition-colors group cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     >
                       <div className="flex items-center gap-3">
                         <Zap className="size-4 text-accent flex-shrink-0 opacity-60 group-hover:opacity-100 transition-opacity" />
@@ -452,27 +452,29 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                   <div ref={messagesEndRef} />
                 </div>
                 {/* Chat input bar */}
-                <div className="border-t border-border p-3 bg-background flex-shrink-0">
+                <div className="p-3 bg-transparent flex-shrink-0">
                   <form
                     onSubmit={(e) => { e.preventDefault(); handleSubmit(); }}
-                    className="flex items-center gap-2"
+                    className="flex items-center"
                   >
-                    <input
-                      type="text"
-                      value={chatInput}
-                      onChange={(e) => setChatInput(e.target.value)}
-                      onKeyDown={handleKeyDown}
-                      placeholder="Enter your message..."
-                      className="flex-1 bg-transparent border rounded px-3 py-2 font-mono text-sm outline-none focus:ring-2 focus:ring-ring"
-                    />
-                    <button
-                      type="submit"
-                      disabled={isLoading || !chatInput.trim()}
-                      className="inline-flex items-center gap-2 border rounded px-3 h-9 hover:bg-[var(--color-secondary)] disabled:opacity-50"
-                    >
-                      <Send className="size-4" />
-                      <span className="hidden sm:inline font-mono text-xs">Send</span>
-                    </button>
+                    <div className="flex items-center gap-2 w-full rounded-2xl border border-border/50 bg-background/80 shadow-sm px-3 py-2 focus-within:ring-2 focus-within:ring-ring transition-colors">
+                      <input
+                        type="text"
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        onKeyDown={handleKeyDown}
+                        placeholder="Enter your message..."
+                        className="flex-1 bg-transparent border-none outline-none font-mono text-sm placeholder:text-muted-foreground"
+                      />
+                      <button
+                        type="submit"
+                        disabled={isLoading || !chatInput.trim()}
+                        className="inline-flex items-center justify-center h-8 w-8 rounded-full bg-foreground/10 hover:bg-foreground/20 disabled:opacity-50"
+                        aria-label="Send message"
+                      >
+                        <ArrowUp className="size-4" />
+                      </button>
+                    </div>
                   </form>
                 </div>
               </div>
