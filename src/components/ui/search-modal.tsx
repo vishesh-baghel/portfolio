@@ -1,11 +1,13 @@
 "use client";
 
 import type React from 'react';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Search, Send, ArrowLeft, Zap } from 'lucide-react';
 import { createPortal } from 'react-dom';
 import { cn } from '@/lib/utils';
 import { QUIRKY_PLACEHOLDERS } from '@/lib/searchPlaceholders';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 interface SearchModalProps {
   open: boolean;
@@ -244,6 +246,72 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
     setTimeout(() => inputRef.current?.focus(), 100);
   };
 
+  // Custom markdown renderer with explicit component styling
+  const renderMarkdownContent = useCallback((content: string) => {
+    return (
+      <ReactMarkdown
+        remarkPlugins={[remarkGfm]}
+        components={{
+          p: ({ children }) => <p className="mb-2 leading-relaxed text-sm">{children}</p>,
+          h1: ({ children }) => (
+            <h1 className="text-sm font-bold mb-2 mt-3">{children}</h1>
+          ),
+          h2: ({ children }) => (
+            <h2 className="text-sm font-semibold mb-2 mt-3">{children}</h2>
+          ),
+          h3: ({ children }) => (
+            <h3 className="text-sm font-semibold mb-1 mt-2">{children}</h3>
+          ),
+          strong: ({ children }) => (
+            <strong className="font-bold text-sm">{children}</strong>
+          ),
+          em: ({ children }) => (
+            <em className="italic text-sm">{children}</em>
+          ),
+          ul: ({ children }) => (
+            <ul className="list-none ml-4 mb-2 space-y-1 text-sm">{children}</ul>
+          ),
+          ol: ({ children }) => (
+            <ol className="list-none ml-4 mb-2 space-y-1 text-sm">{children}</ol>
+          ),
+          li: ({ children }) => <li className="leading-relaxed text-sm">{children}</li>,
+          a: ({ children, href }) => (
+            <a 
+              href={href} 
+              target="_blank" 
+              rel="noopener noreferrer"
+              className="underline hover:text-accent transition-colors"
+            >
+              {children}
+            </a>
+          ),
+          code: ({ children, className }) => {
+            const isInline = !className;
+            return isInline ? (
+              <code className="bg-muted px-1 py-0.5 rounded text-xs font-mono">
+                {children}
+              </code>
+            ) : (
+              <code className={className}>{children}</code>
+            );
+          },
+          pre: ({ children }) => (
+            <pre className="bg-muted p-3 rounded mb-2 overflow-x-auto">
+              {children}
+            </pre>
+          ),
+          blockquote: ({ children }) => (
+            <blockquote className="border-l-2 border-muted-foreground pl-3 italic my-2">
+              {children}
+            </blockquote>
+          ),
+        }}
+      >
+        {content}
+      </ReactMarkdown>
+    );
+  }, []);
+
   // Avoid SSR access to `document` and only portal on client after mount
   if (!mounted) return null;
   if (typeof document === 'undefined') return null;
@@ -358,16 +426,24 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                         message.type === 'user' ? "justify-end" : "justify-start"
                       )}
                     >
-                      <p
-                        className={cn(
-                          "font-mono text-sm whitespace-pre-wrap inline-block max-w-[85%]",
-                          message.type === 'user'
-                            ? "text-right text-muted-foreground"
-                            : "text-left text-foreground"
-                        )}
-                      >
-                        {message.content}
-                      </p>
+                      {message.type === 'assistant' ? (
+                        <div
+                          className={cn(
+                            "font-mono text-sm inline-block max-w-[85%] text-left"
+                          )}
+                        >
+                          {renderMarkdownContent(message.content)}
+                        </div>
+                      ) : (
+                        <p
+                          className={cn(
+                            "font-mono text-sm whitespace-pre-wrap inline-block max-w-[85%]",
+                            "text-right text-muted-foreground"
+                          )}
+                        >
+                          {message.content}
+                        </p>
+                      )}
                     </div>
                   ))}
                   {isLoading && (
