@@ -446,7 +446,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                       )}
                     </div>
                   ))}
-                  {isLoading && (
+                  {isLoading && chatMessages.some(m => m.type === 'assistant' && !m.content) && (
                     <p className="font-mono text-sm text-muted-foreground">Thinking...</p>
                   )}
                   <div ref={messagesEndRef} />

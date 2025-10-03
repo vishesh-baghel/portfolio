@@ -176,17 +176,15 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" onClick={onClose} />
 
       {/* Modal window */}
-      <div className="relative z-10 w-[92vw] max-w-[860px] bg-[var(--color-card)] text-[var(--color-foreground)] border border-[var(--color-border)] shadow-lg">
+      <div className="relative z-10 w-[96vw] sm:w-[92vw] max-w-[860px] rounded-lg overflow-hidden bg-[var(--color-card)] text-[var(--color-foreground)] border border-[var(--color-border)] shadow-lg">
         {/* Title bar */}
-        <div className="sticky top-0 z-10 flex items-center justify-between px-5 py-3 border-b border-[var(--color-border)] bg-[var(--color-card)]/95">
-          <div className="flex items-center gap-3">
-            <span className="opacity-70">↻</span>
-            <span className="font-mono">git commit history</span>
-            <span className="text-[var(--color-muted-foreground)] text-sm">{lastUpdated ? `(last updated: ${lastUpdated})` : null}</span>
+        <div className="sticky top-0 z-10 flex items-center justify-between px-4 sm:px-5 py-2 sm:py-3 border-b border-[var(--color-border)] bg-[var(--color-card)]/95">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <span className="font-mono text-sm">Commits</span>
           </div>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <button
-              className="font-mono text-sm underline text-[var(--color-accent-red)] hover:opacity-80"
+              className="font-mono text-xs sm:text-sm underline text-[var(--color-accent-red)] hover:opacity-80"
               onClick={fetchCommits}
               title="Refresh (Cmd/Ctrl+R)"
             >
@@ -199,10 +197,10 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
         </div>
 
         {/* Content */}
-        <div className="max-h-[72vh] overflow-y-auto pt-0 pb-5 px-5 nice-scroll">
-          {loading && <p className="font-mono">loading recent commits…</p>}
+        <div className="max-h-[72vh] overflow-y-auto pt-0 pb-4 sm:pb-5 px-2 sm:px-5 nice-scroll">
+          {loading && <p className="font-mono text-sm sm:text-base">loading recent commits…</p>}
           {error && (
-            <p className="font-mono text-[var(--color-text-secondary)]">
+            <p className="font-mono text-sm sm:text-base text-[var(--color-text-secondary)]">
               {error}
             </p>
           )}
@@ -210,7 +208,7 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
             <p className="font-mono text-[var(--color-text-secondary)]">no recent commits found.</p>
           )}
 
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             {grouped.map(({ dateKey, items: groupItems }) => {
               const dateLabel = new Date(dateKey).toLocaleDateString('en-US', {
                 month: 'short', day: '2-digit', year: 'numeric'
@@ -218,22 +216,27 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
               return (
                 <section key={dateKey}>
                   {/* Sticky date header */}
-                  <div className="sticky top-0 z-10 -mx-5 px-5 py-2 bg-[var(--color-card)]/95 border-b border-[var(--color-border)]">
-                    <span className="font-mono text-sm text-[var(--color-text-secondary)]">{dateLabel}</span>
+                  <div className="sticky top-0 z-10 -mx-4 sm:-mx-5 px-4 sm:px-5 py-1.5 sm:py-2 bg-[var(--color-card)]/95 border-b border-[var(--color-border)]">
+                    <span className="font-mono text-xs sm:text-sm text-[var(--color-text-secondary)]">{dateLabel}</span>
                   </div>
 
-                  <div className="mt-4 grid gap-3">
+                  <div className="mt-3 sm:mt-4 grid gap-2.5 sm:gap-3">
                     {groupItems.map((c) => (
                       <article
                         key={c.id}
-                        className="border border-[var(--color-border)] bg-[var(--color-card)]/60 hover:bg-[var(--color-card)] transition-colors p-3"
+                        className={`border border-[var(--color-border)] bg-[var(--color-card)]/60 transition-colors p-2 sm:p-3 rounded-md ${c.url ? 'hover:bg-[var(--color-card)] cursor-pointer' : ''}`}
+                        onClick={() => { if (c.url) window.open(c.url, '_blank', 'noopener,noreferrer'); }}
+                        onKeyDown={(e) => { if (c.url && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); window.open(c.url, '_blank', 'noopener,noreferrer'); } }}
+                        role={c.url ? 'link' : undefined}
+                        tabIndex={c.url ? 0 : -1}
+                        aria-label={c.url ? `Open commit ${c.repo}` : undefined}
                       >
                         <header className="mb-1 flex items-center gap-2 flex-wrap">
-                          <span className="px-1.5 py-[1px] text-xs border border-[var(--color-border)] rounded-sm text-[var(--color-accent-red)]">
+                          <span className="px-1.5 py-[1px] text-[10px] sm:text-xs border border-[var(--color-border)] rounded-sm text-[var(--color-accent-red)]">
                             {c.repo}
                           </span>
                           <time
-                            className="text-[var(--color-text-secondary)] text-xs"
+                            className="text-[var(--color-text-secondary)] text-[10px] sm:text-xs"
                             title={new Date(c.created_at).toLocaleString()}
                           >
                             {new Date(c.created_at).toLocaleString('en-US', {
@@ -241,18 +244,9 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
                               hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false
                             })}
                           </time>
-                          {c.url ? (
-                            <a
-                              href={c.url}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="ml-auto text-xs underline text-[var(--color-accent-red)]"
-                            >
-                              view on github
-                            </a>
-                          ) : null}
+                          {/* Removed inline link; container is now clickable */}
                         </header>
-                        <p className="font-mono text-[var(--color-text-primary)] leading-relaxed whitespace-pre-line">
+                        <p className="font-mono text-[var(--color-text-primary)] leading-relaxed whitespace-pre-line text-sm">
                           {c.message}
                         </p>
                       </article>
