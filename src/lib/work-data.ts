@@ -7,21 +7,32 @@ export interface WorkEntry {
   outcomes: string[];
   link?: string;
   images?: string[];
+  logo?: string; // optional path under public/ for client logo
 }
 
-export const workEntries: WorkEntry[] = [
+export const workEntries: WorkEntry[] = [ 
   {
-    id: 'placeholder-project-1',
-    client: 'Tech Startup Inc.',
-    projectTitle: 'AI-Powered Analytics Dashboard',
-    description: 'Built a real-time analytics dashboard with AI-driven insights for business intelligence. Integrated multiple data sources and implemented custom visualization components.',
-    techStack: ['Next.js', 'TypeScript', 'PostgreSQL', 'Mastra', 'OpenAI API', 'TailwindCSS'],
-    outcomes: [
-      'Reduced data processing time by 60%',
-      'Improved user engagement by 45%',
-      'Successfully deployed to 10k+ users',
+    id: 'artifact-engineering-inc',
+    client: 'Artifact Engineering Inc.',
+    projectTitle: 'AI agent for real-time diagram editing',
+    description:
+      'Delivered an MVP of a diagram-editing agent that accepts natural language prompts and performs real-time changes on electrical system diagrams. Built a custom chat UI, integrated a Mastra agent via CedarOS, and executed tool calls on the frontend to mutate the canvas (devices, nets, annotations) with optimistic updates and safety checks. Implemented Supabase Auth with role-based access and a minimal PostgreSQL schema for sessions, prompts, and operation logs.',
+    techStack: [
+      'Next.js',
+      'TypeScript',
+      'CedarOS',
+      'Mastra',
+      'PostgreSQL',
+      'Supabase Auth',
+      'TailwindCSS'
     ],
-    link: '#',
+    outcomes: [
+      'Shipped the first integrated version of the agent into the product as an MVP',
+      'End‑to‑end prompt → tool‑call → diagram change flow demonstrated in a staging environment',
+      'Defined tool schemas and guardrails for safe canvas mutations and undo/redo hooks',
+      'Established structure for audit logs and observability of agent actions',
+    ],
+    link: 'https://www.artifact.engineer/',
+    logo: '/clients/artifact.ico',
   },
-  // Add more work entries here
 ];
