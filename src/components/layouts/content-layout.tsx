@@ -2,19 +2,16 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
-import Header from '@/components/sections/header';
+import { ChevronDown, ChevronRight } from 'lucide-react';
+import { ContentHeader } from '@/components/sections/content-header';
+import { ContentSearch } from '@/components/ui/content-search';
 import Footer from '@/components/sections/footer';
-
-export interface ContentItem {
-  title: string;
-  slug: string;
-}
+import type { ContentCategory } from '@/lib/content-utils';
 
 interface ContentLayoutProps {
   title: string;
   description: string;
-  items: ContentItem[];
+  categories: ContentCategory[];
   currentSlug?: string;
   basePath: string;
   children: React.ReactNode;
@@ -23,63 +20,125 @@ interface ContentLayoutProps {
 export function ContentLayout({
   title,
   description,
-  items,
+  categories,
   currentSlug,
   basePath,
   children,
 }: ContentLayoutProps) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
+    new Set(categories.map(cat => cat.title)) // All expanded by default
+  );
+
+  const toggleCategory = (categoryTitle: string) => {
+    setExpandedCategories(prev => {
+      const next = new Set(prev);
+      if (next.has(categoryTitle)) {
+        next.delete(categoryTitle);
+      } else {
+        next.add(categoryTitle);
+      }
+      return next;
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background-primary font-mono">
       <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
-        <Header />
-
-        {/* Mobile sidebar toggle */}
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="lg:hidden mb-4 inline-flex items-center justify-center rounded-lg border h-10 px-4 hover:bg-[var(--color-secondary)]"
-        >
-          {sidebarOpen ? <X className="size-4 mr-2" /> : <Menu className="size-4 mr-2" />}
-          {sidebarOpen ? 'Close' : 'Menu'}
-        </button>
+        <ContentHeader 
+          onSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
+          categories={categories}
+          basePath={basePath}
+        />
 
         <div className="flex gap-8 mb-20">
           {/* Sidebar */}
           <aside
             className={`
-              ${sidebarOpen ? 'block' : 'hidden'} lg:block
-              w-full lg:w-64 flex-shrink-0
-              lg:sticky lg:top-20 lg:self-start
+              ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0
+              fixed lg:sticky lg:top-20 lg:self-start
+              left-0 top-0 h-full lg:h-auto
+              w-72 lg:w-64 flex-shrink-0
+              bg-background lg:bg-transparent
+              border-r lg:border-r-0 border-border
+              z-40 lg:z-auto
+              transition-transform duration-300 ease-in-out
+              overflow-y-auto
+              pt-20 lg:pt-0
+              px-4 lg:px-0
             `}
           >
-            <div className="space-y-4 pb-8 lg:pb-0">
+            <div className="space-y-4 pb-8">
+              {/* Mobile only: About link and Search */}
+              <div className="lg:hidden space-y-3 pb-4 border-b border-border">
+                <Link
+                  href="/"
+                  onClick={() => setSidebarOpen(false)}
+                  className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
+                >
+                  about
+                </Link>
+                
+                <ContentSearch categories={categories} basePath={basePath} />
+              </div>
+
               <div className="space-y-2">
                 <h2 className="text-lg font-semibold">{title}</h2>
                 <p className="text-sm text-muted-foreground">{description}</p>
               </div>
 
-              <nav className="space-y-1">
-                {items.length === 0 ? (
+              <nav className="space-y-2">
+                {categories.length === 0 ? (
                   <p className="text-sm text-muted-foreground italic">No content yet</p>
                 ) : (
-                  items.map((item) => (
-                    <Link
-                      key={item.slug}
-                      href={`${basePath}/${item.slug}`}
-                      onClick={() => setSidebarOpen(false)}
-                      className={`
-                        block rounded-lg border px-3 py-2 text-sm hover:bg-[var(--color-secondary)] transition-colors
-                        ${currentSlug === item.slug ? 'bg-[var(--color-secondary)] font-medium' : ''}
-                      `}
-                    >
-                      {item.title}
-                    </Link>
+                  categories.map((category) => (
+                    <div key={category.title} className="space-y-1">
+                      <button
+                        onClick={() => toggleCategory(category.title)}
+                        className="flex items-center gap-2 w-full text-left px-3 py-2 text-sm font-medium text-foreground hover:text-accent transition-colors"
+                      >
+                        {expandedCategories.has(category.title) ? (
+                          <ChevronDown className="size-4" />
+                        ) : (
+                          <ChevronRight className="size-4" />
+                        )}
+                        <span>{category.title}</span>
+                      </button>
+
+                      {expandedCategories.has(category.title) && (
+                        <div className="ml-6 space-y-1">
+                          {category.items.map((item) => (
+                            <Link
+                              key={item.slug}
+                              href={`${basePath}/${item.slug}`}
+                              onClick={() => setSidebarOpen(false)}
+                              className={`
+                                block px-3 py-2 text-sm transition-colors
+                                ${currentSlug === item.slug 
+                                  ? 'font-medium text-accent' 
+                                  : 'text-muted-foreground hover:text-foreground'
+                                }
+                              `}
+                            >
+                              {item.title}
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   ))
                 )}
               </nav>
             </div>
           </aside>
+
+          {/* Overlay for mobile */}
+          {sidebarOpen && (
+            <div
+              onClick={() => setSidebarOpen(false)}
+              className="lg:hidden fixed inset-0 bg-black/50 z-30"
+            />
+          )}
 
           {/* Main content */}
           <main className="flex-1 min-w-0">

@@ -182,6 +182,103 @@ src/
 └── mdx-components.tsx
 ```
 
+## Recent Updates
+
+### MDX Component Styling Fixes (Latest)
+**Feature:** Improved visual styling of MDX components for better readability and consistency.
+
+**Changes:**
+- **Code Blocks**: 
+  - Background: Charcoal (#1e1e1e) in both light and dark modes
+  - Border: Subtle dark gray (#2d2d2d)
+  - Inline styles for guaranteed consistency across themes
+- **Inline Code**:
+  - Added charcoal background (#1e1e1e) for inline code snippets
+  - Light gray text (#d4d4d4) for readability
+  - Consistent with code block styling
+- **Callout Components**:
+  - Reduced padding: `px-3 py-2.5` (was `p-4`) for more compact appearance
+  - Fixed icon alignment: Added `mt-[3px]` for precise vertical alignment with text
+  - Reduced margins: `my-4` instead of `my-6`
+  - Tighter spacing: `gap-2.5` between icon and text
+  - Smaller text: `text-[15px]` with `leading-normal`
+  - Border width: 2px for better visibility
+- **Mobile Sidebar**:
+  - Removed redundant "SEARCH" label above search input
+  - Cleaner, more minimal appearance
+
+**Files Updated:**
+- `src/components/mdx/code-block.tsx` - Charcoal background with inline styles
+- `src/components/mdx/callout.tsx` - Compact sizing and precise alignment
+- `src/mdx-components.tsx` - Added inline code styling
+- `src/components/layouts/content-layout.tsx` - Removed search label
+
+### Unified Sidebar Navigation
+**Feature:** Consolidated all navigation into a single sidebar, removing duplicate mobile menu.
+
+**Changes:**
+- **Single Sidebar**: Merged all navigation into the content sidebar
+  - Mobile: About link and search now at top of sidebar
+  - Desktop: About and search remain in header
+  - Removed separate mobile menu panel
+  - Removed "close" and "toggle sidebar" buttons
+- **Clean Mobile UX**: 
+  - Single hamburger button opens main sidebar
+  - Click overlay to close (no close button needed)
+  - All options (about, search, categories) in one place
+  - No more confusion with multiple sidebars
+
+### Search & Navigation Improvements
+**Feature:** Added search functionality and improved navigation UX.
+
+**Changes:**
+- **Search Bar**: Added content search in header (desktop) and sidebar (mobile)
+  - Simple keyword search across all experiments/lessons
+  - Results grouped by category
+  - Click-outside to close dropdown
+  - Instant filtering as you type
+- **Sidebar Hover**: Removed background color change, only text color changes
+  - Categories: hover changes to accent color
+  - Items: hover changes from muted to foreground color
+  - Active item: shown in accent color
+- **Auto-redirect**: Landing on `/experiments` or `/lessons` redirects to first item
+  - No more empty landing page
+  - Shows first experiment/lesson immediately
+
+**Files Created/Updated:**
+- `src/components/ui/content-search.tsx` - New search component
+- `src/components/sections/content-header.tsx` - Simplified to toggle single sidebar
+- `src/components/layouts/content-layout.tsx` - Added about/search to sidebar top
+- `src/app/experiments/page.tsx` - Auto-redirect to first experiment
+- `src/app/lessons/page.tsx` - Auto-redirect to first lesson
+
+### Simplified Content Header
+**Feature:** Created a dedicated simplified header for experiments/lessons pages to avoid navigation clutter.
+
+**Changes:**
+- New `ContentHeader` component with minimal navigation
+- Desktop: Shows about link, search, and theme toggle
+- Mobile: Hamburger menu with about, search, and sidebar toggle
+- Clean separation from main site navigation
+
+### Categorized Sidebar Navigation
+**Feature:** Implemented accordion-style sidebar with collapsible categories, similar to documentation sites.
+
+**Changes:**
+- Added `getCategorizedContent()` function to automatically organize content by categories
+- Sidebar now has collapsible sections with chevron indicators
+- Experiments are categorized into:
+  - Getting Started (Mastra, Next.js)
+  - AI & Agents (OpenAI, AI agents)
+  - Backend & Database (PostgreSQL)
+  - TypeScript & Patterns
+- All categories expanded by default for easy navigation
+
+**Files Updated:**
+- `src/lib/content-utils.ts` - Added category support
+- `src/components/layouts/content-layout.tsx` - New accordion navigation
+- All experiment and lesson pages updated to use categories
+
 ## Known Issues & Fixes
 
 ### MDX with Turbopack

@@ -1,5 +1,5 @@
 import { ContentLayout } from '@/components/layouts/content-layout';
-import { getContentItems } from '@/lib/content-utils';
+import { getContentItems, getCategorizedContent } from '@/lib/content-utils';
 import { notFound } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
@@ -17,6 +17,7 @@ export async function generateStaticParams() {
 export default async function LessonPage({ params }: LessonPageProps) {
   const { slug } = await params;
   const lessons = getContentItems('lessons');
+  const categories = getCategorizedContent('lessons');
   const currentLesson = lessons.find((lesson) => lesson.slug === slug);
 
   if (!currentLesson) {
@@ -35,7 +36,7 @@ export default async function LessonPage({ params }: LessonPageProps) {
     <ContentLayout
       title="lessons"
       description="engineering practices learned throughout my career"
-      items={lessons}
+      categories={categories}
       currentSlug={slug}
       basePath="/lessons"
     >

@@ -1,5 +1,5 @@
 import { ContentLayout } from '@/components/layouts/content-layout';
-import { getContentItems } from '@/lib/content-utils';
+import { getContentItems, getCategorizedContent } from '@/lib/content-utils';
 import { notFound } from 'next/navigation';
 import dynamic from 'next/dynamic';
 
@@ -17,6 +17,7 @@ export async function generateStaticParams() {
 export default async function ExperimentPage({ params }: ExperimentPageProps) {
   const { slug } = await params;
   const experiments = getContentItems('experiments');
+  const categories = getCategorizedContent('experiments');
   const currentExperiment = experiments.find((exp) => exp.slug === slug);
 
   if (!currentExperiment) {
@@ -35,7 +36,7 @@ export default async function ExperimentPage({ params }: ExperimentPageProps) {
     <ContentLayout
       title="experiments"
       description="technical deep-dives into tools & frameworks"
-      items={experiments}
+      categories={categories}
       currentSlug={slug}
       basePath="/experiments"
     >

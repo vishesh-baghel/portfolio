@@ -24,7 +24,7 @@ export function CodeBlock({ children, className, ...props }: CodeBlockProps) {
   const language = match ? match[1] : 'text';
 
   return (
-    <div className="my-6 rounded-lg border border-border overflow-hidden">
+    <div className="my-6 rounded-lg overflow-hidden" style={{ backgroundColor: '#1e1e1e', border: '1px solid #2d2d2d' }}>
       <SyntaxHighlighter
         language={language}
         style={vscDarkPlus}
@@ -33,7 +33,7 @@ export function CodeBlock({ children, className, ...props }: CodeBlockProps) {
           padding: '1rem',
           fontSize: '0.875rem',
           fontFamily: 'var(--font-mono)',
-          background: 'var(--color-secondary)',
+          backgroundColor: '#1e1e1e',
         }}
         showLineNumbers
       >
