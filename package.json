@@ -7,7 +7,11 @@
         "build": "next build",
         "start": "next start",
         "lint": "next lint",
-        "mastra:dev": "mastra dev"
+        "mastra:dev": "mastra dev",
+        "test": "vitest",
+        "test:eval": "vitest run --reporter=verbose",
+        "test:ui": "vitest --ui",
+        "test:watch": "vitest watch"
     },
     "dependencies": {
         "@ai-sdk/openai": "^2.0.42",
@@ -16,7 +20,7 @@
         "@heroicons/react": "^2.2.0",
         "@hookform/resolvers": "^5.1.1",
         "@libsql/client": "^0.15.15",
-        "@mastra/core": "^0.19.1",
+        "@mastra/core": "^0.20.0",
         "@mdx-js/loader": "^3.1.1",
         "@mdx-js/react": "^3.1.1",
         "@next/mdx": "^15.5.4",
@@ -115,18 +119,22 @@
     },
     "devDependencies": {
         "@eslint/eslintrc": "^3.3.1",
+        "@mastra/evals": "^0.13.10",
         "@tailwindcss/postcss": "^4",
         "@types/node": "^20",
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "@types/react-syntax-highlighter": "^15.5.13",
         "@types/three": "^0.178.0",
+        "@vitest/ui": "^3.2.4",
+        "dotenv": "^17.2.3",
         "eslint": "^9.35.0",
         "eslint-config-next": "^15.5.3",
         "mastra": "latest",
         "tailwindcss": "^4",
         "tw-animate-css": "^1.3.8",
-        "typescript": "^5"
+        "typescript": "^5",
+        "vitest": "^3.2.4"
     },
     "packageManager": "pnpm@10.12.4+sha512.5ea8b0deed94ed68691c9bad4c955492705c5eeb8a87ef86bc62c74a26b037b08ff9570f108b2e4dbd1dd1a9186fea925e527f141c648e85af45631074680184"
 }

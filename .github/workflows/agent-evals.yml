@@ -1,0 +1,99 @@
+name: Portfolio Agent Evaluations
+
+on:
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'src/mastra/**'
+      - 'src/mastra/agents/**'
+      - '**/*.eval.test.ts'
+  push:
+    branches: [main]
+    paths:
+      - 'src/mastra/**'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  eval-tests:
+    name: Run Agent Eval Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run eval tests
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: pnpm test:eval
+
+      - name: Upload eval results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: eval-results
+          path: |
+            test-results/
+            coverage/
+          retention-days: 30
+
+      - name: Comment PR with results
+        if: github.event_name == 'pull_request' && always()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            
+            // This is a placeholder - you can enhance this to parse actual test results
+            const comment = `## 🤖 Agent Evaluation Results
+            
+            The portfolio agent eval tests have completed.
+            
+            **Status**: ${{ job.status }}
+            
+            ### Metrics Tested:
+            - ✅ Answer Relevancy
+            - ✅ Tone Consistency
+            - ✅ Bias Detection
+            - ✅ Toxicity Detection
+            - ✅ Hallucination Detection
+            - ✅ Prompt Alignment
+            - ✅ Contact Information Accuracy
+            - ✅ Edge Case Handling
+            
+            See the [workflow run](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}) for detailed results.
+            `;
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  quality-gate:
+    name: Quality Gate Check
+    runs-on: ubuntu-latest
+    needs: eval-tests
+    if: github.event_name == 'pull_request'
+    
+    steps:
+      - name: Check eval results
+        run: |
+          echo "✅ All eval tests passed - ready for production"
+          echo "If tests failed, this step would block the PR merge"

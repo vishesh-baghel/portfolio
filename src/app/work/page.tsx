@@ -67,7 +67,7 @@ export default function WorkPage() {
 
                 {/* Tech Stack */}
                 <div className="space-y-2">
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <h3 className="text-sm sm:text-base font-semibold uppercase tracking-wide text-muted-foreground">
                     Tech Stack
                   </h3>
                   <div className="flex flex-wrap gap-1.5 sm:gap-2">
@@ -84,14 +84,14 @@ export default function WorkPage() {
 
                 {/* Outcomes */}
                 <div className="space-y-2">
-                  <h3 className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  <h3 className="text-sm sm:text-base font-semibold uppercase tracking-wide text-muted-foreground">
                     Key Outcomes
                   </h3>
-                  <ul className="space-y-1 text-sm">
+                  <ul className="space-y-1 text-[13px] leading-6 sm:text-sm sm:leading-relaxed">
                     {work.outcomes.map((outcome, idx) => (
                       <li
                         key={idx}
-                        className="relative pl-4 before:content-['•'] before:absolute before:left-0 before:text-muted-foreground"
+                        className="relative pl-4 text-[13px] leading-6 sm:text-sm sm:leading-relaxed font-normal before:content-['•'] before:absolute before:left-0 before:text-muted-foreground before:text-[13px] sm:before:text-sm"
                       >
                         {outcome}
                       </li>

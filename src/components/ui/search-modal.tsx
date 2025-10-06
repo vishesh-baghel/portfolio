@@ -429,7 +429,7 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
                       {message.type === 'assistant' ? (
                         <div
                           className={cn(
-                            "font-mono text-sm inline-block max-w-[85%] text-left"
+                            "font-mono text-sm inline-block w-full text-left"
                           )}
                         >
                           {renderMarkdownContent(message.content)}
