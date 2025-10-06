@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
           const agent = mastra.getAgent('portfolioAgent');
           
           // Stream the agent response
-          const agentStream = await agent.streamVNext([
+          const agentStream = await agent.stream([
             { role: 'user', content: message }
           ]);
 
