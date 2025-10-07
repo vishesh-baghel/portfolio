@@ -1,3 +1,4 @@
+import { createTool } from '@mastra/core/tools';
 import { GetExperimentInput } from '../types.js';
 import { contentLoader } from '../loaders/content-loader.js';
 
@@ -5,8 +6,8 @@ import { contentLoader } from '../loaders/content-loader.js';
  * Get Experiment Tool
  * Fetch complete experiment content with code examples and attribution
  */
-export const getExperimentTool = {
-  name: 'getExperiment',
+export const getExperimentTool = createTool({
+  id: 'getExperiment',
   description: `Get full content of a specific integration pattern/experiment.
     Returns complete content with code examples, architecture decisions, and implementation details.
     Each experiment includes production code from OSS contributions.
@@ -19,8 +20,9 @@ export const getExperimentTool = {
     - Consultation booking link
     
     Use listExperiments first to see available experiment slugs.`,
-  parameters: GetExperimentInput,
-  execute: async (args: GetExperimentInput): Promise<string> => {
+  inputSchema: GetExperimentInput,
+  execute: async ({ context }) => {
+    const args = context as { slug: string; includeMetadata?: boolean };
     try {
       const { slug, includeMetadata = true } = args;
 
@@ -39,4 +41,4 @@ export const getExperimentTool = {
       throw new Error(`Failed to get experiment: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   },
-};
+});

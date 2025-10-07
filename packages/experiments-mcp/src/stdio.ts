@@ -12,7 +12,7 @@ async function main() {
 
   try {
     await server.startStdio();
-    console.error('Vishesh Experiments MCP Server started on stdio');
+    console.info('Vishesh Experiments MCP Server started on stdio');
   } catch (error) {
     console.error('Failed to start MCP server:', error);
     process.exit(1);

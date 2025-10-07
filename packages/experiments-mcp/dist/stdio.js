@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 import {
   createServer
-} from "./chunk-UPEOGPG6.js";
+} from "./chunk-AJDOB5MM.js";
 
 // src/stdio.ts
 async function main() {
   const server = createServer();
   try {
     await server.startStdio();
-    console.error("Vishesh Experiments MCP Server started on stdio");
+    console.info("Vishesh Experiments MCP Server started on stdio");
   } catch (error) {
     console.error("Failed to start MCP server:", error);
     process.exit(1);

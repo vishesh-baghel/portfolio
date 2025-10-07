@@ -53,6 +53,7 @@
   "homepage": "https://vishesh.dev/experiments",
   "bugs": "https://github.com/vishesh-baghel/portfolio/issues",
   "dependencies": {
+    "@ai-sdk/openai": "^2.0.42",
     "@mastra/core": "^0.20.0",
     "@mastra/mcp": "^0.13.0",
     "@modelcontextprotocol/sdk": "^1.17.0",

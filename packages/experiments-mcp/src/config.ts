@@ -1,11 +1,13 @@
 import path from 'path';
 import { fileURLToPath } from 'url';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+// Get directory path without declaring __filename/__dirname to avoid conflicts
+function getDirname(metaUrl: string) {
+  return path.dirname(fileURLToPath(metaUrl));
+}
 
 // Path to experiments directory in the portfolio repo
-export const EXPERIMENTS_DIR = path.resolve(__dirname, '../../../src/content/experiments');
+export const EXPERIMENTS_DIR = path.resolve(getDirname(import.meta.url), '../../../src/content/experiments');
 
 // Site URLs (matching site-config.ts)
 export const PORTFOLIO_URL = 'https://vishesh.dev';
