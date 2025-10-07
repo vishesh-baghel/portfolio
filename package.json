@@ -24,6 +24,7 @@
         "@hookform/resolvers": "^5.1.1",
         "@libsql/client": "^0.15.15",
         "@mastra/core": "^0.20.0",
+        "@mastra/libsql": "^0.13.8",
         "@mastra/mcp": "^0.13.3",
         "@mdx-js/loader": "^3.1.1",
         "@mdx-js/react": "^3.1.1",
