@@ -4,14 +4,17 @@
     "private": true,
     "scripts": {
         "dev": "next dev",
-        "build": "next build",
+        "build": "pnpm run build:mcp && next build",
+        "build:mcp": "pnpm --filter @vishesh/experiments build",
         "start": "next start",
         "lint": "next lint",
         "mastra:dev": "mastra dev",
         "test": "vitest",
         "test:eval": "vitest run --reporter=verbose",
         "test:ui": "vitest --ui",
-        "test:watch": "vitest watch"
+        "test:watch": "vitest watch",
+        "test:mcp": "pnpm --filter @vishesh/experiments test",
+        "dev:mcp": "pnpm --filter @vishesh/experiments dev"
     },
     "dependencies": {
         "@ai-sdk/openai": "^2.0.42",
@@ -21,6 +24,7 @@
         "@hookform/resolvers": "^5.1.1",
         "@libsql/client": "^0.15.15",
         "@mastra/core": "^0.20.0",
+        "@mastra/mcp": "^0.13.3",
         "@mdx-js/loader": "^3.1.1",
         "@mdx-js/react": "^3.1.1",
         "@next/mdx": "^15.5.4",
