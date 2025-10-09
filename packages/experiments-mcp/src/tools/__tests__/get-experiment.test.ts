@@ -82,13 +82,13 @@ describe('getExperiment tool', () => {
       expect(result).toContain('https://github.com/vishesh-baghel');
     });
 
-    it('should include OSS project link when available', async () => {
+    it('should include OSS project info when available', async () => {
       const result = await callTool(tools.experiments_getExperiment, {
         slug: 'getting-started-with-mastra',
       });
 
-      // This experiment should have OSS project info
-      if (result.includes('OSS Project') || result.includes('PR Link')) {
+      // This experiment should contain OSS project information
+      if (result.includes('OSS Project') || result.includes('Source')) {
         expect(result).toMatch(/https?:\/\//);
       }
     });
@@ -171,7 +171,7 @@ describe('getExperiment tool', () => {
         const result = await callTool(tools.experiments_getExperiment, { slug });
         expect(result).toBeTruthy();
         expect(result.length).toBeGreaterThan(100);
-        expect(result).toContain('Vishesh Baghel');
+        expect(result).toContain('Production code from OSS');
       });
     });
   });
