@@ -39,7 +39,7 @@ jobs:
       - name: Run eval tests
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-        run: pnpm test:eval
+        run: pnpm test:evals
 
       - name: Upload eval results
         if: always()
