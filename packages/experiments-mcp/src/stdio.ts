@@ -5,7 +5,7 @@
  * This is what gets executed when running: npx @vishesh/experiments
  */
 
-import { createServer } from './server.js';
+import { createServer } from './server';
 
 async function main() {
   const server = createServer();

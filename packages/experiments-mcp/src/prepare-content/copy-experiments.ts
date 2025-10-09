@@ -1,6 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
-import { fromRepoRoot, fromPackageRoot } from '../utils/path-helpers.js';
+import { fromRepoRoot, fromPackageRoot } from '../utils/path-helpers';
 
 // Following Mastra's pattern - use helper functions instead of declaring __dirname
 const EXPERIMENTS_SOURCE = fromRepoRoot('src/content/experiments');

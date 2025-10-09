@@ -1,6 +1,6 @@
 import { createTool } from '@mastra/core/tools';
-import { GetExperimentInput } from '../types.js';
-import { contentLoader } from '../loaders/content-loader.js';
+import { GetExperimentInput } from '../types';
+import { contentLoader } from '../loaders/content-loader';
 
 /**
  * Get Experiment Tool

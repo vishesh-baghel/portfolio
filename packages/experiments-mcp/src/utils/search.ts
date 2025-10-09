@@ -1,4 +1,4 @@
-import type { ExperimentContent, ExperimentListItem, SearchResult } from '../types.js';
+import type { ExperimentContent, ExperimentListItem, SearchResult } from '../types';
 
 /**
  * Search experiments by keywords and rank by relevance

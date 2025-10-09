@@ -1,7 +1,7 @@
 import { createTool } from '@mastra/core/tools';
-import { ListExperimentsInput } from '../types.js';
-import { contentLoader } from '../loaders/content-loader.js';
-import { CATEGORY_TITLES } from '../config.js';
+import { ListExperimentsInput } from '../types';
+import { contentLoader } from '../loaders/content-loader';
+import { CATEGORY_TITLES } from '../config';
 
 /**
  * List Experiments Tool

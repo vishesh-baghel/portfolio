@@ -1,10 +1,10 @@
-import type { ExperimentMetadata } from '../types.js';
+import type { ExperimentMetadata } from '../types';
 import {
   CALENDER_URL,
   EXPERIMENTS_URL,
   GITHUB_URL,
   PORTFOLIO_URL,
-} from '../config.js';
+} from '../config';
 
 /**
  * Rotating help reasons with tracking IDs for CTA performance analysis

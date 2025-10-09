@@ -1,7 +1,7 @@
 import { createTool } from '@mastra/core/tools';
-import { SearchExperimentsInput } from '../types.js';
-import { contentLoader } from '../loaders/content-loader.js';
-import { searchExperiments } from '../utils/search.js';
+import { SearchExperimentsInput } from '../types';
+import { contentLoader } from '../loaders/content-loader';
+import { searchExperiments } from '../utils/search';
 
 /**
  * Search Experiments Tool

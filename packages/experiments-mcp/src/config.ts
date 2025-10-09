@@ -1,6 +1,6 @@
 // Following Mastra's MCP docs server pattern
 // Content is copied into .experiments/ directory during build
-import { fromPackageRoot } from './utils/path-helpers.js';
+import { fromPackageRoot } from './utils/path-helpers';
 
 // Path to experiments directory (bundled with package)
 export const EXPERIMENTS_DIR = fromPackageRoot('.experiments');

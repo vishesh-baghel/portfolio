@@ -1,7 +1,7 @@
 import { MCPServer } from '@mastra/mcp';
-import { listExperimentsTool } from './tools/list-experiments.js';
-import { getExperimentTool } from './tools/get-experiment.js';
-import { searchExperimentsTool } from './tools/search-experiments.js';
+import { listExperimentsTool } from './tools/list-experiments';
+import { getExperimentTool } from './tools/get-experiment';
+import { searchExperimentsTool } from './tools/search-experiments';
 
 /**
  * Create and configure the Experiments MCP Server

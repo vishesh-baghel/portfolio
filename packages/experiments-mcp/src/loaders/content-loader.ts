@@ -1,10 +1,10 @@
 import fs from 'fs/promises';
 import path from 'path';
 import matter from 'gray-matter';
-import type { ExperimentContent, ExperimentListItem, ExperimentMetadata } from '../types.js';
-import { ExperimentMetadata as ExperimentMetadataSchema, ExperimentNotFoundError } from '../types.js';
-import { CATEGORY_TITLES, EXPERIMENTS_DIR } from '../config.js';
-import { generateAttribution, formatMetadata } from '../utils/attribution.js';
+import type { ExperimentContent, ExperimentListItem, ExperimentMetadata } from '../types';
+import { ExperimentMetadata as ExperimentMetadataSchema, ExperimentNotFoundError } from '../types';
+import { CATEGORY_TITLES, EXPERIMENTS_DIR } from '../config';
+import { generateAttribution, formatMetadata } from '../utils/attribution';
 
 /**
  * Content loader for experiments
