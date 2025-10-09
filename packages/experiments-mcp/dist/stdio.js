@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 import {
   createServer
-} from "./chunk-AJDOB5MM.js";
+} from "./chunk-MWGYTG5G.js";
+import "./chunk-XQADMHCP.js";
 
 // src/stdio.ts
 async function main() {

@@ -24,14 +24,18 @@ export class ContentLoader {
    */
   async loadAll(): Promise<ExperimentListItem[]> {
     try {
+      console.log('[ContentLoader] Attempting to read from:', this.experimentsDir);
       const files = await fs.readdir(this.experimentsDir);
+      console.log('[ContentLoader] Found files:', files);
       const mdxFiles = files.filter(f => f.endsWith('.mdx'));
+      console.log('[ContentLoader] MDX files:', mdxFiles);
 
       const experiments: ExperimentListItem[] = [];
 
       for (const file of mdxFiles) {
         try {
           const metadata = await this.loadMetadata(file);
+          console.log('[ContentLoader] Loaded metadata for:', metadata.slug);
           experiments.push({
             slug: metadata.slug,
             title: metadata.title,
@@ -40,14 +44,16 @@ export class ContentLoader {
             tags: metadata.tags,
           });
         } catch (error) {
-          console.warn(`Failed to load metadata for ${file}:`, error);
+          console.error(`[ContentLoader] Failed to load metadata for ${file}:`, error);
           // Continue with other files
         }
       }
 
+      console.log('[ContentLoader] Total experiments loaded:', experiments.length);
       return experiments;
     } catch (error) {
-      console.error('Failed to load experiments:', error);
+      console.error('[ContentLoader] Failed to load experiments:', error);
+      console.error('[ContentLoader] Experiments directory:', this.experimentsDir);
       return [];
     }
   }

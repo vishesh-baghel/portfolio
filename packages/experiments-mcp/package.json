@@ -1,6 +1,6 @@
 {
   "name": "@vishesh/experiments",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Production-ready integration patterns via MCP. Access battle-tested code from OSS contributions directly in your IDE.",
   "type": "module",
   "bin": "dist/stdio.js",
@@ -8,6 +8,7 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist",
+    ".experiments",
     "README.md",
     "CHANGELOG.md"
   ],
@@ -21,7 +22,8 @@
     "./package.json": "./package.json"
   },
   "scripts": {
-    "build": "tsup src/stdio.ts src/index.ts --format esm --dts --clean",
+    "prepare-content": "cross-env PREPARE=true node dist/prepare-content/copy-experiments.js",
+    "build": "tsup src/stdio.ts src/index.ts src/prepare-content/copy-experiments.ts --format esm --dts --clean && pnpm run prepare-content",
     "dev": "tsup src/stdio.ts src/index.ts --format esm --dts --watch",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -63,6 +65,7 @@
   },
   "devDependencies": {
     "@types/node": "^20.0.0",
+    "cross-env": "^7.0.3",
     "tsup": "^8.0.0",
     "typescript": "^5.0.0",
     "vitest": "^3.0.0"

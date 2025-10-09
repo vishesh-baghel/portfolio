@@ -1,13 +1,9 @@
-import path from 'path';
-import { fileURLToPath } from 'url';
+// Following Mastra's MCP docs server pattern
+// Content is copied into .experiments/ directory during build
+import { fromPackageRoot } from './utils/path-helpers.js';
 
-// Get directory path without declaring __filename/__dirname to avoid conflicts
-function getDirname(metaUrl: string) {
-  return path.dirname(fileURLToPath(metaUrl));
-}
-
-// Path to experiments directory in the portfolio repo
-export const EXPERIMENTS_DIR = path.resolve(getDirname(import.meta.url), '../../../src/content/experiments');
+// Path to experiments directory (bundled with package)
+export const EXPERIMENTS_DIR = fromPackageRoot('.experiments');
 
 // Site URLs (matching site-config.ts)
 export const PORTFOLIO_URL = 'https://vishesh.dev';
