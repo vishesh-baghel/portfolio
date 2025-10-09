@@ -18,7 +18,7 @@ describe('listExperiments tool', () => {
 
       expect(result).toContain('Available Integration Patterns from Vishesh Baghel');
       expect(result).toContain('Use getExperiment with the slug to fetch full content');
-      expect(result).toContain('All patterns are production-tested and maintainer-endorsed');
+      // Endorsement language removed
     });
 
     it('should include all category headers', async () => {

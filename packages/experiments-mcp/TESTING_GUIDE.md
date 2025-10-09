@@ -75,7 +75,6 @@ it('should handle empty category gracefully')
 - ✅ Include/exclude metadata
 - ✅ Attribution block presence
 - ✅ Calendly link verification
-- ✅ Maintainer endorsement
 - ✅ Portfolio/GitHub links
 - ✅ OSS project links (when available)
 - ✅ Error handling (non-existent experiments)
@@ -333,6 +332,6 @@ pnpm test list-experiments --reporter=verbose
 
 ---
 
-**Last Updated**: 2025-01-09  
+{{ ... }}
 **Test Coverage**: 370+ test cases  
 **Status**: ✅ Production Ready

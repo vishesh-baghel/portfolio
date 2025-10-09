@@ -108,7 +108,7 @@ List all experiments in the "getting-started" category
 
 3. **Working Links**: All URLs should be clickable:
    - Calendly: https://calendly.com/visheshbaghel99/30min
-   - Portfolio: https://vishesh.dev
+   - Portfolio: https://visheshbaghel.com
    - GitHub: https://github.com/vishesh-baghel
 
 4. **Helpful Errors**: If you request a non-existent experiment, you should get:

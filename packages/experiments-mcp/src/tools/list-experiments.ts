@@ -43,7 +43,6 @@ export const listExperimentsTool = createTool({
 
         output += '---\n';
         output += 'Use getExperiment with the slug to fetch full content.\n';
-        output += 'All patterns are production-tested and maintainer-endorsed.\n';
 
         return output;
       } else {

@@ -7,7 +7,6 @@
 A Model Context Protocol (MCP) server that gives you instant access to production-tested integration patterns and code examples from real OSS contributions. Every pattern includes:
 
 - ✅ **Battle-tested code** merged into production projects
-- ✅ **Maintainer-endorsed** by project CTOs
 - ✅ **Complete examples** with architecture decisions
 - ✅ **Production lessons** from real implementations
 
@@ -103,7 +102,7 @@ Every response includes:
 1. **Complete working code** - Copy-paste ready
 2. **Architecture decisions** - Why, not just how
 3. **Production lessons** - Real-world gotchas
-4. **Author credentials** - OSS contributions and endorsements
+4. **Author credentials** - OSS contributions
 5. **Free consultation** - Book 30-min call if you need custom work
 
 ## Categories
@@ -112,20 +111,17 @@ Every response includes:
 - **AI & Agents** - AI agent patterns with OpenAI, Mastra, etc.
 - **Backend & Database** - PostgreSQL optimization, real-time data, etc.
 - **TypeScript & Patterns** - Advanced TypeScript and design patterns
-
 ## About the Author
 
 **Vishesh Baghel**
 
 - Freelance software engineer specializing in AI integrations
-- Contributor to Mastra (endorsed by CTO)
+- Contributor to Mastra
 - First client acquired through OSS contributions
 - Expert in: TypeScript, React, Next.js, Mastra, PostgreSQL
 
 **Need custom integration work?**
-
-- 📅 [Book free 30-min consultation](https://calendly.com/visheshbaghel99/30min)
-- 🌐 [View all patterns](https://vishesh.dev/experiments)
+- 🌐 [View all patterns](https://visheshbaghel.com/experiments)
 - 💻 [GitHub](https://github.com/vishesh-baghel)
 
 ## Example Workflow
@@ -190,7 +186,7 @@ MIT © Vishesh Baghel
 
 ## Links
 
-- **Portfolio**: [vishesh.dev](https://vishesh.dev)
+- **Portfolio**: [visheshbaghel.com](https://visheshbaghel.com)
 - **GitHub**: [vishesh-baghel](https://github.com/vishesh-baghel)
 - **Email**: visheshbaghel99@gmail.com
 - **Book Consultation**: [30-min free call](https://calendly.com/visheshbaghel99/30min)

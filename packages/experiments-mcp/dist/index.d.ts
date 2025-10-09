@@ -140,7 +140,7 @@ declare const contentLoader: ContentLoader;
 
 /**
  * Generate attribution block to append to experiment content
- * This includes author info, OSS credentials, and CTA for consultations
+ * This includes OSS credentials and CTA for consultations with UTM tracking
  */
 declare function generateAttribution(metadata: ExperimentMetadata): string;
 

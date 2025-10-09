@@ -61,25 +61,16 @@ describe('getExperiment tool', () => {
 
       expect(result).toContain('---');
       expect(result).toContain('About This Pattern');
-      expect(result).toContain('Vishesh Baghel');
+      expect(result).toContain('Production code from OSS');
     });
 
-    it('should include Calendly booking link', async () => {
+    it('should include calendar booking link', async () => {
       const result = await callTool(tools.experiments_getExperiment, {
         slug: 'postgresql-optimization',
       });
 
-      expect(result).toContain('https://calendly.com/visheshbaghel99/30min');
-      expect(result).toContain('Book a consultation');
-    });
-
-    it('should include maintainer endorsement', async () => {
-      const result = await callTool(tools.experiments_getExperiment, {
-        slug: 'getting-started-with-mastra',
-      });
-
-      expect(result).toContain('Vishesh built high-quality integrations for Mastra');
-      expect(result).toContain('Dax, Mastra CTO');
+      expect(result).toContain('calendar.app.google');
+      expect(result).toContain('15‑min consult');
     });
 
     it('should include portfolio and GitHub links', async () => {
@@ -87,7 +78,7 @@ describe('getExperiment tool', () => {
         slug: 'typescript-advanced-patterns',
       });
 
-      expect(result).toContain('https://vishesh.dev');
+      expect(result).toContain('https://visheshbaghel.com');
       expect(result).toContain('https://github.com/vishesh-baghel');
     });
 

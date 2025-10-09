@@ -9,5 +9,5 @@ export const email = "visheshbaghel99@gmail.com";
 export const calendlyUrl = "https://calendly.com/visheshbaghel99/30min";
 
 // Portfolio & MCP
-export const portfolioUrl = "https://vishesh.dev";
-export const experimentsUrl = "https://vishesh.dev/experiments";
+export const portfolioUrl = "https://visheshbaghel.com";
+export const experimentsUrl = "https://visheshbaghel.com/experiments";

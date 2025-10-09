@@ -52,7 +52,7 @@
     "url": "https://github.com/vishesh-baghel/portfolio",
     "directory": "packages/experiments-mcp"
   },
-  "homepage": "https://vishesh.dev/experiments",
+  "homepage": "https://visheshbaghel.com/experiments",
   "bugs": "https://github.com/vishesh-baghel/portfolio/issues",
   "dependencies": {
     "@ai-sdk/openai": "^2.0.42",
