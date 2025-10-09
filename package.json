@@ -10,10 +10,9 @@
         "lint": "next lint",
         "mastra:dev": "mastra dev",
         "test": "vitest",
-        "test:eval": "vitest run --reporter=verbose",
+        "test:mcp": "pnpm --filter @vishesh/experiments test",
         "test:ui": "vitest --ui",
         "test:watch": "vitest watch",
-        "test:mcp": "pnpm --filter @vishesh/experiments test",
         "dev:mcp": "pnpm --filter @vishesh/experiments dev"
     },
     "dependencies": {

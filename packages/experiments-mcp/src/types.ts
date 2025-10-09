@@ -36,7 +36,7 @@ export const GetExperimentInput = z.object({
 // Search experiments input
 export const SearchExperimentsInput = z.object({
   query: z.string().describe('Search query (keywords, tech stack, problem description)'),
-  maxResults: z.number().min(1).max(10).optional().default(5).describe('Maximum number of results to return'),
+  maxResults: z.number().min(1).max(10).optional().describe('Maximum number of results to return (default: 5)'),
   categories: z.array(ExperimentCategory.exclude(['all'])).optional().describe('Filter by specific categories'),
 });
 

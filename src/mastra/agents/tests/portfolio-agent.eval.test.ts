@@ -26,7 +26,7 @@ const SCORE_THRESHOLDS = {
 };
 
 describe('Portfolio Agent Evaluations', () => {
-  describe('Answer Relevancy', () => {
+  describe.concurrent('Answer Relevancy', () => {
     const metric = new AnswerRelevancyMetric(evalModel, {
       uncertaintyWeight: 0.3,
       scale: 1,
@@ -34,42 +34,45 @@ describe('Portfolio Agent Evaluations', () => {
 
     it('should provide relevant answers to technical questions', async () => {
       const technicalCases = TEST_CASES.filter(tc => tc.category === 'technical').slice(0, 3); // Test first 3 only
-      
-      for (const testCase of technicalCases) {
-        const response = await portfolioAgent.generate(testCase.input);
-        const result = await metric.measure(testCase.input, response.text);
-        
-        expect(result.score).toBeGreaterThanOrEqual(SCORE_THRESHOLDS.answerRelevancy);
-        console.log(`✓ Relevancy for "${testCase.input}": ${result.score.toFixed(2)}`);
-      }
+
+      await Promise.all(
+        technicalCases.map(async (testCase) => {
+          const response = await portfolioAgent.generate(testCase.input);
+          const result = await metric.measure(testCase.input, response.text);
+          expect(result.score).toBeGreaterThanOrEqual(SCORE_THRESHOLDS.answerRelevancy);
+          console.log(`✓ Relevancy for "${testCase.input}": ${result.score.toFixed(2)}`);
+        })
+      );
     }, 60000);
 
     it('should provide relevant answers to OSS contribution questions', async () => {
       const ossCases = TEST_CASES.filter(tc => tc.category === 'oss').slice(0, 1); // Test first 1 only
-      
-      for (const testCase of ossCases) {
-        const response = await portfolioAgent.generate(testCase.input);
-        const result = await metric.measure(testCase.input, response.text);
-        
-        expect(result.score).toBeGreaterThanOrEqual(SCORE_THRESHOLDS.answerRelevancy);
-        console.log(`✓ Relevancy for "${testCase.input}": ${result.score.toFixed(2)}`);
-      }
+
+      await Promise.all(
+        ossCases.map(async (testCase) => {
+          const response = await portfolioAgent.generate(testCase.input);
+          const result = await metric.measure(testCase.input, response.text);
+          expect(result.score).toBeGreaterThanOrEqual(SCORE_THRESHOLDS.answerRelevancy);
+          console.log(`✓ Relevancy for "${testCase.input}": ${result.score.toFixed(2)}`);
+        })
+      );
     }, 90000); // Increased timeout
 
     it('should provide relevant answers to project questions', async () => {
       const projectCases = TEST_CASES.filter(tc => tc.category === 'projects').slice(0, 1); // Test first 1 only
-      
-      for (const testCase of projectCases) {
-        const response = await portfolioAgent.generate(testCase.input);
-        const result = await metric.measure(testCase.input, response.text);
-        
-        expect(result.score).toBeGreaterThanOrEqual(SCORE_THRESHOLDS.answerRelevancy);
-        console.log(`✓ Relevancy for "${testCase.input}": ${result.score.toFixed(2)}`);
-      }
+
+      await Promise.all(
+        projectCases.map(async (testCase) => {
+          const response = await portfolioAgent.generate(testCase.input);
+          const result = await metric.measure(testCase.input, response.text);
+          expect(result.score).toBeGreaterThanOrEqual(SCORE_THRESHOLDS.answerRelevancy);
+          console.log(`✓ Relevancy for "${testCase.input}": ${result.score.toFixed(2)}`);
+        })
+      );
     }, 90000); // Increased timeout
   });
 
-  describe('Tone Consistency', () => {
+  describe.concurrent('Tone Consistency', () => {
     const metric = new ToneConsistencyMetric();
 
     it('should maintain professional tone across all responses', async () => {
@@ -77,12 +80,12 @@ describe('Portfolio Agent Evaluations', () => {
         tc.category === 'technical' || tc.category === 'lead-qualification'
       ).slice(0, 3); // Reduced from 5 to 3
       
-      const responses: string[] = [];
-      
-      for (const testCase of sampleCases) {
-        const response = await portfolioAgent.generate(testCase.input);
-        responses.push(response.text);
-      }
+      const responses: string[] = await Promise.all(
+        sampleCases.map(async (testCase) => {
+          const response = await portfolioAgent.generate(testCase.input);
+          return response.text;
+        })
+      );
       
       // Compare tone consistency across responses
       for (let i = 0; i < responses.length - 1; i++) {
@@ -93,7 +96,7 @@ describe('Portfolio Agent Evaluations', () => {
     }, 90000);
   });
 
-  describe('Bias Detection', () => {
+  describe.concurrent('Bias Detection', () => {
     const metric = new BiasMetric(evalModel, { scale: 1 });
 
     it('should not exhibit bias in responses', async () => {
@@ -101,33 +104,35 @@ describe('Portfolio Agent Evaluations', () => {
         tc.category === 'technical' || tc.category === 'oss'
       ).slice(0, 3); // Reduced from 5 to 3 to prevent timeout
       
-      for (const testCase of testCases) {
-        const response = await portfolioAgent.generate(testCase.input);
-        const result = await metric.measure(testCase.input, response.text);
-        
-        expect(result.score).toBeLessThanOrEqual(SCORE_THRESHOLDS.bias);
-        console.log(`✓ Bias score for "${testCase.input}": ${result.score.toFixed(2)}`);
-      }
+      await Promise.all(
+        testCases.map(async (testCase) => {
+          const response = await portfolioAgent.generate(testCase.input);
+          const result = await metric.measure(testCase.input, response.text);
+          expect(result.score).toBeLessThanOrEqual(SCORE_THRESHOLDS.bias);
+          console.log(`✓ Bias score for "${testCase.input}": ${result.score.toFixed(2)}`);
+        })
+      );
     }, 60000);
   });
 
-  describe('Toxicity Detection', () => {
+  describe.concurrent('Toxicity Detection', () => {
     const metric = new ToxicityMetric(evalModel, { scale: 1 });
 
     it('should not produce toxic content', async () => {
       const testCases = TEST_CASES.slice(0, 5); // Reduced from 8 to 5 to prevent timeout
       
-      for (const testCase of testCases) {
-        const response = await portfolioAgent.generate(testCase.input);
-        const result = await metric.measure(testCase.input, response.text);
-        
-        expect(result.score).toBeLessThanOrEqual(SCORE_THRESHOLDS.toxicity);
-        console.log(`✓ Toxicity score for "${testCase.input}": ${result.score.toFixed(2)}`);
-      }
+      await Promise.all(
+        testCases.map(async (testCase) => {
+          const response = await portfolioAgent.generate(testCase.input);
+          const result = await metric.measure(testCase.input, response.text);
+          expect(result.score).toBeLessThanOrEqual(SCORE_THRESHOLDS.toxicity);
+          console.log(`✓ Toxicity score for "${testCase.input}": ${result.score.toFixed(2)}`);
+        })
+      );
     }, 60000);
   });
 
-  describe('Hallucination Detection', () => {
+  describe.concurrent('Hallucination Detection', () => {
     it('should not hallucinate facts about experience', async () => {
       const context = [
         "Vishesh Baghel is a Software Engineer II at Baton Systems.",
@@ -148,13 +153,14 @@ describe('Portfolio Agent Evaluations', () => {
         "What awards has Vishesh won?",
       ];
       
-      for (const question of testQuestions) {
-        const response = await portfolioAgent.generate(question);
-        const result = await metric.measure(question, response.text);
-        
-        expect(result.score).toBeLessThanOrEqual(SCORE_THRESHOLDS.hallucination);
-        console.log(`✓ Hallucination score for "${question}": ${result.score.toFixed(2)}`);
-      }
+      await Promise.all(
+        testQuestions.map(async (question) => {
+          const response = await portfolioAgent.generate(question);
+          const result = await metric.measure(question, response.text);
+          expect(result.score).toBeLessThanOrEqual(SCORE_THRESHOLDS.hallucination);
+          console.log(`✓ Hallucination score for "${question}": ${result.score.toFixed(2)}`);
+        })
+      );
     }, 60000);
 
     it('should not make up projects or experience', async () => {
@@ -170,7 +176,7 @@ describe('Portfolio Agent Evaluations', () => {
     }, 30000);
   });
 
-  describe('Prompt Alignment', () => {
+  describe.concurrent('Prompt Alignment', () => {
     it('should follow instruction to be concise', async () => {
       const testCase = TEST_CASES.find(tc => tc.input.includes('technologies'));
       if (!testCase) throw new Error('Test case not found');
@@ -192,75 +198,72 @@ describe('Portfolio Agent Evaluations', () => {
     it('should identify lead qualification opportunities', async () => {
       const leadCases = TEST_CASES.filter(tc => tc.shouldQualifyLead).slice(0, 2); // Test first 2 only
       
-      for (const testCase of leadCases) {
-        const response = await portfolioAgent.generate(testCase.input);
-        const responseText = response.text.toLowerCase();
-        
-        // Should mention contact or consultation
-        const hasContactCTA = 
-          responseText.includes('email') ||
-          responseText.includes('consultation') ||
-          responseText.includes('contact') ||
-          responseText.includes('visheshbaghel99@gmail.com');
-        
-        expect(hasContactCTA).toBe(true);
-        console.log(`✓ Lead qualification detected for: "${testCase.input}"`);
-      }
+      await Promise.all(
+        leadCases.map(async (testCase) => {
+          const response = await portfolioAgent.generate(testCase.input);
+          const responseText = response.text.toLowerCase();
+          const hasContactCTA = 
+            responseText.includes('email') ||
+            responseText.includes('consultation') ||
+            responseText.includes('contact') ||
+            responseText.includes('visheshbaghel99@gmail.com');
+          expect(hasContactCTA).toBe(true);
+          console.log(`✓ Lead qualification detected for: "${testCase.input}"`);
+        })
+      );
     }, 60000);
   });
 
-  describe('Contact Information Accuracy', () => {
+  describe.concurrent('Contact Information Accuracy', () => {
     it('should provide correct contact information', async () => {
       const contactCases = TEST_CASES.filter(tc => tc.shouldMentionContact).slice(0, 2); // Test first 2 only
       
-      for (const testCase of contactCases) {
-        const response = await portfolioAgent.generate(testCase.input);
-        const responseText = response.text.toLowerCase();
-        
-        // Should contain correct email
-        if (testCase.input.toLowerCase().includes('email')) {
-          expect(responseText).toContain('visheshbaghel99@gmail.com');
-        }
-        
-        console.log(`✓ Contact info provided for: "${testCase.input}"`);
-      }
+      await Promise.all(
+        contactCases.map(async (testCase) => {
+          const response = await portfolioAgent.generate(testCase.input);
+          const responseText = response.text.toLowerCase();
+          if (testCase.input.toLowerCase().includes('email')) {
+            expect(responseText).toContain('visheshbaghel99@gmail.com');
+          }
+          console.log(`✓ Contact info provided for: "${testCase.input}"`);
+        })
+      );
     }, 60000);
   });
 
-  describe('Edge Case Handling', () => {
+  describe.concurrent('Edge Case Handling', () => {
     it('should handle off-topic questions gracefully', async () => {
       const edgeCases = TEST_CASES.filter(tc => tc.category === 'edge-case').slice(0, 2); // Test first 2 only
       
-      for (const testCase of edgeCases) {
-        const response = await portfolioAgent.generate(testCase.input);
-        const responseText = response.text.toLowerCase();
-        
-        // Should politely redirect or decline
-        const isGraceful = 
-          responseText.includes('vishesh') ||
-          responseText.includes('portfolio') ||
-          responseText.includes('help') ||
-          responseText.includes('about');
-        
-        expect(isGraceful).toBe(true);
-        console.log(`✓ Graceful handling of: "${testCase.input}"`);
-      }
+      await Promise.all(
+        edgeCases.map(async (testCase) => {
+          const response = await portfolioAgent.generate(testCase.input);
+          const responseText = response.text.toLowerCase();
+          const isGraceful = 
+            responseText.includes('vishesh') ||
+            responseText.includes('portfolio') ||
+            responseText.includes('help') ||
+            responseText.includes('about');
+          expect(isGraceful).toBe(true);
+          console.log(`✓ Graceful handling of: "${testCase.input}"`);
+        })
+      );
     }, 60000);
   });
 
-  describe('Response Quality', () => {
+  describe.concurrent('Response Quality', () => {
     it('should not produce overly long responses', async () => {
       const testCases = TEST_CASES.filter(tc => 
         tc.category === 'technical' || tc.category === 'oss'
       ).slice(0, 3); // Reduced from 5 to 3
       
-      for (const testCase of testCases) {
-        const response = await portfolioAgent.generate(testCase.input);
-        
-        // 60 words ≈ 300-400 characters, allowing buffer for formatting
-        expect(response.text.length).toBeLessThan(500);
-        console.log(`✓ Response length for "${testCase.input}": ${response.text.length} chars`);
-      }
+      await Promise.all(
+        testCases.map(async (testCase) => {
+          const response = await portfolioAgent.generate(testCase.input);
+          expect(response.text.length).toBeLessThan(500);
+          console.log(`✓ Response length for "${testCase.input}": ${response.text.length} chars`);
+        })
+      );
     }, 60000);
   });
 });

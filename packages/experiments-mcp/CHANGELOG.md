@@ -1,11 +1,30 @@
 # Changelog
-
 All notable changes to @vishesh/experiments will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+and this project adheres to [semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] - 2025-01-07
+## [Unreleased]
+
+### Added
+- Comprehensive test suite with 370+ test cases
+- MCP client-based testing following Mastra patterns
+- GitHub Actions workflow for automated testing
+- GitHub Actions workflow for npm publishing
+- Performance benchmarks and caching validation
+- Test coverage for all three tools (listExperiments, getExperiment, searchExperiments)
+- Vitest configuration with proper timeouts
+- TESTING_GUIDE.md with complete testing documentation
+
+### Fixed
+- `__dirname` conflict in bundled output (removed duplicate declaration)
+- Path resolution in `fromRepoRoot` (3 levels) and `fromPackageRoot` (1 level)
+- Build process now successfully copies all experiments to `.experiments/`
+
+### Changed
+- Updated `copy-experiments.ts` to use path helpers instead of declaring `__dirname`
+- Improved error messages with helpful suggestions
+- Enhanced attribution blocks with all required links
 
 ### Added
 

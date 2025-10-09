@@ -1,0 +1,148 @@
+name: Experiments MCP - Publish to npm
+
+on:
+  push:
+    tags:
+      - 'experiments-mcp-v*.*.*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (e.g., 1.0.0)'
+        required: true
+        type: string
+
+jobs:
+  publish:
+    name: Publish to npm
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build package
+        run: pnpm --filter @vishesh/experiments build
+      
+      - name: Run tests
+        run: pnpm --filter @vishesh/experiments test
+      
+      - name: Verify package contents
+        run: |
+          cd packages/experiments-mcp
+          
+          # Check required files exist
+          if [ ! -f "dist/stdio.js" ]; then
+            echo "Error: dist/stdio.js not found"
+            exit 1
+          fi
+          
+          if [ ! -f "dist/index.js" ]; then
+            echo "Error: dist/index.js not found"
+            exit 1
+          fi
+          
+          if [ ! -d ".experiments" ]; then
+            echo "Error: .experiments directory not found"
+            exit 1
+          fi
+          
+          # Check experiment count
+          EXPERIMENT_COUNT=$(ls -1 .experiments/*.mdx 2>/dev/null | wc -l)
+          if [ "$EXPERIMENT_COUNT" -lt 5 ]; then
+            echo "Error: Expected at least 5 experiments, found $EXPERIMENT_COUNT"
+            exit 1
+          fi
+          
+          echo "✅ Package verification passed"
+          echo "✅ Found $EXPERIMENT_COUNT experiments"
+      
+      - name: Update version (if manual trigger)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          cd packages/experiments-mcp
+          npm version ${{ github.event.inputs.version }} --no-git-tag-version
+          echo "Updated version to ${{ github.event.inputs.version }}"
+      
+      - name: Extract version from tag
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        id: extract_version
+        run: |
+          TAG=${GITHUB_REF#refs/tags/experiments-mcp-v}
+          echo "version=$TAG" >> $GITHUB_OUTPUT
+          echo "Extracted version: $TAG"
+      
+      - name: Publish to npm (dry run)
+        run: |
+          cd packages/experiments-mcp
+          npm publish --dry-run
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      - name: Publish to npm
+        run: |
+          cd packages/experiments-mcp
+          npm publish --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+      
+      - name: Create GitHub Release
+        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Experiments MCP v${{ steps.extract_version.outputs.version }}
+          body: |
+            ## @vishesh/experiments v${{ steps.extract_version.outputs.version }}
+            
+            Production-ready integration patterns via MCP.
+            
+            ### Installation
+            ```bash
+            npm install @vishesh/experiments
+            # or
+            pnpm add @vishesh/experiments
+            ```
+            
+            ### What's Included
+            - 5+ battle-tested integration patterns
+            - Full code examples from OSS contributions
+            - MCP server for IDE integration
+            - Mastra-compatible tools
+            
+            ### Documentation
+            - [README](https://github.com/vishesh-baghel/portfolio/blob/main/packages/experiments-mcp/README.md)
+            - [Testing Guide](https://github.com/vishesh-baghel/portfolio/blob/main/packages/experiments-mcp/TESTING.md)
+            - [Changelog](https://github.com/vishesh-baghel/portfolio/blob/main/packages/experiments-mcp/CHANGELOG.md)
+            
+            ### Author
+            **Vishesh Baghel** - [vishesh.dev](https://vishesh.dev)
+          draft: false
+          prerelease: false
+      
+      - name: Notify success
+        if: success()
+        run: |
+          echo "✅ Successfully published @vishesh/experiments to npm"
+          echo "📦 Package: https://www.npmjs.com/package/@vishesh/experiments"

@@ -49,7 +49,7 @@ declare const GetExperimentInput: z.ZodObject<{
 type GetExperimentInput = z.infer<typeof GetExperimentInput>;
 declare const SearchExperimentsInput: z.ZodObject<{
     query: z.ZodString;
-    maxResults: z.ZodDefault<z.ZodOptional<z.ZodNumber>>;
+    maxResults: z.ZodOptional<z.ZodNumber>;
     categories: z.ZodOptional<z.ZodArray<z.ZodEnum<{
         "getting-started": "getting-started";
         "ai-agents": "ai-agents";
