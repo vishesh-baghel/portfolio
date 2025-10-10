@@ -110,7 +110,9 @@ return NextResponse.json({
 ## Troubleshooting
 
 ### Warning: "Mastra telemetry is enabled, but instrumentation file was not loaded"
-**Solution**: ✅ Fixed by creating `instrumentation.ts` and setting the global flag.
+**During Build**: This warning appears during `next build` because the instrumentation hook only runs at runtime, not during static page generation. This is expected and safe to ignore.
+
+**At Runtime**: ✅ Fixed by creating `instrumentation.ts` and setting the global flag. The warning will not appear when the app is running (dev or production).
 
 ### Warning: "Creating a duplicate database object for the same connection"
 **Cause**: Multiple Postgres clients with the same connection string.
