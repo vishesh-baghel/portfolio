@@ -1,8 +1,6 @@
 import { openai } from "@ai-sdk/openai";
 import { Agent } from "@mastra/core/agent";
-import { Memory } from "@mastra/memory";
-import { TokenLimiter } from "@mastra/memory/processors";
-import { PgVector } from "@mastra/pg";
+import { portfolioMemory } from "../storage";
 
 export const portfolioAgent = new Agent({
   name: "portfolio-agent",
@@ -234,26 +232,5 @@ If you encounter a situation that violates these guardrails, respond with:
 
   </guardrails>`,
   model: openai("gpt-4o-mini"),
-  // Conversation history: keep the last 20 messages from the current thread
-  // Semantic recall: retrieve semantically relevant past messages across threads (resource-scoped)
-  // Processors: limit total tokens contributed by memory for safety
-  // Vector storage: uses PgVector for semantic search with OpenAI embeddings
-  memory: new Memory({
-    vector: new PgVector({
-      connectionString: process.env.POSTGRES_URL!,
-      schemaName: process.env.MASTRA_PG_SCHEMA,
-    }),
-    embedder: openai.embedding("text-embedding-3-small"),
-    options: {
-      lastMessages: 20,
-      semanticRecall: {
-        topK: 3, // Retrieve 3 most similar messages
-        messageRange: 1, // Include 1 message before and after each match
-        scope: "resource", // Search across all threads for the same user
-      },
-    },
-    processors: [
-      new TokenLimiter(120000),
-    ],
-  })
-});
+  memory: portfolioMemory,
+})
