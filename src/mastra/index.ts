@@ -12,4 +12,8 @@ export const mastra = new Mastra({
   vectors: {
     pgVector: vector,
   },
+  telemetry: {
+    serviceName: "portfolio-mastra",
+    enabled: true,
+  },
 });
