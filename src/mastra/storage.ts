@@ -4,20 +4,20 @@ import { TokenLimiter } from "@mastra/memory/processors";
 import { openai } from "@ai-sdk/openai";
 
 // Validate required environment variables
-if (!process.env.PORTFOLIO_POSTGRES_URL) {
+if (!process.env.PORTFOLIO_POSTGRES_URL_SIMPLE) {
   throw new Error(
-    "PORTFOLIO_POSTGRES_URL is required. Configure a Postgres connection string to run Mastra."
+    "PORTFOLIO_POSTGRES_URL_NO_PARAMS is required. Configure a Postgres connection string to run Mastra."
   );
 }
 
 // Shared storage for Mastra (conversation threads, messages)
 export const storage = new PostgresStore({
-  connectionString: process.env.PORTFOLIO_POSTGRES_URL,
+  connectionString: process.env.PORTFOLIO_POSTGRES_URL_SIMPLE,
 });
 
 // Shared vector store for semantic recall (pgvector)
 export const vector = new PgVector({
-  connectionString: process.env.PORTFOLIO_POSTGRES_URL,
+  connectionString: process.env.PORTFOLIO_POSTGRES_URL_SIMPLE,
   schemaName: process.env.PORTFOLIO_PG_SCHEMA,
 });
 
