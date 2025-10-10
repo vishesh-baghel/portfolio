@@ -2,6 +2,7 @@ import { PostgresStore, PgVector } from "@mastra/pg";
 import { Memory } from "@mastra/memory";
 import { TokenLimiter } from "@mastra/memory/processors";
 import { openai } from "@ai-sdk/openai";
+import { fastembed } from "@mastra/fastembed";
 
 // Validate required environment variables
 if (!process.env.PORTFOLIO_POSTGRES_URL_SIMPLE) {
@@ -26,13 +27,14 @@ export const vector = new PgVector({
 // - Keeps last 20 messages and recalls semantically relevant history (resource-scoped)
 export const portfolioMemory = new Memory({
   vector,
-  embedder: openai.embedding("text-embedding-3-small"),
+  // Use local FastEmbed to avoid network latency on embeddings
+  embedder: fastembed,
   options: {
-    lastMessages: 20,
+    lastMessages: 10,
     semanticRecall: {
-      topK: 3,
-      messageRange: 1,
-      scope: "resource",
+      topK: 1,
+      messageRange: 0,
+      scope: "thread",
     },
   },
   processors: [new TokenLimiter(120000)],
