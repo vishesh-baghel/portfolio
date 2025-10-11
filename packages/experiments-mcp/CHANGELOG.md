@@ -4,6 +4,35 @@ All notable changes to vishesh-experiments will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.5] - 2025-10-12
+
+### Fixed
+
+- **Critical: Server Initialization**: Changed server creation from function-based to module-level initialization (matching `@mastra/mcp-docs-server` pattern). The server must be created at module load time using top-level await, not inside a function. This ensures proper schema registration with the MCP protocol.
+- **Import Paths**: Added `.js` extensions to all imports for proper ESM resolution
+
+### Technical Details
+
+Changed from:
+```typescript
+export function createServer() {
+  const server = new MCPServer({ ... });
+  return server;
+}
+```
+
+To:
+```typescript
+const server = new MCPServer({
+  version: JSON.parse(await fs.readFile(...)).version,
+  tools: { ... }
+});
+
+export { runServer, server };
+```
+
+This matches the exact pattern used by `@mastra/mcp-docs-server` and ensures schemas are properly registered.
+
 ## [0.0.4] - 2025-10-12
 
 ### Fixed

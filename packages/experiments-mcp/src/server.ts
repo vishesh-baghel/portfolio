@@ -1,5 +1,5 @@
+import fs from 'node:fs/promises';
 import { MCPServer } from '@mastra/mcp';
-import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { listExperimentsTool } from './tools/list-experiments';
@@ -9,31 +9,29 @@ import { searchExperimentsTool } from './tools/search-experiments';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Read version from package.json
-function getVersion(): string {
+// Helper to get package root path
+function fromPackageRoot(relativePath: string): string {
+  return join(__dirname, '..', relativePath);
+}
+
+const server = new MCPServer({
+  name: 'Vishesh Experiments Server',
+  version: JSON.parse(await fs.readFile(fromPackageRoot('package.json'), 'utf8')).version,
+  tools: {
+    listExperiments: listExperimentsTool,
+    getExperiment: getExperimentTool,
+    searchExperiments: searchExperimentsTool,
+  },
+});
+
+async function runServer() {
   try {
-    const packageJsonPath = join(__dirname, '../package.json');
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8'));
-    return packageJson.version;
-  } catch {
-    return '0.0.1'; // Fallback version
+    await server.startStdio();
+    console.error('Vishesh Experiments MCP Server started on stdio');
+  } catch (error) {
+    console.error('Failed to start server', error);
+    process.exit(1);
   }
 }
 
-/**
- * Create and configure the Experiments MCP Server
- * Exposes Vishesh's integration patterns via Model Context Protocol
- */
-export function createServer(): MCPServer {
-  const server = new MCPServer({
-    name: 'Vishesh Experiments Server',
-    version: getVersion(),
-    tools: {
-      listExperiments: listExperimentsTool,
-      getExperiment: getExperimentTool,
-      searchExperiments: searchExperimentsTool,
-    },
-  });
-
-  return server;
-}
+export { runServer, server };

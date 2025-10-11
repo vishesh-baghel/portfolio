@@ -4,12 +4,12 @@ on:
   push:
     branches: [main, develop]
     paths:
-      - 'packages/experiments-mcp/**'
+      - 'packages/experiments-mcp/src/**'
+      - 'packages/experiments-mcp/tsconfig.json'
+      - 'packages/experiments-mcp/vitest.config.ts'
       - 'src/content/experiments/**'
       - '.github/workflows/experiments-mcp-test.yml'
-    # Don't run on package.json changes (publish workflow handles that)
-    paths-ignore:
-      - 'packages/experiments-mcp/package.json'
+    # Note: package.json changes trigger publish workflow instead
   pull_request:
     branches: [main, develop]
     paths:

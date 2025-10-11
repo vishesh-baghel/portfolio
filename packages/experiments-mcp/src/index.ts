@@ -5,10 +5,10 @@
  * Access battle-tested code from OSS contributions directly in your IDE.
  */
 
-export { createServer } from './server';
-export { contentLoader, ContentLoader } from './loaders/content-loader';
-export { generateAttribution } from './utils/attribution';
-export { searchExperiments } from './utils/search';
+export { runServer, server } from './server.js';
+export { contentLoader, ContentLoader } from './loaders/content-loader.js';
+export { generateAttribution } from './utils/attribution.js';
+export { searchExperiments } from './utils/search.js';
 
 // Export types
 export type {
@@ -20,7 +20,7 @@ export type {
   ListExperimentsInput,
   GetExperimentInput,
   SearchExperimentsInput,
-} from './types';
+} from './types.js';
 
 // Export error classes
-export { ExperimentNotFoundError, InvalidCategoryError } from './types';
+export { ExperimentNotFoundError, InvalidCategoryError } from './types.js';

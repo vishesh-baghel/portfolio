@@ -1,11 +1,8 @@
 import { MCPServer } from '@mastra/mcp';
 import { z } from 'zod';
 
-/**
- * Create and configure the Experiments MCP Server
- * Exposes Vishesh's integration patterns via Model Context Protocol
- */
-declare function createServer(): MCPServer;
+declare const server: MCPServer;
+declare function runServer(): Promise<void>;
 
 declare const ExperimentCategory: z.ZodEnum<{
     all: "all";
@@ -144,4 +141,4 @@ declare function generateAttribution(metadata: ExperimentMetadata): string;
  */
 declare function searchExperiments(experiments: ExperimentListItem[], contentsMap: Map<string, ExperimentContent>, query: string, maxResults?: number): SearchResult[];
 
-export { ContentLoader, ExperimentCategory, ExperimentContent, ExperimentListItem, ExperimentMetadata, ExperimentNotFoundError, GetExperimentInput, InvalidCategoryError, ListExperimentsInput, SearchExperimentsInput, SearchResult, contentLoader, createServer, generateAttribution, searchExperiments };
+export { ContentLoader, ExperimentCategory, ExperimentContent, ExperimentListItem, ExperimentMetadata, ExperimentNotFoundError, GetExperimentInput, InvalidCategoryError, ListExperimentsInput, SearchExperimentsInput, SearchResult, contentLoader, generateAttribution, runServer, searchExperiments, server };
