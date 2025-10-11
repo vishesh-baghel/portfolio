@@ -4,6 +4,12 @@ All notable changes to vishesh-experiments will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.2] - 2025-01-11
+
+### Fixed
+
+- **Critical MCP Protocol Fix**: Changed stdio.ts to use `console.error()` instead of `console.info()` for startup logging. stdout is reserved for MCP protocol communication, and writing to it was preventing proper connection with MCP clients (Windsurf, Cursor, etc.)
+
 ## [0.0.1] - 2025-01-11
 
 ### Added

@@ -12,7 +12,8 @@ async function main() {
 
   try {
     await server.startStdio();
-    console.info('Vishesh Experiments MCP Server started on stdio');
+    // Use stderr for logging - stdout is reserved for MCP protocol
+    console.error('Vishesh Experiments MCP Server started on stdio');
   } catch (error) {
     console.error('Failed to start MCP server:', error);
     process.exit(1);
