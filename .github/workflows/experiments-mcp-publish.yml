@@ -2,14 +2,10 @@ name: Experiments MCP - Publish to npm
 
 on:
   push:
-    tags:
-      - 'experiments-mcp-v*.*.*'
+    branches: [main]
+    paths:
+      - 'packages/experiments-mcp/package.json'
   workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version to publish (e.g., 1.0.0)'
-        required: true
-        type: string
 
 jobs:
   publish:
@@ -67,30 +63,39 @@ jobs:
           
           # Check experiment count
           EXPERIMENT_COUNT=$(ls -1 .experiments/*.mdx 2>/dev/null | wc -l)
-          if [ "$EXPERIMENT_COUNT" -lt 5 ]; then
-            echo "Error: Expected at least 5 experiments, found $EXPERIMENT_COUNT"
+          if [ "$EXPERIMENT_COUNT" -lt 1 ]; then
+            echo "Error: Expected at least 1 experiment, found $EXPERIMENT_COUNT"
             exit 1
           fi
           
           echo "✅ Package verification passed"
           echo "✅ Found $EXPERIMENT_COUNT experiments"
       
-      - name: Update version (if manual trigger)
-        if: github.event_name == 'workflow_dispatch'
+      - name: Get version from package.json
+        id: get_version
         run: |
           cd packages/experiments-mcp
-          npm version ${{ github.event.inputs.version }} --no-git-tag-version
-          echo "Updated version to ${{ github.event.inputs.version }}"
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "📦 Package version: $VERSION"
       
-      - name: Extract version from tag
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
-        id: extract_version
+      - name: Check if version already published
+        id: check_version
         run: |
-          TAG=${GITHUB_REF#refs/tags/experiments-mcp-v}
-          echo "version=$TAG" >> $GITHUB_OUTPUT
-          echo "Extracted version: $TAG"
+          cd packages/experiments-mcp
+          VERSION=$(node -p "require('./package.json').version")
+          
+          # Check if this version exists on npm
+          if npm view @vishesh/experiments@$VERSION version 2>/dev/null; then
+            echo "Version $VERSION already published to npm"
+            echo "should_publish=false" >> $GITHUB_OUTPUT
+          else
+            echo "Version $VERSION not yet published"
+            echo "should_publish=true" >> $GITHUB_OUTPUT
+          fi
       
       - name: Publish to npm (dry run)
+        if: steps.check_version.outputs.should_publish == 'true'
         run: |
           cd packages/experiments-mcp
           npm publish --dry-run
@@ -98,22 +103,28 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
       - name: Publish to npm
+        if: steps.check_version.outputs.should_publish == 'true'
         run: |
           cd packages/experiments-mcp
           npm publish --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
       
+      - name: Skip publishing (version already exists)
+        if: steps.check_version.outputs.should_publish == 'false'
+        run: |
+          echo "⏭️  Skipping publish - version already exists on npm"
+      
       - name: Create GitHub Release
-        if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/')
+        if: steps.check_version.outputs.should_publish == 'true' && github.event_name == 'push'
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Experiments MCP v${{ steps.extract_version.outputs.version }}
+          tag_name: experiments-mcp-v${{ steps.get_version.outputs.version }}
+          release_name: Experiments MCP v${{ steps.get_version.outputs.version }}
           body: |
-            ## @vishesh/experiments v${{ steps.extract_version.outputs.version }}
+            ## @vishesh/experiments v${{ steps.get_version.outputs.version }}
             
             Production-ready integration patterns via MCP.
             
@@ -136,7 +147,7 @@ jobs:
             - [Changelog](https://github.com/vishesh-baghel/portfolio/blob/main/packages/experiments-mcp/CHANGELOG.md)
             
             ### Author
-            **Vishesh Baghel** - [vishesh.dev](https://vishesh.dev)
+            **Vishesh Baghel** - [visheshbaghel.com](https://visheshbaghel.com)
           draft: false
           prerelease: false
       

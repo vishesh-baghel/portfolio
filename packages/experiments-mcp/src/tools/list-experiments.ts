@@ -17,9 +17,15 @@ export const listExperimentsTool = createTool({
     Categories: getting-started, ai-agents, backend-database, typescript-patterns, or all (default).`,
   inputSchema: ListExperimentsInput,
   execute: async ({ context }) => {
-    const args = context as { category?: string };
     try {
+      const args = context as { category?: string };
       const { category = 'all' } = args;
+      
+      // Validate category
+      const validCategories = ['all', 'getting-started', 'ai-agents', 'backend-database', 'typescript-patterns'];
+      if (!validCategories.includes(category)) {
+        return `Invalid category "${category}".\n\nValid categories:\n- getting-started\n- ai-agents\n- backend-database\n- typescript-patterns\n- all (default)\n\nUse category "all" to see all available patterns.`;
+      }
 
       if (category === 'all') {
         // Return all experiments grouped by category

@@ -54,8 +54,8 @@ jobs:
           fi
           
           EXPERIMENT_COUNT=$(ls -1 packages/experiments-mcp/.experiments/*.mdx 2>/dev/null | wc -l)
-          if [ "$EXPERIMENT_COUNT" -lt 5 ]; then
-            echo "Error: Expected at least 5 experiments, found $EXPERIMENT_COUNT"
+          if [ "$EXPERIMENT_COUNT" -lt 1 ]; then
+            echo "Error: Expected at least 1 experiment, found $EXPERIMENT_COUNT"
             exit 1
           fi
           

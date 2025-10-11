@@ -33,18 +33,12 @@ declare const ExperimentMetadata: z.ZodObject<{
 }, z.core.$strip>;
 type ExperimentMetadata = z.infer<typeof ExperimentMetadata>;
 declare const ListExperimentsInput: z.ZodObject<{
-    category: z.ZodDefault<z.ZodOptional<z.ZodEnum<{
-        all: "all";
-        "getting-started": "getting-started";
-        "ai-agents": "ai-agents";
-        "backend-database": "backend-database";
-        "typescript-patterns": "typescript-patterns";
-    }>>>;
+    category: z.ZodOptional<z.ZodString>;
 }, z.core.$strip>;
 type ListExperimentsInput = z.infer<typeof ListExperimentsInput>;
 declare const GetExperimentInput: z.ZodObject<{
     slug: z.ZodString;
-    includeMetadata: z.ZodDefault<z.ZodOptional<z.ZodBoolean>>;
+    includeMetadata: z.ZodOptional<z.ZodBoolean>;
 }, z.core.$strip>;
 type GetExperimentInput = z.infer<typeof GetExperimentInput>;
 declare const SearchExperimentsInput: z.ZodObject<{

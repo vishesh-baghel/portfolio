@@ -24,13 +24,13 @@ export const ExperimentMetadata = z.object({
 
 // List experiments input
 export const ListExperimentsInput = z.object({
-  category: ExperimentCategory.optional().default('all'),
+  category: z.string().optional().describe('Category to filter by. Options: getting-started, ai-agents, backend-database, typescript-patterns, or all (default)'),
 });
 
 // Get experiment input
 export const GetExperimentInput = z.object({
   slug: z.string().describe('Experiment slug (use listExperiments to see available slugs)'),
-  includeMetadata: z.boolean().optional().default(true).describe('Include metadata like author, date, category'),
+  includeMetadata: z.boolean().optional().describe('Include metadata like author, date, category (default: true)'),
 });
 
 // Search experiments input
