@@ -116,43 +116,94 @@ jobs:
         run: |
           echo "⏭️  Skipping publish - version already exists on npm"
       
+      - name: Extract changelog for this version
+        if: steps.check_version.outputs.should_publish == 'true'
+        id: changelog
+        run: |
+          cd packages/experiments-mcp
+          VERSION=${{ steps.get_version.outputs.version }}
+          
+          # Extract changelog section for this version
+          CHANGELOG=$(awk -v ver="$VERSION" '
+            /^## \[/ {
+              if (found) exit;
+              if ($0 ~ "\\[" ver "\\]") {
+                found=1;
+                next;
+              }
+            }
+            found { print }
+          ' CHANGELOG.md | sed '/^## \[/,$d')
+          
+          # Create release body
+          cat > /tmp/release-body.md << 'EOF'
+          ## vishesh-experiments v${{ steps.get_version.outputs.version }}
+          
+          Production-ready integration patterns via MCP.
+          
+          ### 📦 Installation
+          
+          **npm:**
+          ```bash
+          npm install vishesh-experiments@${{ steps.get_version.outputs.version }}
+          ```
+          
+          **Use directly with npx:**
+          ```bash
+          npx vishesh-experiments@${{ steps.get_version.outputs.version }}
+          ```
+          
+          **MCP Configuration (Windsurf/Cursor):**
+          ```json
+          {
+            "mcpServers": {
+              "vishesh-experiments": {
+                "command": "npx",
+                "args": ["-y", "vishesh-experiments@${{ steps.get_version.outputs.version }}"]
+              }
+            }
+          }
+          ```
+          
+          ### 📝 Changes in this version
+          
+          EOF
+          echo "$CHANGELOG" >> /tmp/release-body.md
+          cat >> /tmp/release-body.md << 'EOF'
+          
+          ### 📚 Documentation
+          - [README](https://github.com/vishesh-baghel/portfolio/blob/main/packages/experiments-mcp/README.md)
+          - [Testing Guide](https://github.com/vishesh-baghel/portfolio/blob/main/packages/experiments-mcp/TESTING.md)
+          - [Full Changelog](https://github.com/vishesh-baghel/portfolio/blob/main/packages/experiments-mcp/CHANGELOG.md)
+          
+          ### 🔗 Links
+          - **npm Package:** https://www.npmjs.com/package/vishesh-experiments
+          - **Author:** [Vishesh Baghel](https://visheshbaghel.com)
+          - **Experiments:** https://visheshbaghel.com/experiments
+          EOF
+          
+          echo "Release body created"
+      
+      - name: Create Git Tag
+        if: steps.check_version.outputs.should_publish == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "experiments-mcp-v${{ steps.get_version.outputs.version }}" -m "Release vishesh-experiments v${{ steps.get_version.outputs.version }}"
+          git push origin "experiments-mcp-v${{ steps.get_version.outputs.version }}"
+      
       - name: Create GitHub Release
-        if: steps.check_version.outputs.should_publish == 'true' && github.event_name == 'push'
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        if: steps.check_version.outputs.should_publish == 'true'
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: experiments-mcp-v${{ steps.get_version.outputs.version }}
-          release_name: Experiments MCP v${{ steps.get_version.outputs.version }}
-          body: |
-            ## vishesh-experiments v${{ steps.get_version.outputs.version }}
-            
-            Production-ready integration patterns via MCP.
-            
-            ### Installation
-            ```bash
-            npm install vishesh-experiments
-            # or
-            pnpm add vishesh-experiments
-            # or use directly
-            npx vishesh-experiments
-            ```
-            
-            ### What's Included
-            - 5+ battle-tested integration patterns
-            - Full code examples from OSS contributions
-            - MCP server for IDE integration
-            - Mastra-compatible tools
-            
-            ### Documentation
-            - [README](https://github.com/vishesh-baghel/portfolio/blob/main/packages/experiments-mcp/README.md)
-            - [Testing Guide](https://github.com/vishesh-baghel/portfolio/blob/main/packages/experiments-mcp/TESTING.md)
-            - [Changelog](https://github.com/vishesh-baghel/portfolio/blob/main/packages/experiments-mcp/CHANGELOG.md)
-            
-            ### Author
-            **Vishesh Baghel** - [visheshbaghel.com](https://visheshbaghel.com)
+          name: vishesh-experiments v${{ steps.get_version.outputs.version }}
+          body_path: /tmp/release-body.md
           draft: false
           prerelease: false
+          generate_release_notes: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       
       - name: Notify success
         if: success()

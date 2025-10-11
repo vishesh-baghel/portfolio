@@ -1,6 +1,6 @@
 {
   "name": "vishesh-experiments",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Production-ready integration patterns via MCP. Access battle-tested code from OSS contributions directly in your IDE.",
   "type": "module",
   "bin": "dist/stdio.js",

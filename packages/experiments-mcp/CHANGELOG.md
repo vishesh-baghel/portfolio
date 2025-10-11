@@ -4,6 +4,12 @@ All notable changes to vishesh-experiments will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.3] - 2025-01-11
+
+### Fixed
+
+- **JSON Schema Validation Fix**: Replaced `ExperimentCategory.exclude(['all'])` with explicit `ExperimentCategoryWithoutAll` enum to generate MCP-compatible JSON schemas. The `.exclude()` method produced complex schemas that failed Windsurf's strict JSON Schema Draft 2020-12 validation.
+
 ## [0.0.2] - 2025-01-11
 
 ### Fixed

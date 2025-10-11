@@ -9,12 +9,20 @@ export const ExperimentCategory = z.enum([
   'typescript-patterns',
 ]);
 
+// Category enum without 'all' for metadata
+export const ExperimentCategoryWithoutAll = z.enum([
+  'getting-started',
+  'ai-agents',
+  'backend-database',
+  'typescript-patterns',
+]);
+
 // Experiment metadata schema
 export const ExperimentMetadata = z.object({
   title: z.string(),
   slug: z.string(),
   description: z.string().optional(),
-  category: ExperimentCategory.exclude(['all']),
+  category: ExperimentCategoryWithoutAll,
   tags: z.array(z.string()).optional(),
   date: z.string().optional(),
   author: z.string().default('Vishesh Baghel'),
@@ -37,7 +45,7 @@ export const GetExperimentInput = z.object({
 export const SearchExperimentsInput = z.object({
   query: z.string().describe('Search query (keywords, tech stack, problem description)'),
   maxResults: z.number().min(1).max(10).optional().describe('Maximum number of results to return (default: 5)'),
-  categories: z.array(ExperimentCategory.exclude(['all'])).optional().describe('Filter by specific categories'),
+  categories: z.array(ExperimentCategoryWithoutAll).optional().describe('Filter by specific categories'),
 });
 
 // Output types
