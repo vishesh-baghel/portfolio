@@ -7,11 +7,16 @@ import { fastembed } from "@mastra/fastembed";
  * LibSQL Storage Configuration
  * 
  * Environment Variables:
- * - MASTRA_DB_FILE: Path to database file (default: .mastra/db.sqlite for local, .mastra/prod.sqlite for prod)
- * - NODE_ENV: Determines which database file to use
+ * - MASTRA_DB_FILE: Override database path (optional)
+ * - TURSO_AUTH_TOKEN: Auth token for Turso cloud database (optional)
  * 
- * Local Development: Uses file:.mastra/db.sqlite
- * Production (Vercel): Uses file:.mastra/prod.sqlite
+ * Default Database Paths:
+ * - Local Development: file:.mastra/db.sqlite
+ * - Vercel Build: file::memory:?cache=shared (in-memory, read-only filesystem)
+ * - Vercel Runtime: file:/tmp/mastra-prod.sqlite (writable /tmp directory)
+ * 
+ * Note: On Vercel, /tmp is ephemeral per-function-instance. Database persists
+ * during warm starts but is recreated on cold starts.
  */
 
 // Determine database file based on environment
@@ -21,9 +26,16 @@ const getDbPath = () => {
     return process.env.MASTRA_DB_FILE;
   }
   
-  // Default: use different files for dev vs prod
-  const isProduction = process.env.NODE_ENV === 'production' || process.env.VERCEL === '1';
-  return isProduction ? 'file:.mastra/prod.sqlite' : 'file:.mastra/db.sqlite';
+  // Vercel: Use /tmp for writable filesystem, or in-memory during build
+  if (process.env.VERCEL === '1') {
+    // During build (NEXT_PHASE === 'phase-production-build'), use in-memory
+    // At runtime, use /tmp which is writable on Vercel
+    const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
+    return isBuild ? 'file::memory:?cache=shared' : 'file:/tmp/mastra-prod.sqlite';
+  }
+  
+  // Local development: use .mastra directory
+  return 'file:.mastra/db.sqlite';
 };
 
 const dbPath = getDbPath();

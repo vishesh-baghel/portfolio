@@ -11,9 +11,10 @@ This portfolio uses **LibSQL** (SQLite-based) for Mastra agent storage. This is 
 The storage automatically uses different database files based on the environment:
 
 - **Local Development**: `file:.mastra/db.sqlite`
-- **Production (Vercel)**: `file:.mastra/prod.sqlite`
+- **Vercel Build**: `file::memory:?cache=shared` (in-memory, read-only filesystem)
+- **Vercel Runtime**: `file:/tmp/mastra-prod.sqlite` (writable `/tmp` directory)
 
-The `.mastra` directory is gitignored and will be created automatically when the app first runs.
+The `.mastra` directory is gitignored and will be created automatically in local development. On Vercel, the `/tmp` directory is used because it's the only writable location in serverless functions.
 
 ### Environment Variables
 
@@ -43,10 +44,20 @@ OPENAI_API_KEY=sk-your-openai-api-key
 import { LibSQLStore } from "@mastra/libsql";
 
 // Automatically selects db file based on environment
-const dbPath = process.env.MASTRA_DB_FILE || 
-  (isProduction ? 'file:.mastra/prod.sqlite' : 'file:.mastra/db.sqlite');
+const getDbPath = () => {
+  if (process.env.MASTRA_DB_FILE) return process.env.MASTRA_DB_FILE;
+  
+  // Vercel: in-memory during build, /tmp at runtime
+  if (process.env.VERCEL === '1') {
+    const isBuild = process.env.NEXT_PHASE === 'phase-production-build';
+    return isBuild ? 'file::memory:?cache=shared' : 'file:/tmp/mastra-prod.sqlite';
+  }
+  
+  // Local dev: .mastra directory
+  return 'file:.mastra/db.sqlite';
+};
 
-export const storage = new LibSQLStore({ url: dbPath });
+export const storage = new LibSQLStore({ url: getDbPath() });
 ```
 
 ### Lazy Initialization
@@ -126,17 +137,23 @@ Set in Vercel Dashboard → Project Settings → Environment Variables:
 OPENAI_API_KEY=sk-your-openai-api-key
 ```
 
-### Database Persistence
+### Database Persistence on Vercel
 
-**Important**: On Vercel, the filesystem is ephemeral. The database file is recreated on each deployment. This is acceptable for a portfolio agent because:
+**Important**: On Vercel, the `/tmp` filesystem is ephemeral and has specific characteristics:
 
-1. Conversation history is not critical to preserve across deployments
-2. The agent is stateless and doesn't rely on long-term memory
-3. Simplicity > complexity for a personal portfolio
+1. **Per-function instance**: Each serverless function instance has its own `/tmp` directory
+2. **Survives across requests**: Within the same function instance (warm start), the database persists
+3. **Lost on cold start**: When a function instance is recycled, the database is recreated
+4. **Not shared**: Different function instances don't share the same database file
 
-If you need persistent storage, consider:
-- Using Turso (LibSQL cloud service)
-- Switching to a managed database (but this defeats the simplicity goal)
+This is acceptable for a portfolio agent because:
+- Conversation history within a session is preserved (warm starts)
+- The agent is stateless and doesn't rely on long-term memory
+- Simplicity > complexity for a personal portfolio
+
+If you need persistent storage across all instances, consider:
+- Using Turso (LibSQL cloud service) - see below
+- Using a managed database (but this defeats the simplicity goal)
 
 ### Using Turso (Optional)
 
@@ -225,6 +242,8 @@ For a personal portfolio agent, the simplicity of LibSQL far outweighs the benef
 
 ## Related Documentation
 
-- [Mastra LibSQL Docs](https://mastra.ai/en/docs/reference/storage/libsql)
+- [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) - Vercel-specific deployment guide
+- [Mastra Memory Docs](https://mastra.ai/en/docs/memory/overview)
+- [Mastra LibSQL Storage](https://mastra.ai/en/docs/reference/storage/libsql)
 - [LibSQL Documentation](https://github.com/tursodatabase/libsql)
-- [Turso Documentation](https://docs.turso.tech/)
+- [Memory Processors](https://mastra.ai/en/docs/memory/memory-processors)
