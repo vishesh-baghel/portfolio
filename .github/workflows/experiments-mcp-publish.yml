@@ -36,10 +36,10 @@ jobs:
         run: pnpm install --frozen-lockfile
       
       - name: Build package
-        run: pnpm --filter @vishesh/experiments build
+        run: pnpm --filter vishesh-experiments build
       
       - name: Run tests
-        run: pnpm --filter @vishesh/experiments test
+        run: pnpm --filter vishesh-experiments test
       
       - name: Verify package contents
         run: |
