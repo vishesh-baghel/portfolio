@@ -5,16 +5,16 @@
     "scripts": {
         "dev": "next dev",
         "build": "pnpm run build:mcp && next build",
-        "build:mcp": "pnpm --filter @vishesh/experiments build",
+        "build:mcp": "pnpm --filter vishesh-experiments build",
         "start": "next start",
         "lint": "next lint",
         "mastra:dev": "mastra dev",
         "test": "vitest",
         "test:evals": "vitest --project portfolio",
-        "test:mcp": "pnpm --filter @vishesh/experiments test",
+        "test:mcp": "pnpm --filter vishesh-experiments test",
         "test:ui": "vitest --ui",
         "test:watch": "vitest watch",
-        "dev:mcp": "pnpm --filter @vishesh/experiments dev"
+        "dev:mcp": "pnpm --filter vishesh-experiments dev"
     },
     "dependencies": {
         "@ai-sdk/openai": "^2.0.42",
