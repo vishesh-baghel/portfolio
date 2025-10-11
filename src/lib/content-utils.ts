@@ -14,7 +14,7 @@ export interface ContentCategory {
   items: ContentMetadata[];
 }
 
-export function getContentItems(contentType: 'experiments' | 'lessons'): ContentMetadata[] {
+export function getContentItems(contentType: 'experiments'): ContentMetadata[] {
   const contentDir = path.join(process.cwd(), 'src', 'content', contentType);
   
   // Create directory if it doesn't exist
@@ -41,43 +41,33 @@ export function getContentItems(contentType: 'experiments' | 'lessons'): Content
   });
 }
 
-export function getCategorizedContent(contentType: 'experiments' | 'lessons'): ContentCategory[] {
+export function getCategorizedContent(contentType: 'experiments'): ContentCategory[] {
   const items = getContentItems(contentType);
   
-  if (contentType === 'experiments') {
-    return [
-      {
-        title: 'Getting Started',
-        items: items.filter(item => 
-          item.slug.includes('mastra') || item.slug.includes('nextjs')
-        ),
-      },
-      {
-        title: 'AI & Agents',
-        items: items.filter(item => 
-          item.slug.includes('ai') || item.slug.includes('openai') || item.slug.includes('agents')
-        ),
-      },
-      {
-        title: 'Backend & Database',
-        items: items.filter(item => 
-          item.slug.includes('postgresql') || item.slug.includes('database')
-        ),
-      },
-      {
-        title: 'TypeScript & Patterns',
-        items: items.filter(item => 
-          item.slug.includes('typescript') || item.slug.includes('patterns')
-        ),
-      },
-    ].filter(category => category.items.length > 0);
-  }
-  
-  // For lessons, return a simple structure
   return [
     {
-      title: 'Engineering Practices',
-      items: items,
+      title: 'Getting Started',
+      items: items.filter(item => 
+        item.slug.includes('mastra') || item.slug.includes('nextjs')
+      ),
     },
-  ];
+    {
+      title: 'AI & Agents',
+      items: items.filter(item => 
+        item.slug.includes('ai') || item.slug.includes('openai') || item.slug.includes('agents')
+      ),
+    },
+    {
+      title: 'Backend & Database',
+      items: items.filter(item => 
+        item.slug.includes('postgresql') || item.slug.includes('database')
+      ),
+    },
+    {
+      title: 'TypeScript & Patterns',
+      items: items.filter(item => 
+        item.slug.includes('typescript') || item.slug.includes('patterns')
+      ),
+    },
+  ].filter(category => category.items.length > 0);
 }

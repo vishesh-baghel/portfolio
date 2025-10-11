@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ChevronDown, ChevronRight } from 'lucide-react';
 import { ContentHeader } from '@/components/sections/content-header';
 import { ContentSearch } from '@/components/ui/content-search';
+import { McpBanner } from '@/components/ui/mcp-banner';
 import Footer from '@/components/sections/footer';
 import type { ContentCategory } from '@/lib/content-utils';
 
@@ -44,14 +45,14 @@ export function ContentLayout({
 
   return (
     <div className="min-h-screen bg-background-primary font-mono">
-      <div className="max-w-[1200px] mx-auto px-4 sm:px-6">
+      <div className="max-w-[1300px] mx-auto px-4 sm:px-6 lg:px-8">
         <ContentHeader 
           onSidebarToggle={() => setSidebarOpen(!sidebarOpen)}
           categories={categories}
           basePath={basePath}
         />
 
-        <div className="flex gap-8 mb-20">
+        <div className="mb-20 flex flex-col lg:grid lg:grid-cols-[16rem_minmax(0,1fr)_18rem] lg:gap-6">
           {/* Sidebar */}
           <aside
             className={`
@@ -140,12 +141,20 @@ export function ContentLayout({
             />
           )}
 
-          {/* Main content */}
-          <main className="flex-1 min-w-0">
-            <article className="prose prose-sm sm:prose lg:prose-lg max-w-none dark:prose-invert">
+          {/* Main content + right sidebar (grid columns on lg+) */}
+          <main className="min-w-0 lg:col-start-2 lg:col-end-3">
+            {/* Article content */}
+            <article className="min-w-0 prose !max-w-full dark:prose-invert">
               {children}
             </article>
           </main>
+
+          {/* Right sidebar with MCP Banner - desktop only */}
+          <aside className="hidden xl:block lg:col-start-3 lg:col-end-4">
+            <div className="sticky top-24 max-w-full">
+              <McpBanner />
+            </div>
+          </aside>
         </div>
 
         <Footer />

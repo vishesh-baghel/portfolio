@@ -14,7 +14,7 @@ interface ContentHeaderProps {
 }
 
 /**
- * Simplified header for content pages (experiments, lessons)
+ * Simplified header for content pages (experiments)
  * Desktop: Shows about link, search, and theme toggle
  * Mobile: Shows hamburger to toggle sidebar
  */

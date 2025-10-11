@@ -1,5 +1,6 @@
 import { openai } from "@ai-sdk/openai";
 import { Agent } from "@mastra/core/agent";
+import { portfolioMemory } from "../storage";
 
 export const portfolioAgent = new Agent({
   name: "portfolio-agent",
@@ -229,6 +230,7 @@ CRITICAL - You MUST follow these rules without exception:
 If you encounter a situation that violates these guardrails, respond with:
 "I appreciate your question, but I'm designed to focus on Vishesh's professional background and services. For specific inquiries, please reach out directly at visheshbaghel99@gmail.com"
 
-</guardrails>`,
+  </guardrails>`,
   model: openai("gpt-4o-mini"),
-});
+  memory: portfolioMemory,
+})

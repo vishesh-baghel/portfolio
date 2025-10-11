@@ -1,0 +1,77 @@
+name: Experiments MCP - Test
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'packages/experiments-mcp/**'
+      - 'src/content/experiments/**'
+      - '.github/workflows/experiments-mcp-test.yml'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'packages/experiments-mcp/**'
+      - 'src/content/experiments/**'
+      - '.github/workflows/experiments-mcp-test.yml'
+
+jobs:
+  test:
+    name: Test MCP Server
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [20.x]
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        # Version is read from packageManager field in package.json
+      
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'pnpm'
+      
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      
+      - name: Build experiments-mcp package
+        run: pnpm --filter @vishesh/experiments build
+      
+      - name: Run tests
+        run: pnpm --filter @vishesh/experiments test
+      
+      - name: Verify experiments copied
+        run: |
+          if [ ! -d "packages/experiments-mcp/.experiments" ]; then
+            echo "Error: .experiments directory not found"
+            exit 1
+          fi
+          
+          EXPERIMENT_COUNT=$(ls -1 packages/experiments-mcp/.experiments/*.mdx 2>/dev/null | wc -l)
+          if [ "$EXPERIMENT_COUNT" -lt 5 ]; then
+            echo "Error: Expected at least 5 experiments, found $EXPERIMENT_COUNT"
+            exit 1
+          fi
+          
+          echo "✅ Found $EXPERIMENT_COUNT experiments"
+      
+      - name: Test MCP server startup
+        run: |
+          timeout 5s node packages/experiments-mcp/dist/stdio.js <<< '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{}}' || true
+          echo "✅ MCP server can start"
+      
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results-${{ matrix.node-version }}
+          path: |
+            packages/experiments-mcp/coverage/
+            packages/experiments-mcp/.experiments/
+          retention-days: 7

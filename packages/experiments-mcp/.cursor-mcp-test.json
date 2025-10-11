@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "vishesh-experiments-local": {
+      "command": "node",
+      "args": [
+        "/home/vishesh.baghel/Documents/workspace/portfolio/packages/experiments-mcp/dist/stdio.js"
+      ]
+    }
+  }
+}
