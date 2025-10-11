@@ -4,19 +4,48 @@ All notable changes to vishesh-experiments will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.0.3] - 2025-01-11
+## [0.0.4] - 2025-10-12
+
+### Fixed
+
+- **Critical: Tool Definition Format**: Converted from `createTool()` to plain object format with `parameters` field. The `@mastra/mcp` package requires tools to be defined as plain objects (like `@mastra/mcp-docs-server`), not using `createTool()` from `@mastra/core`. This was causing empty schemas to be sent to MCP clients.
+- **Schema Generation**: Now properly generates complete JSON Schema Draft 2020-12 schemas for all tool inputs
+
+### Technical Details
+
+Changed tool definitions from:
+```typescript
+export const tool = createTool({
+  id: 'toolName',
+  inputSchema: ZodSchema,
+  execute: async ({ context }) => { ... }
+})
+```
+
+To:
+```typescript
+export const tool = {
+  name: 'toolName',
+  parameters: ZodSchema,
+  execute: async (args) => { ... }
+}
+```
+
+This matches the pattern used by `@mastra/mcp-docs-server` and ensures proper schema conversion.
+
+## [0.0.3] - 2025-10-11
 
 ### Fixed
 
 - **JSON Schema Validation Fix**: Replaced `ExperimentCategory.exclude(['all'])` with explicit `ExperimentCategoryWithoutAll` enum to generate MCP-compatible JSON schemas. The `.exclude()` method produced complex schemas that failed Windsurf's strict JSON Schema Draft 2020-12 validation.
 
-## [0.0.2] - 2025-01-11
+## [0.0.2] - 2025-10-11
 
 ### Fixed
 
 - **Critical MCP Protocol Fix**: Changed stdio.ts to use `console.error()` instead of `console.info()` for startup logging. stdout is reserved for MCP protocol communication, and writing to it was preventing proper connection with MCP clients (Windsurf, Cursor, etc.)
 
-## [0.0.1] - 2025-01-11
+## [0.0.1] - 2025-10-11
 
 ### Added
 

@@ -1,4 +1,3 @@
-import { createTool } from '@mastra/core/tools';
 import { ListExperimentsInput } from '../types';
 import { contentLoader } from '../loaders/content-loader';
 import { CATEGORY_TITLES } from '../config';
@@ -7,18 +6,17 @@ import { CATEGORY_TITLES } from '../config';
  * List Experiments Tool
  * Browse all available experiments, optionally filtered by category
  */
-export const listExperimentsTool = createTool({
-  id: 'listExperiments',
+export const listExperimentsTool = {
+  name: 'listExperiments',
   description: `Browse Vishesh's production-ready integration patterns and experiments.
     Returns categorized list of all available experiments.
     Use this first to see what's available, then use getExperiment to fetch specific ones.
     
     Each experiment includes production-tested code from OSS contributions.
     Categories: getting-started, ai-agents, backend-database, typescript-patterns, or all (default).`,
-  inputSchema: ListExperimentsInput,
-  execute: async ({ context }) => {
+  parameters: ListExperimentsInput,
+  execute: async (args: { category?: string }) => {
     try {
-      const args = context as { category?: string };
       const { category = 'all' } = args;
       
       // Validate category
@@ -79,4 +77,4 @@ export const listExperimentsTool = createTool({
       throw new Error(`Failed to list experiments: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   },
-});
+};

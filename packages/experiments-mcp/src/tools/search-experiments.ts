@@ -1,4 +1,3 @@
-import { createTool } from '@mastra/core/tools';
 import { SearchExperimentsInput } from '../types';
 import { contentLoader } from '../loaders/content-loader';
 import { searchExperiments } from '../utils/search';
@@ -7,8 +6,8 @@ import { searchExperiments } from '../utils/search';
  * Search Experiments Tool
  * Keyword-based search across all experiments with relevance ranking
  */
-export const searchExperimentsTool = createTool({
-  id: 'searchExperiments',
+export const searchExperimentsTool = {
+  name: 'searchExperiments',
   description: `Search experiments by keywords, technologies, or patterns.
     Returns relevant experiments matching the query with relevance scores.
     Useful when you know what you're looking for but not the exact experiment name.
@@ -20,9 +19,8 @@ export const searchExperimentsTool = createTool({
     - Content (lowest priority)
     
     Results are ranked by relevance with excerpts showing matched content.`,
-  inputSchema: SearchExperimentsInput,
-  execute: async ({ context }) => {
-    const args = context as { query: string; maxResults?: number; categories?: string[] };
+  parameters: SearchExperimentsInput,
+  execute: async (args: { query: string; maxResults?: number; categories?: string[] }) => {
     try {
       const { query, maxResults = 5, categories } = args;
 
@@ -86,4 +84,4 @@ export const searchExperimentsTool = createTool({
       throw new Error(`Failed to search experiments: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
   },
-});
+};
