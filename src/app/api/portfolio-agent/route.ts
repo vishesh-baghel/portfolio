@@ -1,9 +1,14 @@
 import { NextRequest } from 'next/server';
 import { mastra } from '@/mastra';
+import { getStorage } from '@/mastra/storage';
 
 export async function POST(request: NextRequest) {
   try {
-    const { message } = await request.json();
+    // Ensure storage is initialized before processing request
+    // This follows Next.js serverless best practices
+    await getStorage();
+    
+    const { message, threadId, userId } = await request.json();
 
     if (!message) {
       return new Response(
@@ -15,6 +20,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Generate IDs if not provided (for persistence)
+    // In production, get userId from auth session
+    const resourceId = userId || `user-${Date.now()}`;
+    const conversationThreadId = threadId || `thread-${resourceId}-${Date.now()}`;
+
     // Create a ReadableStream for Server-Sent Events
     const stream = new ReadableStream({
       async start(controller) {
@@ -22,10 +32,15 @@ export async function POST(request: NextRequest) {
           // Get the portfolio agent
           const agent = mastra.getAgent('portfolioAgent');
           
-          // Stream the agent response
+          // Stream the agent response with memory persistence
           const agentStream = await agent.stream([
             { role: 'user', content: message }
-          ]);
+          ], {
+            memory: {
+              thread: conversationThreadId,
+              resource: resourceId,
+            },
+          });
 
           // Process the text stream
           for await (const chunk of agentStream.textStream) {
@@ -39,9 +54,11 @@ export async function POST(request: NextRequest) {
             controller.enqueue(new TextEncoder().encode(data));
           }
 
-          // Send completion signal
+          // Send completion signal with thread/resource IDs for conversation continuity
           const completion = `data: ${JSON.stringify({ 
             type: 'done',
+            threadId: conversationThreadId,
+            resourceId: resourceId,
             timestamp: new Date().toISOString()
           })}\n\n`;
           

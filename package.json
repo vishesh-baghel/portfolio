@@ -28,7 +28,6 @@
         "@mastra/libsql": "^0.13.8",
         "@mastra/mcp": "^0.13.3",
         "@mastra/memory": "^0.15.6",
-        "@mastra/pg": "^0.17.2",
         "@mdx-js/loader": "^3.1.1",
         "@mdx-js/react": "^3.1.1",
         "@next/mdx": "^15.5.4",

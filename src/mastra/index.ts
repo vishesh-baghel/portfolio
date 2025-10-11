@@ -1,7 +1,7 @@
 import { Mastra } from "@mastra/core/mastra";
 import { portfolioAgent } from "./agents/portfolio-agent";
 import { experimentsAgent } from "./agents/experiments-agent";
-import { storage, vector } from "./storage";
+import { storage } from "./storage";
 
 export const mastra = new Mastra({
   agents: {
@@ -9,9 +9,6 @@ export const mastra = new Mastra({
     experimentsAgent,
   },
   storage,
-  vectors: {
-    pgVector: vector,
-  },
   telemetry: {
     serviceName: "portfolio-mastra",
     enabled: true,

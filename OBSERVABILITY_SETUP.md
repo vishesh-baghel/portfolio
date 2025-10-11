@@ -114,12 +114,12 @@ return NextResponse.json({
 
 **At Runtime**: ✅ Fixed by creating `instrumentation.ts` and setting the global flag. The warning will not appear when the app is running (dev or production).
 
-### Warning: "Creating a duplicate database object for the same connection"
-**Cause**: Multiple Postgres clients with the same connection string.
+### Warning: Database initialization issues
+**Cause**: LibSQL file permissions or path issues.
 **Solution**: 
-- Use `PORTFOLIO_POSTGRES_URL_SIMPLE` (without query params)
-- Ensure storage and vector use the same connection instance
-- Current setup reuses connection properly
+- Ensure `.mastra` directory is writable
+- Check `MASTRA_DB_FILE` environment variable if set
+- Database files are created automatically on first run
 
 ### Traces Not Appearing
 **Check**:
@@ -210,10 +210,9 @@ execute: async ({ inputData, tracingContext }) => {
 
 ### Required
 - `OPENAI_API_KEY` - For agent LLM calls
-- `PORTFOLIO_POSTGRES_URL_SIMPLE` - Database connection
 
 ### Optional
-- `PORTFOLIO_PG_SCHEMA` - Custom schema (defaults to `public`)
+- `MASTRA_DB_FILE` - Override default database file path (defaults to `.mastra/db.sqlite` for dev, `.mastra/prod.sqlite` for prod)
 - `VERCEL_ENV` - Automatically set by Vercel (production/preview/development)
 
 ### Observability-Specific (Optional)

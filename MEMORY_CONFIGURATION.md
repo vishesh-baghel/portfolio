@@ -2,136 +2,119 @@
 
 ## Overview
 
-The portfolio agent now has full memory capabilities with semantic recall enabled, using PostgreSQL with the pgvector extension for vector storage.
+The portfolio agent uses LibSQL (SQLite-based) for simple, file-based storage. Memory is configured to keep recent conversation context without the complexity of vector search.
 
 ## Configuration Details
 
 ### Memory Features Enabled
 
 1. **Conversation History** (Last Messages)
-   - Keeps the last 20 messages from the current thread
+   - Keeps the last 10 messages from the current thread
    - Provides short-term conversational context
-   - Configured via `lastMessages: 20`
+   - Configured via `lastMessages: 10`
 
-2. **Semantic Recall** (Vector Search)
-   - Retrieves semantically relevant messages from past conversations
-   - Uses vector embeddings for similarity search
-   - Searches across ALL threads for the same user (resource-scoped)
-   - Configuration:
-     - `topK: 3` - Retrieves 3 most similar messages
-     - `messageRange: 1` - Includes 1 message before and after each match for context
-     - `scope: "resource"` - Searches across all threads for the same user/resource
-
-3. **Memory Processors**
+2. **Memory Processors**
    - `TokenLimiter(120000)` - Ensures memory doesn't exceed ~120k tokens
    - Prevents context window overflow for gpt-4o-mini
 
-### Storage & Vector Configuration
+### Storage Configuration
 
-**Storage**: PostgreSQL (via `@mastra/pg`)
-- Connection: `process.env.POSTGRES_URL`
-- Schema: `process.env.MASTRA_PG_SCHEMA` (optional, defaults to public)
+**Storage**: LibSQL (via `@mastra/libsql`)
+- File-based SQLite storage
+- Local dev: `file:.mastra/db.sqlite`
+- Production: `file:.mastra/prod.sqlite`
 - Stores conversation threads and messages
 
-**Vector Store**: PgVector (PostgreSQL with pgvector extension)
-- Connection: Same as storage (`process.env.POSTGRES_URL`)
-- Schema: Same as storage
-- Stores message embeddings for semantic search
-- Uses pgvector extension for efficient vector similarity search
+**Embedder**: FastEmbed (local embeddings)
+- Uses local FastEmbed models (no API calls)
+- Fast and cost-effective
+- No network latency
 
-**Embedder**: OpenAI text-embedding-3-small
-- Converts messages to 1536-dimensional vectors
-- Fast and cost-effective for semantic search
-- Configured per-agent in the Memory instance
+**Note**: Semantic recall (vector search) is disabled because LibSQL doesn't support vector operations. For a simple portfolio agent, the last 10 messages provide sufficient context.
 
 ## File Changes
 
-### 1. `src/mastra/index.ts`
+### 1. `src/mastra/storage.ts`
 ```typescript
-import { PgVector } from "@mastra/pg";
+import { LibSQLStore } from "@mastra/libsql";
+import { fastembed } from "@mastra/fastembed";
 
-// Vector store configured at Mastra level
-const vector = new PgVector({
-  connectionString: process.env.POSTGRES_URL,
-  schemaName: process.env.MASTRA_PG_SCHEMA,
+// Automatically selects db file based on environment
+const dbPath = process.env.MASTRA_DB_FILE || 
+  (isProduction ? 'file:.mastra/prod.sqlite' : 'file:.mastra/db.sqlite');
+
+export const storage = new LibSQLStore({ url: dbPath });
+
+export const portfolioMemory = new Memory({
+  embedder: fastembed,
+  options: {
+    lastMessages: 10,
+  },
+  processors: [new TokenLimiter(120000)],
 });
+```
+
+### 2. `src/mastra/index.ts`
+```typescript
+import { storage } from "./storage";
 
 export const mastra = new Mastra({
   agents: { portfolioAgent, experimentsAgent },
   storage,
-  vectors: { pgVector: vector },
+  // No vectors configuration needed for LibSQL
 });
-```
-
-### 2. `src/mastra/agents/portfolio-agent.ts`
-```typescript
-import { PgVector } from "@mastra/pg";
-
-memory: new Memory({
-  vector: new PgVector({
-    connectionString: process.env.POSTGRES_URL!,
-    schemaName: process.env.MASTRA_PG_SCHEMA,
-  }),
-  embedder: openai.embedding("text-embedding-3-small"),
-  options: {
-    lastMessages: 20,
-    semanticRecall: {
-      topK: 3,
-      messageRange: 1,
-      scope: "resource",
-    },
-  },
-  processors: [new TokenLimiter(120000)],
-})
 ```
 
 ## Environment Variables Required
 
 ```bash
 # Required
-POSTGRES_URL=postgresql://user:password@localhost:5432/mydb
 OPENAI_API_KEY=your_openai_api_key_here
 
-# Optional
-MASTRA_PG_SCHEMA=public  # Defaults to public if not set
+# Optional - override default database file
+MASTRA_DB_FILE=file:.mastra/custom.sqlite
 ```
 
 ## How It Works
 
 1. **User sends a message** → Agent receives it with thread/resource context
-2. **Conversation History** → Last 20 messages from current thread are loaded
-3. **Semantic Recall** → User's message is embedded and used to search for similar past messages across ALL their threads
-4. **Context Assembly** → Recent messages + semantically relevant past messages are combined
-5. **Token Limiting** → TokenLimiter ensures total memory doesn't exceed 120k tokens
-6. **LLM Processing** → Combined context is sent to gpt-4o-mini for response generation
-7. **Memory Storage** → New messages are stored in Postgres and embedded for future recall
+2. **Conversation History** → Last 10 messages from current thread are loaded from LibSQL
+3. **Token Limiting** → TokenLimiter ensures total memory doesn't exceed 120k tokens
+4. **LLM Processing** → Recent messages are sent to gpt-4o-mini for response generation
+5. **Memory Storage** → New messages are stored in LibSQL database file
 
 ## Benefits
 
-- **Persistent Memory**: Conversations survive server restarts
-- **Cross-Thread Recall**: Agent remembers context from previous conversations with the same user
-- **Semantic Search**: Finds relevant past messages even if exact keywords don't match
-- **Token Management**: Automatic limiting prevents context overflow
-- **Production Ready**: Uses PostgreSQL for reliability and scalability
+- **Simple Setup**: No external database service needed
+- **Fast Local Queries**: SQLite is extremely fast for local operations
+- **Zero Configuration**: Works out of the box
+- **Cost Effective**: No embedding API calls (uses local FastEmbed)
+- **Portable**: Database is just a file
 
 ## Performance Considerations
 
-- **Embedding Cost**: Each message generates an OpenAI embedding (~$0.0001 per 1k tokens)
-- **Vector Search**: PgVector provides efficient similarity search with pgvector extension
+- **No Embedding Cost**: FastEmbed runs locally (no API calls)
+- **Fast Queries**: SQLite is optimized for local file access
 - **Token Usage**: 120k token limit balances context richness with cost
-- **Latency**: Semantic recall adds ~100-300ms per request (embedding + vector search)
+- **Low Latency**: No network calls for embeddings or vector search
+
+## Limitations
+
+- **No Semantic Recall**: LibSQL doesn't support vector search
+- **Limited Context**: Only last 10 messages (vs. searching all past conversations)
+- **Ephemeral on Vercel**: Database resets on deployment (unless using Turso)
+
+For a simple portfolio agent, these limitations are acceptable. The agent doesn't need to remember conversations across deployments.
 
 ## Future Optimizations
 
-1. **HNSW Index**: Configure HNSW index for faster vector search (see Mastra docs)
-2. **Batch Embeddings**: Embed multiple messages in one API call
-3. **Caching**: Cache embeddings for frequently accessed messages
-4. **Adjust topK**: Tune based on actual usage patterns (3 is a good starting point)
-5. **Working Memory**: Consider adding working memory for persistent user preferences
+1. **Turso Integration**: Use Turso for persistent cloud storage (optional)
+2. **Increase lastMessages**: Adjust based on typical conversation length
+3. **Working Memory**: Add persistent user preferences if needed
 
 ## References
 
 - [Mastra Memory Docs](https://mastra.ai/en/docs/memory/overview)
-- [Semantic Recall](https://mastra.ai/en/docs/memory/semantic-recall)
-- [PgVector Configuration](https://mastra.ai/en/docs/reference/vectors/pg)
+- [Mastra LibSQL Storage](https://mastra.ai/en/docs/reference/storage/libsql)
+- [LibSQL Documentation](https://github.com/tursodatabase/libsql)
 - [Memory Processors](https://mastra.ai/en/docs/memory/memory-processors)
