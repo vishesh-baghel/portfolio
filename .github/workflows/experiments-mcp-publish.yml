@@ -84,9 +84,10 @@ jobs:
         run: |
           cd packages/experiments-mcp
           VERSION=$(node -p "require('./package.json').version")
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
           
           # Check if this version exists on npm
-          if npm view @vishesh/experiments@$VERSION version 2>/dev/null; then
+          if npm view ${PACKAGE_NAME}@$VERSION version 2>/dev/null; then
             echo "Version $VERSION already published to npm"
             echo "should_publish=false" >> $GITHUB_OUTPUT
           else
@@ -124,15 +125,17 @@ jobs:
           tag_name: experiments-mcp-v${{ steps.get_version.outputs.version }}
           release_name: Experiments MCP v${{ steps.get_version.outputs.version }}
           body: |
-            ## @vishesh/experiments v${{ steps.get_version.outputs.version }}
+            ## vishesh-experiments v${{ steps.get_version.outputs.version }}
             
             Production-ready integration patterns via MCP.
             
             ### Installation
             ```bash
-            npm install @vishesh/experiments
+            npm install vishesh-experiments
             # or
-            pnpm add @vishesh/experiments
+            pnpm add vishesh-experiments
+            # or use directly
+            npx vishesh-experiments
             ```
             
             ### What's Included

@@ -1,5 +1,5 @@
 {
-  "name": "@vishesh/experiments",
+  "name": "vishesh-experiments",
   "version": "0.0.1",
   "description": "Production-ready integration patterns via MCP. Access battle-tested code from OSS contributions directly in your IDE.",
   "type": "module",

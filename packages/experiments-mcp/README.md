@@ -1,4 +1,4 @@
-# @vishesh/experiments
+# vishesh-experiments
 
 > Production-ready integration patterns via MCP. Access battle-tested code from OSS contributions directly in your IDE.
 
@@ -21,7 +21,7 @@ Add to `.cursor/mcp.json` in your project root (or `~/.cursor/mcp.json` for glob
   "mcpServers": {
     "vishesh-experiments": {
       "command": "npx",
-      "args": ["-y", "@vishesh/experiments"]
+      "args": ["-y", "vishesh-experiments"]
     }
   }
 }
@@ -36,7 +36,7 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
   "mcpServers": {
     "vishesh-experiments": {
       "command": "npx",
-      "args": ["-y", "@vishesh/experiments"]
+      "args": ["-y", "vishesh-experiments"]
     }
   }
 }
@@ -51,7 +51,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
   "mcpServers": {
     "vishesh-experiments": {
       "command": "npx",
-      "args": ["-y", "@vishesh/experiments"]
+      "args": ["-y", "vishesh-experiments"]
     }
   }
 }
@@ -148,7 +148,7 @@ This MCP server is part of my freelance growth strategy:
 - Ensure [npx](https://docs.npmjs.com/cli/v11/commands/npx) is installed and working
 - Check for conflicting MCP servers
 - Verify your configuration file syntax
-- Try running `npx @vishesh/experiments` directly to see errors
+- Try running `npx vishesh-experiments` directly to see errors
 
 ### Tool Calls Failing
 
@@ -158,7 +158,7 @@ This MCP server is part of my freelance growth strategy:
 
 ### Content Not Loading
 
-- Ensure the package is up to date: `npx @vishesh/experiments@latest`
+- Ensure the package is up to date: `npx vishesh-experiments@latest`
 - Check your internet connection (first run downloads the package)
 - Report issues: [GitHub Issues](https://github.com/vishesh-baghel/portfolio/issues)
 

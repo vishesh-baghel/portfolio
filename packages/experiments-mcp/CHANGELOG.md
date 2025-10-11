@@ -1,5 +1,5 @@
 # Changelog
-All notable changes to @vishesh/experiments will be documented in this file.
+All notable changes to vishesh-experiments will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [semantic Versioning](https://semver.org/spec/v2.0.0.html).
@@ -8,7 +8,7 @@ and this project adheres to [semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Initial release of @vishesh/experiments MCP server
+- Initial release of vishesh-experiments MCP server
 - `listExperiments` tool - Browse all available patterns with category filtering
 - `getExperiment` tool - Fetch complete experiment with code and attribution
 - `searchExperiments` tool - Keyword-based search with relevance ranking
