@@ -43,7 +43,6 @@ next-env.d.ts
 # MCP package build output
 packages/*/dist/
 packages/*/node_modules/
-packages/.experiments
 
 # Local database
 local.db
@@ -51,3 +50,4 @@ local.db-shm
 local.db-wal
 
 .experiments
+packages/experiments-mcp/.experiments
