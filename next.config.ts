@@ -1,5 +1,6 @@
 import type { NextConfig } from "next";
 import createMDX from '@next/mdx';
+import remarkFrontmatter from 'remark-frontmatter';
 
 const nextConfig: NextConfig = {
   serverExternalPackages: ["@mastra/*"],
@@ -21,7 +22,7 @@ const nextConfig: NextConfig = {
 const withMDX = createMDX({
   extension: /\.mdx?$/,
   options: {
-    remarkPlugins: [],
+    remarkPlugins: [remarkFrontmatter],
     rehypePlugins: [],
   },
 });

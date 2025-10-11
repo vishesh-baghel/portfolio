@@ -88,13 +88,6 @@ const Header = () => {
                   >
                     experiments
                   </Link>
-                  <Link
-                    href="/lessons"
-                    onClick={() => setDrawerOpen(false)}
-                    className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
-                  >
-                    lessons
-                  </Link>
                   <button
                     onClick={() => setDrawerOpen(false)}
                     className="block w-full rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] text-left"
@@ -134,12 +127,6 @@ const Header = () => {
               className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
             >
               experiments
-            </Link>
-            <Link
-              href="/lessons"
-              className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
-            >
-              lessons
             </Link>
           </div>
         </div>
