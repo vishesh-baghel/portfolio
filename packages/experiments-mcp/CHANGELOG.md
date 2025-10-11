@@ -4,6 +4,16 @@ All notable changes to vishesh-experiments will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.6] - 2025-10-12
+
+### Fixed
+
+- **Critical: Dependency Version**: Downgraded `@mastra/mcp` from `^0.13.0` to `^0.10.5` to match the version used by the working `@mastra/mcp-docs-server@0.13.2`. Version 0.13.0 has breaking changes in how it converts Zod schemas to JSON Schema, causing empty or malformed schemas to be sent to MCP clients.
+
+### Root Cause
+
+After extensive debugging, the issue was not our code but a breaking change in `@mastra/mcp@0.13.0`. The working reference implementation (`@mastra/mcp-docs-server`) uses `@mastra/mcp@0.10.5`, which properly converts Zod schemas to JSON Schema Draft 2020-12.
+
 ## [0.0.5] - 2025-10-12
 
 ### Fixed

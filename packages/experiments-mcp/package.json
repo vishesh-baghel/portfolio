@@ -1,6 +1,6 @@
 {
   "name": "vishesh-experiments",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Production-ready integration patterns via MCP. Access battle-tested code from OSS contributions directly in your IDE.",
   "type": "module",
   "bin": "dist/stdio.js",
@@ -57,7 +57,7 @@
   "dependencies": {
     "@ai-sdk/openai": "^2.0.42",
     "@mastra/core": "^0.20.0",
-    "@mastra/mcp": "^0.13.0",
+    "@mastra/mcp": "^0.10.5",
     "@modelcontextprotocol/sdk": "^1.17.0",
     "gray-matter": "^4.0.3",
     "zod": "^4.1.8",
