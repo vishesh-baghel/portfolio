@@ -1,30 +1,28 @@
-# vishesh-experiments
+# Vishesh Experiments MCP
 
-> Production-ready integration patterns via MCP. Access battle-tested code from OSS contributions directly in your IDE.
+An MCP server providing access to production-ready integration patterns and code examples directly in your IDE.
 
-## What is This?
+## What It Does
 
-A Model Context Protocol (MCP) server that gives you instant access to production-tested integration patterns and code examples from real OSS contributions. Every pattern includes:
+Skip the research phase and go straight to implementation. This server exposes battle-tested code from real OSS contributions, helping you:
 
-- ✅ **Battle-tested code** merged into production projects
-- ✅ **Complete examples** with architecture decisions
-- ✅ **Production lessons** from real implementations
+- **Integrate AI agents** with OpenAI, Anthropic, or Mastra
+- **Build with modern frameworks** like Next.js 15, React Server Components
+- **Optimize databases** with PostgreSQL performance patterns
+- **Apply TypeScript best practices** for large-scale applications
+
+Each pattern includes:
+- Complete working code (copy-paste ready)
+- Architecture decisions and trade-offs
+- Production deployment considerations
+- Real-world implementation notes
 
 ## Installation
 
-### Cursor
+### Claude Code
 
-Add to `.cursor/mcp.json` in your project root (or `~/.cursor/mcp.json` for global):
-
-```json
-{
-  "mcpServers": {
-    "vishesh-experiments": {
-      "command": "npx",
-      "args": ["-y", "vishesh-experiments"]
-    }
-  }
-}
+```bash
+claude mcp add vishesh-experiments -- npx -y vishesh-experiments
 ```
 
 ### Windsurf
@@ -42,9 +40,9 @@ Add to `~/.codeium/windsurf/mcp_config.json`:
 }
 ```
 
-### Claude Desktop
+### Cursor
 
-Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or equivalent:
+Add to `.cursor/mcp.json` in your project root (or `~/.cursor/mcp.json` for global):
 
 ```json
 {
@@ -59,138 +57,120 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
 
 ## Usage
 
-After installation, ask your AI assistant:
+Once configured in your IDE, you can ask Claude Code naturally:
 
-- **"List all available integration patterns"**
-- **"Show me Mastra + Supabase integration code"**
-- **"How do I optimize PostgreSQL for Next.js?"**
-- **"Search for AI agent patterns"**
-
-## Available Tools
-
-### 1. `listExperiments`
-
-Browse all available patterns, optionally filtered by category.
-
+### List Available Patterns
 ```
-// In your IDE:
-"List all experiments in the ai-agents category"
+"Show me all available integration patterns"
+"List the experiments you have"
 ```
 
-### 2. `getExperiment`
-
-Fetch complete code and documentation for a specific pattern.
-
+### Search by Technology
 ```
-// In your IDE:
-"Get the experiment 'ai-agents-with-openai'"
+"Find patterns for OpenAI agent integration"
+"Search for PostgreSQL optimization examples"
+"Show me Next.js 15 server component patterns"
 ```
 
-### 3. `searchExperiments`
-
-Search by keywords, technologies, or problem descriptions.
-
+### Get Full Implementation
 ```
-// In your IDE:
-"Search for mastra database integration patterns"
+"Show me how to build AI agents with OpenAI"
+"Get the complete implementation for TypeScript advanced patterns"
+"Give me the PostgreSQL optimization code"
 ```
 
-## What You Get
+## Available Patterns
 
-Every response includes:
+### AI
+- **AI Agents with OpenAI** - Complete agent implementation with conversation memory
+- **Mastra Framework Integration** - Modern AI framework patterns
 
-1. **Complete working code** - Copy-paste ready
-2. **Architecture decisions** - Why, not just how
-3. **Production lessons** - Real-world gotchas
-4. **Author credentials** - OSS contributions
-5. **Free consultation** - Book 30-min call if you need custom work
+### Frameworks & Libraries
+- **Next.js 15 Features** - App Router, Server Components, streaming
+- **TypeScript Advanced Patterns** - Generic utilities, type safety, performance
 
-## Categories
+### Database & Backend
+- **PostgreSQL Optimization** - Connection pooling, query optimization, migrations
+- **Real-time Data Patterns** - WebSocket implementations, state management
 
-- **Getting Started** - Framework introductions and quick starts
-- **AI & Agents** - AI agent patterns with OpenAI, Mastra, etc.
-- **Backend & Database** - PostgreSQL optimization, real-time data, etc.
-- **TypeScript & Patterns** - Advanced TypeScript and design patterns
-## About the Author
+### Full Catalog
 
-**Vishesh Baghel**
+Run `listExperiments()` or visit [visheshbaghel.com/experiments](https://visheshbaghel.com/experiments) to browse all patterns.
 
-- Freelance software engineer specializing in AI integrations
-- Contributor to Mastra
-- First client acquired through OSS contributions
-- Expert in: TypeScript, React, Next.js, Mastra, PostgreSQL
+## Pattern Structure
 
-**Need custom integration work?**
-- 🌐 [View all patterns](https://visheshbaghel.com/experiments)
-- 💻 [GitHub](https://github.com/vishesh-baghel)
+Each experiment includes:
 
-## Example Workflow
+```
+📁 Experiment Name
+├── Complete source code
+├── Architecture decisions
+├── Production considerations
+├── Implementation notes
+├── Related technologies
+```
 
-1. **Discover**: `listExperiments` to see what's available
-2. **Search**: `searchExperiments` for specific tech/problem
-3. **Deep Dive**: `getExperiment` for full implementation
-4. **Implement**: Copy code and adapt to your needs
-5. **Get Help**: Book consultation if you need customization
+## Development Benefits
 
-## Why This Exists
+### Time Savings
 
-This MCP server is part of my freelance growth strategy:
+Instead of:
+1. Researching "how to integrate X with Y" (2-4 hours)
+2. Finding outdated tutorials (1-2 hours)
+3. Debugging integration issues (4-8 hours)
+4. Optimizing for production (2-4 hours)
 
-1. **Provide value first** - Give away production code for free
-2. **Build trust** - Show real OSS contributions
-3. **Generate leads** - Every interaction includes consultation CTA
-4. **Zero cost** - Runs on your machine, no hosting needed
+You get:
+1. Working implementation in minutes
+2. Production-ready patterns
+3. Real-world optimizations included
+4. Common pitfalls already solved
 
-## Troubleshooting
 
-### Server Not Starting
+All patterns are:
+- **Tested in production** environments
+- **Contributed to OSS** projects
+- **Peer reviewed** by maintainers
+- **Updated regularly**
 
-- Ensure [npx](https://docs.npmjs.com/cli/v11/commands/npx) is installed and working
-- Check for conflicting MCP servers
-- Verify your configuration file syntax
-- Try running `npx vishesh-experiments` directly to see errors
+## IDE Integration
 
-### Tool Calls Failing
+Once configured, ask your IDE naturally:
 
-- Restart the MCP server and/or your IDE
-- Update to the latest version of your IDE
-- Check IDE's MCP logs for detailed errors
-
-### Content Not Loading
-
-- Ensure the package is up to date: `npx vishesh-experiments@latest`
-- Check your internet connection (first run downloads the package)
-- Report issues: [GitHub Issues](https://github.com/vishesh-baghel/portfolio/issues)
-
-## Development
-
-This is a monorepo package within the portfolio project.
-
+### Claude Code
 ```bash
-# Install dependencies
-pnpm install
-
-# Build
-pnpm run build:mcp
-
-# Test
-pnpm run test:mcp
-
-# Development mode
-pnpm run dev:mcp
+# Ask your IDE directly
+"Show me integration patterns for AI agents"
+"What experiments do you have for database optimization?"
+"Get me the complete code for Next.js 15 features"
 ```
+
+### Windsurf/Cursor
+```bash
+# Ask your IDE directly
+"Show me how to integrate OpenAI agents with Mastra"
+"Find PostgreSQL optimization patterns"
+"Get Next.js 15 server component examples"
+```
+
+The server provides context-aware code suggestions directly in your development environment.
+
+## Contributing
+
+Patterns are sourced from real development work:
+- Open-source contributions
+- Freelance client projects
+- Internal tooling development
+- Framework ecosystem participation
+
+## Author
+
+**Vishesh Baghel** - Software engineer specializing in AI integrations and modern web development.
+
+- [GitHub](https://github.com/vishesh-baghel)
+- [Portfolio](https://visheshbaghel.com)
+- [Experiments](https://visheshbaghel.com/experiments)
 
 ## License
 
-MIT © Vishesh Baghel
-
-## Links
-
-- **Portfolio**: [visheshbaghel.com](https://visheshbaghel.com)
-- **GitHub**: [vishesh-baghel](https://github.com/vishesh-baghel)
-- **Email**: visheshbaghel99@gmail.com
-- **Book Consultation**: [30-min free call](https://calendly.com/visheshbaghel99/30min)
-
----
-
-*Built with [@mastra/mcp](https://mastra.ai) · Following [MCP Protocol](https://modelcontextprotocol.io)*
+MIT

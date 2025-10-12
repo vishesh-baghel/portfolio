@@ -4,6 +4,15 @@ All notable changes to vishesh-experiments will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.8] - 2025-10-12
+
+### Changed
+
+- **README Cleanup**: Consolidated all MCP installation commands into a single Installation section for better organization
+- **Documentation Improvements**: Rewritten README to be more developer-focused, emphasizing time-saving benefits and practical development value
+- **Usage Examples**: Updated to show natural language prompts instead of function calls, reflecting actual MCP usage patterns
+- **Content Organization**: Removed duplicate sections and improved overall document structure
+
 ## [0.0.7] - 2025-10-12
 
 ### Fixed
