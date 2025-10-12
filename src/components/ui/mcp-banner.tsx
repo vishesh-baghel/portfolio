@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Copy, Check } from 'lucide-react';
 
 const CATCHY_MESSAGES = [
@@ -50,7 +50,7 @@ const MCP_CONFIGS = {
 
 type IDE = keyof typeof MCP_CONFIGS;
 
-export function McpBanner() {
+export const McpBanner = memo(function McpBanner() {
   const [selectedIDE, setSelectedIDE] = useState<IDE>('cursor');
   const [copied, setCopied] = useState(false);
   const [messageIndex] = useState(() => Math.floor(Math.random() * CATCHY_MESSAGES.length));
@@ -121,4 +121,4 @@ export function McpBanner() {
       </p>
     </div>
   );
-}
+});
