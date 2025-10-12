@@ -4,15 +4,31 @@ All notable changes to vishesh-experiments will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.0.7] - 2025-10-12
+
+### Fixed
+
+- **Critical: Exact Dependency Versions**: Pinned dependencies to exact versions used by working `@mastra/mcp-docs-server@0.13.29`
+  - `@mastra/core`: `0.20.2` (was `^0.20.0`) - EXACT version required
+  - `@mastra/mcp`: `^0.13.4` (was `^0.10.5`)
+  - `zod`: `^3.25.76` (was `^4.1.8`)
+  - Removed unused `@ai-sdk/openai` dependency
+
+### Root Cause
+
+The issue was **dependency version mismatch**. When installed via `npx`, npm's dependency resolution would pull incompatible versions of `@mastra/core`, causing schema conversion to fail. The published `@mastra/mcp-docs-server` uses exact version `0.20.2` of `@mastra/core` to prevent this issue.
+
+**Key Learning**: Always check the PUBLISHED package dependencies, not just the source code. The source repo had `@mastra/mcp@0.10.5`, but the published npm package uses `@mastra/mcp@^0.13.4`.
+
 ## [0.0.6] - 2025-10-12
 
 ### Fixed
 
 - **Critical: Dependency Version**: Downgraded `@mastra/mcp` from `^0.13.0` to `^0.10.5` to match the version used by the working `@mastra/mcp-docs-server@0.13.2`. Version 0.13.0 has breaking changes in how it converts Zod schemas to JSON Schema, causing empty or malformed schemas to be sent to MCP clients.
 
-### Root Cause
+### Note
 
-After extensive debugging, the issue was not our code but a breaking change in `@mastra/mcp@0.13.0`. The working reference implementation (`@mastra/mcp-docs-server`) uses `@mastra/mcp@0.10.5`, which properly converts Zod schemas to JSON Schema Draft 2020-12.
+This version was incorrect - we were looking at source code dependencies, not published package dependencies.
 
 ## [0.0.5] - 2025-10-12
 
