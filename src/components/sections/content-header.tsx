@@ -46,7 +46,7 @@ export function ContentHeader({ onSidebarToggle, categories, basePath }: Content
         </div>
 
         {/* Right: search (desktop only) and theme toggle */}
-        <div className="flex h-full items-center gap-2 sm:gap-3">
+        <div className="flex h-full items-center gap-3 xl:w-[19rem]">
           <div className="hidden lg:block">
             <ContentSearch categories={categories} basePath={basePath} />
           </div>

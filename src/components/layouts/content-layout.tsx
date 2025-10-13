@@ -52,7 +52,7 @@ export function ContentLayout({
           basePath={basePath}
         />
 
-        <div className="mb-20 flex flex-col lg:grid lg:grid-cols-[16rem_minmax(0,1fr)_18rem] lg:gap-6">
+        <div className="mb-20 flex flex-col lg:grid lg:grid-cols-[16rem_minmax(0,1fr)_19rem] lg:gap-6">
           {/* Sidebar */}
           <aside
             className={`
