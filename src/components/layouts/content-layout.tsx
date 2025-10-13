@@ -6,6 +6,7 @@ import { ChevronDown, ChevronRight } from 'lucide-react';
 import { ContentHeader } from '@/components/sections/content-header';
 import { ContentSearch } from '@/components/ui/content-search';
 import { McpBanner } from '@/components/ui/mcp-banner';
+import { OnThisPage } from '@/components/ui/on-this-page';
 import Footer from '@/components/sections/footer';
 import type { ContentCategory } from '@/lib/content-utils';
 
@@ -149,10 +150,11 @@ export function ContentLayout({
             </article>
           </main>
 
-          {/* Right sidebar with MCP Banner - desktop only */}
+          {/* Right sidebar with MCP Banner and On This Page - desktop only */}
           <aside className="hidden xl:block lg:col-start-3 lg:col-end-4">
-            <div className="sticky top-24 max-w-full">
-              <McpBanner />
+            <McpBanner />
+            <div className="sticky top-24 mt-6">
+              <OnThisPage />
             </div>
           </aside>
         </div>
