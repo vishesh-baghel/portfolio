@@ -6,7 +6,7 @@ export const EXPERIMENTS_DIR = fromPackageRoot('.experiments');
 
 export const PORTFOLIO_URL = 'https://visheshbaghel.com';
 export const EXPERIMENTS_URL = 'https://visheshbaghel.com/experiments';
-export const CALENDER_URL = 'https://calendar.app.google/cHQgyAoBcQxDCFQn9'
+export const CALENDER_URL = 'https://cal.com/vishesh-baghel/15min'
 export const GITHUB_URL = 'https://github.com/vishesh-baghel';
 export const EMAIL = 'visheshbaghel99@gmail.com';
 

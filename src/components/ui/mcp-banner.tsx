@@ -86,7 +86,7 @@ export const McpBanner = memo(function McpBanner() {
             key={ide}
             onClick={() => setSelectedIDE(ide)}
             className={`
-              px-3 py-1.5 text-xs rounded-lg border transition-colors whitespace-nowrap
+              px-3 py-1.5 text-xs rounded-lg border transition-colors whitespace-nowrap cursor-pointer
               ${selectedIDE === ide 
                 ? 'bg-accent text-accent-foreground border-accent' 
                 : 'border-border hover:bg-[var(--color-secondary)]'

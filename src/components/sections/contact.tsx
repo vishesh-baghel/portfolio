@@ -18,12 +18,12 @@ const ContactSection = () => {
         </a>
         <span> or </span>
         <a
-          href="https://calendly.com/visheshbaghel99/30min"
+          href="https://cal.com/vishesh-baghel/15min"
           target="_blank"
           rel="noreferrer"
           className="underline"
         >
-          book a 30‑min intro
+          book a 15‑min intro
         </a>
       </p>
     </section>

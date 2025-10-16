@@ -90,7 +90,7 @@ export default function McpPage() {
                 that already works.
               </p>
               <p className="font-medium">
-                everything is free. no strings attached. use them however you want in your projects.
+                everything is free and open source. no strings attached. use them however you want in your projects.
               </p>
             </div>
           </section>
@@ -144,7 +144,7 @@ export default function McpPage() {
                   key={ide}
                   onClick={() => setSelectedIDE(ide)}
                   className={`
-                    px-4 py-2 text-sm rounded-lg border transition-colors
+                    px-4 py-2 text-sm rounded-lg border transition-colors cursor-pointer
                     ${selectedIDE === ide 
                       ? 'bg-accent text-accent-foreground border-accent' 
                       : 'border-border hover:bg-[var(--color-secondary)]'
