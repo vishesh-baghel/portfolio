@@ -17,6 +17,30 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-accordion'],
+  },
+  webpack: (config, { isServer }) => {
+    // Optimize bundle size by properly handling MDX on server
+    if (!isServer) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          ...config.optimization.splitChunks,
+          cacheGroups: {
+            ...config.optimization.splitChunks?.cacheGroups,
+            mdx: {
+              test: /\.mdx$/,
+              name: 'mdx-content',
+              chunks: 'async',
+              priority: 10,
+            },
+          },
+        },
+      };
+    }
+    return config;
+  },
 };
 
 const withMDX = createMDX({

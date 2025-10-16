@@ -1,6 +1,7 @@
-import { ContentLayout } from '@/components/layouts/content-layout';
+import { ContentLayoutServer } from '@/components/layouts/content-layout-server';
 import { getContentItems, getCategorizedContent } from '@/lib/content-utils';
 import { notFound } from 'next/navigation';
+import type { Metadata } from 'next';
 
 interface ExperimentPageProps {
   params: Promise<{ slug: string }>;
@@ -11,6 +12,23 @@ export async function generateStaticParams() {
   return experiments.map((exp) => ({
     slug: exp.slug,
   }));
+}
+
+export async function generateMetadata({ params }: ExperimentPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const experiments = getContentItems('experiments');
+  const experiment = experiments.find(exp => exp.slug === slug);
+  
+  if (!experiment) {
+    return {
+      title: 'Experiment Not Found',
+    };
+  }
+  
+  return {
+    title: `${experiment.title} | Vishesh Baghel`,
+    description: experiment.description || `Technical deep-dive: ${experiment.title}`,
+  };
 }
 
 export default async function ExperimentPage({ params }: ExperimentPageProps) {
@@ -37,7 +55,7 @@ export default async function ExperimentPage({ params }: ExperimentPageProps) {
   }
 
   return (
-    <ContentLayout
+    <ContentLayoutServer
       title="experiments"
       description="technical deep-dives into tools & frameworks"
       categories={categories}
@@ -45,6 +63,6 @@ export default async function ExperimentPage({ params }: ExperimentPageProps) {
       basePath="/experiments"
     >
       <Content />
-    </ContentLayout>
+    </ContentLayoutServer>
   );
 }
