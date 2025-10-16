@@ -75,7 +75,7 @@ describe('getExperiment tool', () => {
         slug,
       });
 
-      expect(result).toContain('calendar.app.google');
+      expect(result).toContain('cal.com/vishesh-baghel/15min');
       expect(result).toContain('15‑min consult');
     });
 

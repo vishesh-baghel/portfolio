@@ -44,30 +44,31 @@ export function getContentItems(contentType: 'experiments'): ContentMetadata[] {
 export function getCategorizedContent(contentType: 'experiments'): ContentCategory[] {
   const items = getContentItems(contentType);
   
-  return [
-    {
-      title: 'Getting Started',
-      items: items.filter(item => 
-        item.slug.includes('mastra') || item.slug.includes('nextjs')
-      ),
-    },
-    {
-      title: 'AI & Agents',
-      items: items.filter(item => 
-        item.slug.includes('ai') || item.slug.includes('openai') || item.slug.includes('agents')
-      ),
-    },
-    {
-      title: 'Backend & Database',
-      items: items.filter(item => 
-        item.slug.includes('postgresql') || item.slug.includes('database')
-      ),
-    },
-    {
-      title: 'TypeScript & Patterns',
-      items: items.filter(item => 
-        item.slug.includes('typescript') || item.slug.includes('patterns')
-      ),
-    },
-  ].filter(category => category.items.length > 0);
+  // Single-pass categorization for better performance
+  const categoryMap: Record<string, ContentMetadata[]> = {
+    'Getting Started': [],
+    'AI & Agents': [],
+    'Backend & Database': [],
+    'TypeScript & Patterns': [],
+  };
+  
+  // Categorize items in a single pass
+  for (const item of items) {
+    const slug = item.slug.toLowerCase();
+    
+    if (slug.includes('mastra') || slug.includes('nextjs')) {
+      categoryMap['Getting Started'].push(item);
+    } else if (slug.includes('ai') || slug.includes('openai') || slug.includes('agents')) {
+      categoryMap['AI & Agents'].push(item);
+    } else if (slug.includes('postgresql') || slug.includes('database')) {
+      categoryMap['Backend & Database'].push(item);
+    } else if (slug.includes('typescript') || slug.includes('patterns')) {
+      categoryMap['TypeScript & Patterns'].push(item);
+    }
+  }
+  
+  // Return only non-empty categories
+  return Object.entries(categoryMap)
+    .filter(([_, items]) => items.length > 0)
+    .map(([title, items]) => ({ title, items }));
 }

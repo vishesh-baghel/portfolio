@@ -212,7 +212,7 @@ describe('searchExperiments tool', () => {
         query: 'database',
       });
 
-      expect(result).toContain('https://calendly.com/visheshbaghel99/30min');
+      expect(result).toContain('https://cal.com/vishesh-baghel/15min');
       expect(result).toContain('Book a consultation');
     });
 

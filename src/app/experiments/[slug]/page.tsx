@@ -1,7 +1,6 @@
 import { ContentLayout } from '@/components/layouts/content-layout';
 import { getContentItems, getCategorizedContent } from '@/lib/content-utils';
 import { notFound } from 'next/navigation';
-import dynamic from 'next/dynamic';
 
 interface ExperimentPageProps {
   params: Promise<{ slug: string }>;
@@ -16,18 +15,23 @@ export async function generateStaticParams() {
 
 export default async function ExperimentPage({ params }: ExperimentPageProps) {
   const { slug } = await params;
-  const experiments = getContentItems('experiments');
   const categories = getCategorizedContent('experiments');
-  const currentExperiment = experiments.find((exp) => exp.slug === slug);
+  
+  // Verify experiment exists
+  const experimentExists = categories.some(cat => 
+    cat.items.some(item => item.slug === slug)
+  );
 
-  if (!currentExperiment) {
+  if (!experimentExists) {
     notFound();
   }
 
-  // Dynamically import the MDX content
+  // Import MDX content - this must be done with a direct import, not dynamic()
+  // Dynamic imports should be at module level, not inside components
   let Content;
   try {
-    Content = dynamic(() => import(`@/content/experiments/${slug}.mdx`));
+    // Use require to dynamically load the MDX at build/runtime
+    Content = (await import(`@/content/experiments/${slug}.mdx`)).default;
   } catch (error) {
     notFound();
   }

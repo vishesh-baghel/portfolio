@@ -76,7 +76,7 @@ export const searchExperimentsTool = {
       });
 
       output += '---\n';
-      output += 'Need help implementing? Book a consultation: https://calendly.com/visheshbaghel99/30min\n';
+      output += 'Need help implementing? Book a consultation: https://cal.com/vishesh-baghel/15min\n';
 
       return output;
     } catch (error) {

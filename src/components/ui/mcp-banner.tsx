@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, memo } from 'react';
 import { Copy, Check } from 'lucide-react';
+import Link from 'next/link';
 
 const CATCHY_MESSAGES = [
   "Skip the research. Get working code from experiments I've already validated in production.",
@@ -24,7 +25,7 @@ const MCP_CONFIGS = {
       "mcpServers": {
         "vishesh-experiments": {
           "command": "npx",
-          "args": ["-y", "@vishesh/experiments@latest"]
+          "args": ["-y", "vishesh-experiments@latest"]
         }
       }
     }
@@ -36,7 +37,7 @@ const MCP_CONFIGS = {
       "mcpServers": {
         "vishesh-experiments": {
           "command": "npx",
-          "args": ["-y", "@vishesh/experiments@latest"]
+          "args": ["-y", "vishesh-experiments@latest"]
         }
       }
     }
@@ -44,13 +45,13 @@ const MCP_CONFIGS = {
   claude: {
     name: 'Claude',
     type: 'command' as const,
-    config: "claude mcp add npx -y @vishesh/experiments@latest"
+    config: "claude mcp add npx -y vishesh-experiments@latest"
   }
 };
 
 type IDE = keyof typeof MCP_CONFIGS;
 
-export function McpBanner() {
+export const McpBanner = memo(function McpBanner() {
   const [selectedIDE, setSelectedIDE] = useState<IDE>('cursor');
   const [copied, setCopied] = useState(false);
   const [messageIndex] = useState(() => Math.floor(Math.random() * CATCHY_MESSAGES.length));
@@ -69,8 +70,14 @@ export function McpBanner() {
 
   return (
     <div className="rounded-lg border border-border bg-background-secondary p-4 space-y-3 w-full">
-      <div>
-        <h3 className="text-sm font-semibold">Experiments MCP</h3>
+      <div className="flex items-center justify-between">
+        <h3 className="text-sm font-semibold leading-none mb-0">Experiments MCP</h3>
+        <Link 
+          href="/mcp" 
+          className="text-sm text-orange-500 hover:text-orange-600 transition-colors underline leading-none"
+        >
+          why?
+        </Link>
       </div>
 
       <div className="flex flex-wrap gap-2">
@@ -79,7 +86,7 @@ export function McpBanner() {
             key={ide}
             onClick={() => setSelectedIDE(ide)}
             className={`
-              px-3 py-1.5 text-xs rounded-lg border transition-colors whitespace-nowrap
+              px-3 py-1.5 text-xs rounded-lg border transition-colors whitespace-nowrap cursor-pointer
               ${selectedIDE === ide 
                 ? 'bg-accent text-accent-foreground border-accent' 
                 : 'border-border hover:bg-[var(--color-secondary)]'
@@ -121,4 +128,4 @@ export function McpBanner() {
       </p>
     </div>
   );
-}
+});

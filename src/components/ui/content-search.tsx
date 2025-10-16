@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import Link from 'next/link';
 import { Search, X } from 'lucide-react';
 import type { ContentCategory } from '@/lib/content-utils';
@@ -26,15 +26,18 @@ export function ContentSearch({ categories, basePath }: ContentSearchProps) {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Filter items based on query
-  const filteredItems = categories.flatMap(category =>
-    category.items
-      .filter(item =>
-        item.title.toLowerCase().includes(query.toLowerCase()) ||
-        item.slug.toLowerCase().includes(query.toLowerCase())
-      )
-      .map(item => ({ ...item, category: category.title }))
-  );
+  // Memoize filtered items to avoid recalculation on every render
+  const filteredItems = useMemo(() => {
+    const lowerQuery = query.toLowerCase();
+    return categories.flatMap(category =>
+      category.items
+        .filter(item =>
+          item.title.toLowerCase().includes(lowerQuery) ||
+          item.slug.toLowerCase().includes(lowerQuery)
+        )
+        .map(item => ({ ...item, category: category.title }))
+    );
+  }, [query, categories]);
 
   return (
     <div ref={searchRef} className="relative">
