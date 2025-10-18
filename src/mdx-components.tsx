@@ -1,23 +1,16 @@
-import type { MDXComponents } from 'mdx/types';
-import { CodeBlock } from '@/components/mdx/code-block';
+import { useMDXComponents as getThemeComponents } from 'nextra-theme-docs';
 import { Callout } from '@/components/mdx/callout';
-import { MDXImage } from '@/components/mdx/mdx-image';
 import { GitHubButton } from '@/components/mdx/github-button';
-import { InlineCode } from '@/components/mdx/inline-code';
 
-export function useMDXComponents(components: MDXComponents): MDXComponents {
+// Get Nextra theme components (includes wrapper, toc, code blocks, etc.)
+const themeComponents = getThemeComponents();
+
+export function useMDXComponents(components?: any) {
   return {
+    ...themeComponents,
     ...components,
-    pre: CodeBlock,
-    code: InlineCode,
-    img: MDXImage,
+    // Custom components
     Callout,
     GitHubButton,
-    // Ensure consistent paragraph rendering
-    p: (props: any) => <p className="text-base" {...props} />,
-    // Ensure consistent list rendering
-    ul: (props: any) => <ul className="text-base" {...props} />,
-    ol: (props: any) => <ol className="text-base" {...props} />,
-    li: (props: any) => <li className="text-base" {...props} />,
   };
 }

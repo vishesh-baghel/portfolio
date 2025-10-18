@@ -2,7 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fromRepoRoot, fromPackageRoot } from '../utils/path-helpers';
 
-const EXPERIMENTS_SOURCE = fromRepoRoot('src/content/experiments');
+const EXPERIMENTS_SOURCE = fromRepoRoot('content/experiments');
 const EXPERIMENTS_DEST = fromPackageRoot('.experiments');
 
 async function copyDir(src: string, dest: string) {
