@@ -31,7 +31,7 @@ const MCP_CONFIGS = {
     }
   },
   claude: {
-    name: 'Claude Desktop',
+    name: 'Claude',
     type: 'command' as const,
     config: "claude mcp add npx -y vishesh-experiments@latest"
   }

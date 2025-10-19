@@ -3,8 +3,11 @@
 (globalThis as any).___MASTRA_TELEMETRY___ = true;
 
 export async function register() {
-  // Only run instrumentation on the server side
-  if (process.env.NEXT_RUNTIME === "nodejs") {
+  // Only run instrumentation on the server side and in production
+  if (
+    process.env.NEXT_RUNTIME === "nodejs" &&
+    process.env.NODE_ENV === "production"
+  ) {
     // Import OpenTelemetry SDK components
     const { NodeSDK } = await import("@opentelemetry/sdk-node");
     const { getNodeAutoInstrumentations } = await import(
@@ -21,7 +24,17 @@ export async function register() {
     const sdk = new NodeSDK({
       serviceName: "portfolio-mastra",
       traceExporter,
-      instrumentations: [getNodeAutoInstrumentations()],
+      instrumentations: [
+        getNodeAutoInstrumentations({
+          // Disable instrumentations that require packages we don't use
+          "@opentelemetry/instrumentation-winston": {
+            enabled: false,
+          },
+          "@opentelemetry/instrumentation-bunyan": {
+            enabled: false,
+          },
+        }),
+      ],
     });
 
     // Start the SDK

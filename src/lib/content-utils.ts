@@ -1,5 +1,7 @@
 import fs from 'fs';
 import path from 'path';
+import { cache } from 'react';
+import matter from 'gray-matter';
 
 export interface ContentMetadata {
   title: string;
@@ -11,8 +13,76 @@ export interface ContentMetadata {
 
 export interface ContentCategory {
   title: string;
+  slug: string;
   items: ContentMetadata[];
 }
+
+// Cache wrapper to prevent redundant filesystem reads within a single request
+export const getCategorizedContent = cache((contentType: 'experiments'): ContentCategory[] => {
+  const contentDir = path.join(process.cwd(), 'src', 'content', contentType);
+  
+  // Create directory if it doesn't exist
+  if (!fs.existsSync(contentDir)) {
+    return [];
+  }
+
+  const files = fs.readdirSync(contentDir);
+  const mdxFiles = files.filter((file) => file.endsWith('.mdx'));
+  
+  // Read all MDX files and categorize based on frontmatter
+  const categoryMap: Record<string, ContentMetadata[]> = {};
+  
+  for (const filename of mdxFiles) {
+    const slug = filename.replace(/\.mdx$/, '');
+    const filePath = path.join(contentDir, filename);
+    
+    try {
+      const fileContents = fs.readFileSync(filePath, 'utf8');
+      const { data } = matter(fileContents);
+      
+      const item: ContentMetadata = {
+        title: data.title || slug.split('-').map((word) => word.charAt(0).toUpperCase() + word.slice(1)).join(' '),
+        slug,
+        description: data.description,
+        date: data.date,
+        category: data.category,
+      };
+      
+      // Categorize based on frontmatter category field
+      const categoryKey = data.category || 'other';
+      if (!categoryMap[categoryKey]) {
+        categoryMap[categoryKey] = [];
+      }
+      categoryMap[categoryKey].push(item);
+    } catch {
+      // Skip files that can't be parsed
+      continue;
+    }
+  }
+  
+  // Convert to array and sort
+  const categories: ContentCategory[] = Object.entries(categoryMap).map(([categorySlug, items]) => {
+    // Sort items by date (newest first)
+    items.sort((a, b) => {
+      if (!a.date || !b.date) return 0;
+      return new Date(b.date).getTime() - new Date(a.date).getTime();
+    });
+    
+    // Convert category slug to title
+    const categoryTitle = categorySlug
+      .split('-')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+    
+    return {
+      title: categoryTitle,
+      slug: categorySlug,
+      items,
+    };
+  });
+  
+  return categories;
+});
 
 export function getContentItems(contentType: 'experiments'): ContentMetadata[] {
   const contentDir = path.join(process.cwd(), 'src', 'content', contentType);
@@ -28,7 +98,6 @@ export function getContentItems(contentType: 'experiments'): ContentMetadata[] {
 
   return mdxFiles.map((filename) => {
     const slug = filename.replace(/\.mdx$/, '');
-    // For now, use slug as title - can be enhanced to read frontmatter later
     const title = slug
       .split('-')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -39,36 +108,4 @@ export function getContentItems(contentType: 'experiments'): ContentMetadata[] {
       slug,
     };
   });
-}
-
-export function getCategorizedContent(contentType: 'experiments'): ContentCategory[] {
-  const items = getContentItems(contentType);
-  
-  // Single-pass categorization for better performance
-  const categoryMap: Record<string, ContentMetadata[]> = {
-    'Getting Started': [],
-    'AI & Agents': [],
-    'Backend & Database': [],
-    'TypeScript & Patterns': [],
-  };
-  
-  // Categorize items in a single pass
-  for (const item of items) {
-    const slug = item.slug.toLowerCase();
-    
-    if (slug.includes('mastra') || slug.includes('nextjs')) {
-      categoryMap['Getting Started'].push(item);
-    } else if (slug.includes('ai') || slug.includes('openai') || slug.includes('agents')) {
-      categoryMap['AI & Agents'].push(item);
-    } else if (slug.includes('postgresql') || slug.includes('database')) {
-      categoryMap['Backend & Database'].push(item);
-    } else if (slug.includes('typescript') || slug.includes('patterns')) {
-      categoryMap['TypeScript & Patterns'].push(item);
-    }
-  }
-  
-  // Return only non-empty categories
-  return Object.entries(categoryMap)
-    .filter(([_, items]) => items.length > 0)
-    .map(([title, items]) => ({ title, items }));
 }
