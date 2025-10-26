@@ -7,7 +7,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SearchProvider } from "@/components/providers/search-provider";
 
 export const metadata: Metadata = {
-  title: "Vishesh Baghel — open source & agents",
+  title: "Vishesh Baghel Portfolio",
   description: "i build agents, infra, and tools for developers.",
   icons: {
     icon: "/favicon.svg",

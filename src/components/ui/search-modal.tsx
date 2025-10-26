@@ -349,11 +349,11 @@ export function SearchModal({ open, onClose }: SearchModalProps) {
               <button
                 type="button"
                 onClick={handleBackToSearch}
-                className="group inline-flex items-center gap-2 h-8 px-2 hover:bg-white hover:text-foreground rounded transition-colors cursor-pointer"
+                className="group inline-flex items-center gap-2 h-8 px-2 hover:bg-[var(--color-secondary)] rounded transition-colors cursor-pointer"
                 aria-label="Back to search"
               >
-                <ArrowLeft className="size-4 group-hover:text-foreground" />
-                <span className="font-mono text-sm leading-4 relative top-[1px] text-muted-foreground group-hover:text-foreground">Back to search</span>
+                <ArrowLeft className="size-4 text-muted-foreground" />
+                <span className="font-mono text-sm leading-4 relative top-[1px] text-muted-foreground">Back to search</span>
               </button>
             ) : (
               /* Search mode - show search input */

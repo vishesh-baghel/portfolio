@@ -25,7 +25,7 @@ export default function ThemeToggle() {
       onClick={toggle}
       title={isDark ? "Switch to light" : "Switch to dark"}
     >
-      {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
+      {isDark ? <Sun className="size-4 text-accent" /> : <Moon className="size-4 text-accent" />}
     </Button>
   );
 }
