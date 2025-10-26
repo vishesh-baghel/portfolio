@@ -1,13 +1,8 @@
 import { NextRequest } from 'next/server';
 import { mastra } from '@/mastra';
-import { getStorage } from '@/mastra/storage';
 
 export async function POST(request: NextRequest) {
   try {
-    // Ensure storage is initialized before processing request
-    // This follows Next.js serverless best practices
-    await getStorage();
-    
     const { message, threadId, userId } = await request.json();
 
     if (!message) {

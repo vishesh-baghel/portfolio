@@ -8,15 +8,17 @@ export const mastra = new Mastra({
     portfolioAgent,
     experimentsAgent,
   },
-  storage,
+  storage, // In-memory storage for conversation context
   telemetry: {
     serviceName: "portfolio-mastra",
-    enabled: true,
+    // Disable telemetry in dev for faster responses
+    // In production, Vercel OTEL will handle tracing
+    enabled: process.env.NODE_ENV === "production",
     sampling: {
       type: "always_on",
     },
     export: {
-      type: "console", // Use console for local dev, will be overridden by Vercel OTEL in production
+      type: "console",
     },
   },
 });
