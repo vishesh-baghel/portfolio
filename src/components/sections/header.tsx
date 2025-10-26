@@ -77,7 +77,7 @@ const Header = () => {
                   <button
                     type="button"
                     onClick={() => { setOpenCommits(true); setDrawerOpen(false); }}
-                    className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] text-left"
+                    className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] text-left cursor-pointer"
                   >
                     commits
                   </button>
@@ -124,7 +124,7 @@ const Header = () => {
             <button
               type="button"
               onClick={() => setOpenCommits(true)}
-              className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)]"
+              className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] cursor-pointer"
               aria-label="Open commits modal"
             >
               commits

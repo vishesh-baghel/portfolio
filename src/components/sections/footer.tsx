@@ -16,7 +16,13 @@ const Footer = () => {
 
       {/* Bottom row */}
       <div className="flex items-center justify-between text-xs text-muted-foreground">
-        <span>© {year} vishesh baghel • built with next.js and deployed on vercel</span>
+        <div className="flex items-center gap-2">
+          <span>© {year} vishesh baghel</span>
+          <span>•</span>
+          <Link href="/llms.txt" className="text-muted-foreground no-underline cursor-pointer text-xs">
+            llms.txt
+          </Link>
+        </div>
         <button
           type="button"
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
