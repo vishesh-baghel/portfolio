@@ -3,7 +3,7 @@
 (globalThis as any).___MASTRA_TELEMETRY___ = true;
 
 export async function register() {
-  // Only run instrumentation on the server side and in production
+  // Only run OpenTelemetry instrumentation in production
   if (
     process.env.NEXT_RUNTIME === "nodejs" &&
     process.env.NODE_ENV === "production"
