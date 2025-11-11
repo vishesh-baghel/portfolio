@@ -15,4 +15,5 @@ export const CATEGORY_TITLES: Record<string, string> = {
   'ai-agents': 'AI & Agents',
   'backend-database': 'Backend & Database',
   'typescript-patterns': 'TypeScript & Patterns',
+  'optimizations': 'Optimizations',
 };

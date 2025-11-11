@@ -20,9 +20,9 @@ export const listExperimentsTool = {
       const { category = 'all' } = args;
       
       // Validate category
-      const validCategories = ['all', 'getting-started', 'ai-agents', 'backend-database', 'typescript-patterns'];
+      const validCategories = ['all', 'getting-started', 'ai-agents', 'backend-database', 'typescript-patterns', 'optimizations'];
       if (!validCategories.includes(category)) {
-        return `Invalid category "${category}".\n\nValid categories:\n- getting-started\n- ai-agents\n- backend-database\n- typescript-patterns\n- all (default)\n\nUse category "all" to see all available patterns.`;
+        return `Invalid category "${category}".\n\nValid categories:\n- getting-started\n- ai-agents\n- backend-database\n- typescript-patterns\n- optimizations\n- all (default)\n\nUse category "all" to see all available patterns.`;
       }
 
       if (category === 'all') {

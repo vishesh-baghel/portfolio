@@ -4,13 +4,13 @@ import { z } from 'zod';
 declare const server: MCPServer;
 declare function runServer(): Promise<void>;
 
-declare const ExperimentCategory: z.ZodEnum<["all", "getting-started", "ai-agents", "backend-database", "typescript-patterns"]>;
+declare const ExperimentCategory: z.ZodEnum<["all", "getting-started", "ai-agents", "backend-database", "typescript-patterns", "optimizations"]>;
 type ExperimentCategory = z.infer<typeof ExperimentCategory>;
 declare const ExperimentMetadata: z.ZodObject<{
     title: z.ZodString;
     slug: z.ZodString;
     description: z.ZodOptional<z.ZodString>;
-    category: z.ZodEnum<["getting-started", "ai-agents", "backend-database", "typescript-patterns"]>;
+    category: z.ZodEnum<["getting-started", "ai-agents", "backend-database", "typescript-patterns", "optimizations"]>;
     tags: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
     date: z.ZodOptional<z.ZodString>;
     author: z.ZodDefault<z.ZodString>;
@@ -19,7 +19,7 @@ declare const ExperimentMetadata: z.ZodObject<{
 }, "strip", z.ZodTypeAny, {
     title: string;
     slug: string;
-    category: "getting-started" | "ai-agents" | "backend-database" | "typescript-patterns";
+    category: "getting-started" | "ai-agents" | "backend-database" | "typescript-patterns" | "optimizations";
     author: string;
     description?: string | undefined;
     tags?: string[] | undefined;
@@ -29,7 +29,7 @@ declare const ExperimentMetadata: z.ZodObject<{
 }, {
     title: string;
     slug: string;
-    category: "getting-started" | "ai-agents" | "backend-database" | "typescript-patterns";
+    category: "getting-started" | "ai-agents" | "backend-database" | "typescript-patterns" | "optimizations";
     description?: string | undefined;
     tags?: string[] | undefined;
     date?: string | undefined;
@@ -60,15 +60,15 @@ type GetExperimentInput = z.infer<typeof GetExperimentInput>;
 declare const SearchExperimentsInput: z.ZodObject<{
     query: z.ZodString;
     maxResults: z.ZodOptional<z.ZodNumber>;
-    categories: z.ZodOptional<z.ZodArray<z.ZodEnum<["getting-started", "ai-agents", "backend-database", "typescript-patterns"]>, "many">>;
+    categories: z.ZodOptional<z.ZodArray<z.ZodEnum<["getting-started", "ai-agents", "backend-database", "typescript-patterns", "optimizations"]>, "many">>;
 }, "strip", z.ZodTypeAny, {
     query: string;
     maxResults?: number | undefined;
-    categories?: ("getting-started" | "ai-agents" | "backend-database" | "typescript-patterns")[] | undefined;
+    categories?: ("getting-started" | "ai-agents" | "backend-database" | "typescript-patterns" | "optimizations")[] | undefined;
 }, {
     query: string;
     maxResults?: number | undefined;
-    categories?: ("getting-started" | "ai-agents" | "backend-database" | "typescript-patterns")[] | undefined;
+    categories?: ("getting-started" | "ai-agents" | "backend-database" | "typescript-patterns" | "optimizations")[] | undefined;
 }>;
 type SearchExperimentsInput = z.infer<typeof SearchExperimentsInput>;
 declare const ExperimentListItem: z.ZodObject<{
@@ -96,7 +96,7 @@ declare const ExperimentContent: z.ZodObject<{
         title: z.ZodString;
         slug: z.ZodString;
         description: z.ZodOptional<z.ZodString>;
-        category: z.ZodEnum<["getting-started", "ai-agents", "backend-database", "typescript-patterns"]>;
+        category: z.ZodEnum<["getting-started", "ai-agents", "backend-database", "typescript-patterns", "optimizations"]>;
         tags: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
         date: z.ZodOptional<z.ZodString>;
         author: z.ZodDefault<z.ZodString>;
@@ -105,7 +105,7 @@ declare const ExperimentContent: z.ZodObject<{
     }, "strip", z.ZodTypeAny, {
         title: string;
         slug: string;
-        category: "getting-started" | "ai-agents" | "backend-database" | "typescript-patterns";
+        category: "getting-started" | "ai-agents" | "backend-database" | "typescript-patterns" | "optimizations";
         author: string;
         description?: string | undefined;
         tags?: string[] | undefined;
@@ -115,7 +115,7 @@ declare const ExperimentContent: z.ZodObject<{
     }, {
         title: string;
         slug: string;
-        category: "getting-started" | "ai-agents" | "backend-database" | "typescript-patterns";
+        category: "getting-started" | "ai-agents" | "backend-database" | "typescript-patterns" | "optimizations";
         description?: string | undefined;
         tags?: string[] | undefined;
         date?: string | undefined;
@@ -131,7 +131,7 @@ declare const ExperimentContent: z.ZodObject<{
     metadata?: {
         title: string;
         slug: string;
-        category: "getting-started" | "ai-agents" | "backend-database" | "typescript-patterns";
+        category: "getting-started" | "ai-agents" | "backend-database" | "typescript-patterns" | "optimizations";
         author: string;
         description?: string | undefined;
         tags?: string[] | undefined;
@@ -145,7 +145,7 @@ declare const ExperimentContent: z.ZodObject<{
     metadata?: {
         title: string;
         slug: string;
-        category: "getting-started" | "ai-agents" | "backend-database" | "typescript-patterns";
+        category: "getting-started" | "ai-agents" | "backend-database" | "typescript-patterns" | "optimizations";
         description?: string | undefined;
         tags?: string[] | undefined;
         date?: string | undefined;

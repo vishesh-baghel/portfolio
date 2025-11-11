@@ -7,6 +7,7 @@ export const ExperimentCategory = z.enum([
   'ai-agents',
   'backend-database',
   'typescript-patterns',
+  'optimizations',
 ]);
 
 // Category enum without 'all' for metadata
@@ -15,6 +16,7 @@ export const ExperimentCategoryWithoutAll = z.enum([
   'ai-agents',
   'backend-database',
   'typescript-patterns',
+  'optimizations',
 ]);
 
 // Experiment metadata schema
@@ -32,7 +34,7 @@ export const ExperimentMetadata = z.object({
 
 // List experiments input
 export const ListExperimentsInput = z.object({
-  category: z.string().optional().describe('Category to filter by. Options: getting-started, ai-agents, backend-database, typescript-patterns, or all (default)'),
+  category: z.string().optional().describe('Category to filter by. Options: getting-started, ai-agents, backend-database, typescript-patterns, optimizations, or all (default)'),
 });
 
 // Get experiment input
