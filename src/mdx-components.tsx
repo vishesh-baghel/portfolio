@@ -3,6 +3,7 @@ import { CodeBlock } from '@/components/mdx/code-block';
 import { Callout } from '@/components/mdx/callout';
 import { MDXImage } from '@/components/mdx/mdx-image';
 import { GitHubButton } from '@/components/mdx/github-button';
+import { LiveDemoButton } from '@/components/mdx/live-demo-button';
 import { InlineCode } from '@/components/mdx/inline-code';
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
@@ -13,6 +14,7 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     img: MDXImage,
     Callout,
     GitHubButton,
+    LiveDemoButton,
     // Ensure consistent paragraph rendering
     p: (props: any) => <p className="text-base" {...props} />,
     // Ensure consistent list rendering
