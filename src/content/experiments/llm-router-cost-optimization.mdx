@@ -1,6 +1,6 @@
 ---
 title: "LLM Router - Intelligent Model Selection"
-description: "Standalone LLM router utility with ML classification, semantic caching, streaming, and multi-provider support. Tested with 200 training examples and 1000+ test queries."
+description: "Standalone LLM router utility with ML classification, semantic caching, streaming, and multi-provider support. Tested with 200 training examples and 100 test queries."
 category: "optimizations"
 tags: ["llm-router", "ml-classification", "semantic-caching", "streaming", "cost-optimization", "openai", "anthropic", "upstash", "tiktoken", "ai-sdk", "typescript"]
 date: "2025-11-11"
@@ -8,7 +8,7 @@ date: "2025-11-11"
 
 # LLM Router - Intelligent Model Selection
 
-Standalone LLM router utility that routes queries to optimal models based on complexity and cost. Tested with **50-60% routing accuracy** (200 training examples) and **>90% cache hit rate** through ML-based classification and semantic caching.
+Standalone LLM router utility that routes queries to optimal models based on complexity and cost. Tested with **40-50% routing accuracy** with heuristics (up to 60% with ML) and **>90% cache hit rate** after population.
 
 <div className="flex gap-3 flex-wrap">
   <GitHubButton repo="https://github.com/vishesh-baghel/experiments/tree/main/packages/llm-router" />
@@ -18,8 +18,8 @@ Standalone LLM router utility that routes queries to optimal models based on com
 ## Overview
 
 **Core Features:**
-- **ML-Based Classification** - 50-60% routing accuracy with Upstash Vector embeddings (200 training examples)
-- **Semantic Caching** - Upstash Vector with built-in embeddings (measured under 50ms lookups, >90% cache hit rate)
+- **ML-Based Classification** - Up to 60% routing accuracy with Upstash Vector (vs 40-50% heuristics)
+- **Semantic Caching** - Upstash Vector with built-in embeddings (measured under 50ms lookups, >90% cache hit rate after populated)
 - **Accurate Token Counting** - tiktoken integration (±2% accuracy vs ±15% estimation)
 - **Multi-Provider Support** - 6 providers, 15 models (OpenAI, Anthropic, Google, Groq, Together, Ollama)
 - **Streaming Support** - Real-time response streaming with StreamingRouter
@@ -41,11 +41,11 @@ Using GPT-4 or Claude Opus for every query is expensive. Most customer support q
 **With this router:**
 - Simple queries → Gemini Flash ($0.075/1M) or Groq ($0.05/1M)
 - Complex queries → Claude 3.5 Sonnet or GPT-4o
-- Cached queries → $0 (>90% cache hit rate on test data)
+- Cached queries → $0 (>90% cache hit rate after population)
 - **Result: 70-97% theoretical cost savings vs GPT-4o** (depends on your query mix)
 
 **Additional benefits:**
-- 50-60% routing accuracy on test data (ML-based)
+- 40-50% routing accuracy on test data with heuristics (84% simple, 96% moderate, 8% complex, 0% reasoning)
 - Under 100ms routing latency (measured locally)
 - Streaming support for real-time UX
 - Interactive UI for testing and training
@@ -262,10 +262,10 @@ Automated testing system for measuring router performance:
 **Example results:**
 ```
 Total Queries: 100
-Routing Accuracy: 50-60%
-Cache Hit Rate: >90%
-Avg Response Time: 2.5s
-Total Cost: $0.05
+Routing Accuracy: 40-50% (84% simple, 96% moderate, 8% complex, 0% reasoning)
+Cache Hit Rate: 0% (cold start), >90% after cache populated
+Avg Response Time: 1.8s
+Total Cost: $0.054
 Cost Saved: $4.95 (99% vs GPT-4)
 ```
 
@@ -349,10 +349,10 @@ The router supports both classification methods:
 - Zero latency (under 5ms)
 - No training data needed
 - Transparent and debuggable
-- ~50-60% accuracy on test data
+- 40-50% overall routing accuracy (84% simple, 96% moderate, 8% complex, 0% reasoning)
 
 **ML Classification** (optional, `useMLClassifier: true`):
-- ~50-60% routing accuracy with Upstash Vector
+- Up to 60% routing accuracy on test data (small improvement over heuristics)
 - Learns from 200 training examples
 - Under 50ms latency for embedding lookup
 - Adapts to your domain
@@ -360,7 +360,7 @@ The router supports both classification methods:
 **Semantic Caching** (optional, `useCache: true`):
 - Upstash Vector with built-in embeddings
 - Under 50ms similarity search
-- >90% hit rate on similar queries
+- >90% hit rate after cache populated with similar queries
 - Zero cost for cached responses
 
 <Callout type="info">
@@ -369,7 +369,7 @@ Start with heuristics for speed. Enable ML classification when accuracy matters.
 
 ## Lessons from Testing
 
-From testing with 1000+ queries (controlled environment, not production):
+From testing with **100 queries** (controlled environment, not production validated):
 
 ### 1. Cost Tracking Overhead
 
@@ -409,16 +409,16 @@ const tunedThresholds = {
 
 ### 3. Semantic Caching Performance
 
-**Finding**: Semantic caching with Upstash Vector achieves >90% hit rate on similar queries.
+**Finding**: Semantic caching with Upstash Vector achieves >90% hit rate after cache is populated with similar queries.
 
 ```typescript
-// Similar queries match semantically
+// Similar queries match semantically after cache population
 "What are your hours?" → Cache hit
 "When are you open?" → Cache hit (>90% similarity)
 "What time do you close?" → Cache hit (>90% similarity)
 ```
 
-**Recommendation**: Enable semantic caching for high-traffic applications. The >90% hit rate significantly reduces costs.
+**Recommendation**: Enable semantic caching for high-traffic applications. The >90% hit rate significantly reduces costs after initial cache population.
 
 ### 4. Model Fallback
 
@@ -452,12 +452,12 @@ try {
 
 From local batch tests (sample runs, not production validated):
 
-- **Avg Routing Decision**: 3ms
-- **Avg Latency (simple)**: 1.5-2.5s
+- **Avg Routing Decision**: 3ms (classification + model selection only)
+- **Avg Latency (simple)**: 1.5-2.5s (includes API calls)
 - **Avg Latency (moderate)**: 2.5-4.5s
 - **Avg Latency (complex)**: 4-7s
 - **Cost per Query**: $0.000037 - $0.000307 (approximate)
-- **Routing Accuracy**: ~85% (heuristic-based, not validated on real queries)
+- **Routing Accuracy**: 40-50% overall (84% simple, 96% moderate, 8% complex, 0% reasoning)
 - **Cost Savings**: 87-99% vs strawman baseline (always GPT-4)
 
 <Callout type="info">
@@ -466,7 +466,7 @@ These metrics are from controlled local tests. The 87% savings compares against 
 
 ## Testing
 
-Comprehensive test suite with 105 tests:
+Comprehensive test suite with 100 tests:
 
 ```bash
 # Run all tests
@@ -484,9 +484,8 @@ pnpm test customer-care-agent.test.ts
 - CostCalculator: 16 tests
 - ModelSelector: 18 tests
 - LLMRouter: 21 tests
-- SemanticCache: 15 tests
-- StreamingRouter: 12 tests
-- ML Classifier: 8 tests
+- SemanticCache: 12 tests
+- ML Classifier: 11 tests
 
 ## Next Steps
 
@@ -509,7 +508,7 @@ Want to extend this experiment with your own features? Use the [Experiments MCP 
 - ✅ Streaming support with StreamingRouter
 - ✅ 6 providers (OpenAI, Anthropic, Google, Groq, Together, Ollama)
 - ✅ Interactive UI with chat, benchmarks, and training
-- ✅ 106 tests with 99% coverage
+- ✅ 100 tests with 99% coverage
 - ✅ Error handling and fallback logic
 
 **To make this production-ready, consider adding**:
