@@ -10,22 +10,26 @@ export default function ThemeToggle() {
   const [mounted, setMounted] = React.useState(false);
 
   React.useEffect(() => setMounted(true), []);
-  if (!mounted) return null;
 
   const isDark = resolvedTheme === "dark";
   const toggle = () => setTheme(isDark ? "light" : "dark");
 
+  // Render placeholder with same dimensions to prevent CLS
   return (
     <Button
       type="button"
       variant="ghost"
       size="sm"
       aria-label="Toggle theme"
-      className="h-8 rounded-lg border px-3 hover:bg-[var(--color-secondary)] cursor-pointer"
-      onClick={toggle}
-      title={isDark ? "Switch to light" : "Switch to dark"}
+      className="h-8 w-[52px] rounded-lg border px-3 hover:bg-[var(--color-secondary)] cursor-pointer"
+      onClick={mounted ? toggle : undefined}
+      title={mounted ? (isDark ? "Switch to light" : "Switch to dark") : "Toggle theme"}
     >
-      {isDark ? <Sun className="size-4 text-accent" /> : <Moon className="size-4 text-accent" />}
+      {mounted ? (
+        isDark ? <Sun className="size-4 text-accent" /> : <Moon className="size-4 text-accent" />
+      ) : (
+        <span className="size-4" />
+      )}
     </Button>
   );
 }

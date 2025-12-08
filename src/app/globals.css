@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;700&display=swap');
-
 @import "tailwindcss";
 @import "tw-animate-css";
 @custom-variant dark (&:is(.dark *));
@@ -81,14 +79,14 @@
   --color-border-divider: #E0E0E0;
   --color-testimonial-border: #FF0000;
 
-  /* Typography */
-  --font-primary: "IBM Plex Mono", monospace;
-  --font-hero-heading: "IBM Plex Mono", monospace;
-  --font-section-heading: "IBM Plex Mono", monospace;
-  --font-subheading: "IBM Plex Mono", monospace;
-  --font-body: "IBM Plex Mono", monospace;
-  --font-small: "IBM Plex Mono", monospace;
-  --font-links: "IBM Plex Mono", monospace;
+  /* Typography - uses CSS variable from next/font */
+  --font-primary: var(--font-ibm-plex-mono), monospace;
+  --font-hero-heading: var(--font-ibm-plex-mono), monospace;
+  --font-section-heading: var(--font-ibm-plex-mono), monospace;
+  --font-subheading: var(--font-ibm-plex-mono), monospace;
+  --font-body: var(--font-ibm-plex-mono), monospace;
+  --font-small: var(--font-ibm-plex-mono), monospace;
+  --font-links: var(--font-ibm-plex-mono), monospace;
 }
 
 /*
