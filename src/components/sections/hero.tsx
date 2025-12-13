@@ -6,7 +6,7 @@ const HeroSection = () => {
       <h1 className="text-2xl sm:text-3xl font-bold mb-4 cursor-default">
         <span className="inline-block">
           <span className="whitespace-pre-wrap">
-            open source + freelance
+            Hi, i'm vishesh
           </span>
         </span>
       </h1>

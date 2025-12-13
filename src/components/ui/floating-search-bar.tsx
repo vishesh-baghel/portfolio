@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { Search } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { QUIRKY_PLACEHOLDERS } from '@/lib/searchPlaceholders';
@@ -13,9 +13,10 @@ interface FloatingSearchBarProps {
 export function FloatingSearchBar({ onClick, className }: FloatingSearchBarProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const intervalRef = useRef<number | null>(null);
-  const [isMac, setIsMac] = useState(false);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     const tick = () => setCurrentIndex((i) => (i + 1) % QUIRKY_PLACEHOLDERS.length);
     intervalRef.current = window.setInterval(tick, 10000);
     return () => {
@@ -23,12 +24,12 @@ export function FloatingSearchBar({ onClick, className }: FloatingSearchBarProps
     };
   }, []);
 
-  useEffect(() => {
-    // Lightweight platform detection for displaying keyboard hint
+  // Memoize platform detection to avoid re-renders - only compute once after mount
+  const isMac = useMemo(() => {
+    if (typeof navigator === 'undefined') return false;
     const ua = navigator.userAgent || "";
     const platform = (navigator as any).platform || "";
-    const mac = /Mac|Macintosh|MacIntel|MacPPC|Mac68K/i.test(platform) || /Mac OS X/i.test(ua);
-    setIsMac(mac);
+    return /Mac|Macintosh|MacIntel|MacPPC|Mac68K/i.test(platform) || /Mac OS X/i.test(ua);
   }, []);
 
   return (
@@ -64,8 +65,8 @@ export function FloatingSearchBar({ onClick, className }: FloatingSearchBarProps
           {QUIRKY_PLACEHOLDERS[currentIndex]}
         </div>
       </div>
-      <div className="hidden sm:flex items-center gap-1 text-xs text-muted-foreground font-mono">
-        <span>{isMac ? 'Cmd K' : 'Ctrl K'}</span>
+      <div className="hidden sm:flex items-center gap-1 text-xs text-muted-foreground font-mono w-[52px] justify-end">
+        <span>{mounted ? (isMac ? 'Cmd K' : 'Ctrl K') : '\u00A0'}</span>
       </div>
     </button>
     {/* No transitions; simple 10s text swap */}
