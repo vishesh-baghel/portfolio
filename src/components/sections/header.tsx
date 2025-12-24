@@ -95,6 +95,13 @@ const Header = () => {
                   >
                     mcp
                   </Link>
+                  <Link
+                    href="/pitch"
+                    onClick={() => setDrawerOpen(false)}
+                    className="flex w-full items-center font-mono text-sm text-accent-red rounded-lg border border-accent-red px-3 py-2 hover:bg-accent-red hover:text-white no-underline transition-colors"
+                  >
+                    hire me
+                  </Link>
                   <button
                     onClick={() => setDrawerOpen(false)}
                     className="block w-full rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] text-left"
@@ -140,6 +147,12 @@ const Header = () => {
               className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
             >
               mcp
+            </Link>
+            <Link
+              href="/pitch"
+              className="inline-flex items-center justify-center font-mono text-xs text-accent-red rounded-lg border border-accent-red h-8 px-3 hover:bg-accent-red hover:text-white no-underline hover:no-underline transition-colors"
+            >
+              hire me
             </Link>
           </div>
         </div>
