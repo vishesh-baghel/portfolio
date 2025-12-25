@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Header from '@/components/sections/header';
 import Footer from '@/components/sections/footer';
 import { Copy, Check } from 'lucide-react';
+import { trackMcpIdeSelect, trackMcpConfigCopy } from '@/lib/analytics';
 
 const MCP_CONFIGS = {
   cursor: {
@@ -49,6 +50,7 @@ export default function McpPage() {
       ? JSON.stringify(selectedConfig.config, null, 2)
       : selectedConfig.config;
     await navigator.clipboard.writeText(textToCopy);
+    trackMcpConfigCopy(selectedIDE);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
   };
@@ -142,7 +144,10 @@ export default function McpPage() {
               {(Object.keys(MCP_CONFIGS) as IDE[]).map((ide) => (
                 <button
                   key={ide}
-                  onClick={() => setSelectedIDE(ide)}
+                  onClick={() => {
+                    trackMcpIdeSelect(ide);
+                    setSelectedIDE(ide);
+                  }}
                   className={`
                     px-4 py-2 text-sm rounded-lg border transition-colors cursor-pointer
                     ${selectedIDE === ide 

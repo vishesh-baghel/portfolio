@@ -21,8 +21,8 @@ export default defineConfig({
     projects: [
       {
         test: {
-          name: 'portfolio',
-          include: ['src/**/*.test.ts', 'src/**/*.eval.test.ts'],
+          name: 'portfolio-evals',
+          include: ['src/mastra/**/*.eval.test.ts'],
           environment: 'node',
           globalSetup: './globalSetup.ts',
           setupFiles: ['./testSetup.ts'],
@@ -34,6 +34,15 @@ export default defineConfig({
             concurrent: true,
             shuffle: false,
           },
+        },
+      },
+      {
+        test: {
+          name: 'portfolio-unit',
+          include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
+          exclude: ['src/mastra/**/*.eval.test.ts'],
+          environment: 'node',
+          testTimeout: 30000,
         },
       },
       {

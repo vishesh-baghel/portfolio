@@ -6,6 +6,7 @@ import { ThemeProvider } from "next-themes";
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { SearchProvider } from "@/components/providers/search-provider";
+import { PostHogProvider } from "@/components/providers/posthog-provider";
 
 const ibmPlexMono = IBM_Plex_Mono({
   subsets: ["latin"],
@@ -33,12 +34,14 @@ export default function RootLayout({
     <html lang="en" suppressHydrationWarning className={ibmPlexMono.variable}>
       <body className={`${ibmPlexMono.className} antialiased`}>
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
-          <SearchProvider>
-            <ErrorReporter />
-            {children}
-            <Analytics />
-            <SpeedInsights />
-          </SearchProvider>
+          <PostHogProvider>
+            <SearchProvider>
+              <ErrorReporter />
+              {children}
+              <Analytics />
+              <SpeedInsights />
+            </SearchProvider>
+          </PostHogProvider>
         </ThemeProvider>
       </body>
     </html>

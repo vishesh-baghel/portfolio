@@ -209,6 +209,9 @@ importers:
       next-themes:
         specifier: ^0.4.6
         version: 0.4.6(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      posthog-js:
+        specifier: ^1.310.1
+        version: 1.310.1
       qss:
         specifier: ^3.0.0
         version: 3.0.0
@@ -317,7 +320,7 @@ importers:
         version: 15.5.4(eslint@9.36.0(jiti@2.6.0))(typescript@5.9.2)
       mastra:
         specifier: latest
-        version: 0.17.0(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))(@opentelemetry/api@1.9.0)(typescript@5.9.2)(zod@4.1.11)
+        version: 0.18.9(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))(@opentelemetry/api@1.9.0)(typescript@5.9.2)(zod@4.1.11)
       tailwindcss:
         specifier: ^4
         version: 4.1.13
@@ -1561,10 +1564,10 @@ packages:
     peerDependencies:
       zod: ^3.25.0 || ^4.0.0
 
-  '@mastra/deployer@0.21.1':
-    resolution: {integrity: sha512-bkwARFO9PRCvVzCsTYGOP/JpYem9QEYqSEjv8i1MdH/6u+GK4XqbCufO5NLM014aAN3h5OrTIcdImuy2rnih6w==}
+  '@mastra/deployer@0.24.9':
+    resolution: {integrity: sha512-Vr6qEZxEdSDu6R/7PMWyjg/UbZZIxhoge+/0FUN1b2ZClj6lW+tol+xfDT5z9UJTyLEuu7Om0B/v8qHUffJi1Q==}
     peerDependencies:
-      '@mastra/core': '>=0.21.0-0 <0.22.0-0'
+      '@mastra/core': '>=0.24.0-0 <0.25.0-0'
       zod: ^3.25.0 || ^4.0.0
 
   '@mastra/evals@0.13.10':
@@ -1579,10 +1582,10 @@ packages:
     peerDependencies:
       '@mastra/core': '>=0.15.3-0 <0.16.0-0'
 
-  '@mastra/loggers@0.10.16':
-    resolution: {integrity: sha512-zZiaz/kfChdA9L8ks0F73pn/kh6gU8FkS8VMigKH5uc7Ez8gvWsaC9Orgg5k7Og4bkXrZ3j2fN5RewtjI8appA==}
+  '@mastra/loggers@0.10.19':
+    resolution: {integrity: sha512-H4qTgqKt3YJxz6B1I0lOPqRpOpR8gEzYYNZ6iO/TGQ11r+wvug/i80MAKr0B1IBZvr9l18vr7wjYCdTxPqaAGg==}
     peerDependencies:
-      '@mastra/core': '>=0.18.1-0 <0.22.0-0'
+      '@mastra/core': '>=0.18.1-0 <0.25.0-0'
 
   '@mastra/mcp@0.13.3':
     resolution: {integrity: sha512-XDNphR+ZKxCpnjzCYwym6ULFoEAKpffyS+aAfUuBYcwb+ebMyYXt9CvvaLPjpXo089vmEs3ESFAad2C5cwVUmw==}
@@ -1608,10 +1611,10 @@ packages:
       ai: ^4.0.0 || ^5.0.0
       zod: ^3.25.0 || ^4.0.0
 
-  '@mastra/server@0.21.1':
-    resolution: {integrity: sha512-qf14MT+lGiPAgv7oqOC2+bcOa5jED1Ucmlm66y7TZKywUr1n8qDNePoGj+RTU1Nz/oLI0NloNYu3kCUO2GW/sA==}
+  '@mastra/server@0.24.9':
+    resolution: {integrity: sha512-UrX4I/hgL8twg/Ddb+sCIMvlIq3PSJloXEmUKnMdLT/bUWzE52eZ1dSaJp0ehgkCiadZPZxBY5UzUjUD/xP0EQ==}
     peerDependencies:
-      '@mastra/core': '>=0.21.0-0 <0.22.0-0'
+      '@mastra/core': '>=0.24.0-0 <0.25.0-0'
       zod: ^3.25.0 || ^4.0.0
 
   '@mdx-js/loader@3.1.1':
@@ -2678,6 +2681,9 @@ packages:
 
   '@polka/url@1.0.0-next.29':
     resolution: {integrity: sha512-wwQAWhWSuHaag8c4q/KN/vCoeOJYshAIvMQwD4GpSb3OiZklFfvAgmj0VCBBImRpuF/aFgIRzllXlVX93Jevww==}
+
+  '@posthog/core@1.9.0':
+    resolution: {integrity: sha512-j7KSWxJTUtNyKynLt/p0hfip/3I46dWU2dk+pt7dKRoz2l5CYueHuHK4EO7Wlgno5yo1HO4sc4s30MXMTICHJw==}
 
   '@protobufjs/aspromise@1.1.2':
     resolution: {integrity: sha512-j+gKExEuLmKwvz3OgROXtrJ2UG2x8Ch2YZUxahh+s1F2HZ+wAceUNLkvy6zKCPVRkU++ZWQrdxsUeQXmcg4uoQ==}
@@ -4598,6 +4604,9 @@ packages:
     resolution: {integrity: sha512-yki5XnKuf750l50uGTllt6kKILY4nQ1eNIQatoXEByZ5dWgnKqbnqmTrBE5B4N7lrMJKQ2ytWMiTO2o0v6Ew/w==}
     engines: {node: '>= 0.6'}
 
+  core-js@3.47.0:
+    resolution: {integrity: sha512-c3Q2VVkGAUyupsjRnaNX6u8Dq2vAdzm9iuPj5FW0fRxzlxgq9Q39MDq10IvmQSpLgHQNyQzQmOo6bgGHmH3NNg==}
+
   cors@2.8.5:
     resolution: {integrity: sha512-KIHbLJqu73RGr/hnbrO9uBeixNGuvSQjul/jdFvS/KFSIH1hWVd1ng7zOHx+YrEfInLG7q4n6GHQ9cDtxv/P6g==}
     engines: {node: '>= 0.10'}
@@ -5231,6 +5240,9 @@ packages:
   fetch-blob@3.2.0:
     resolution: {integrity: sha512-7yAQpD2UMJzLi1Dqv7qFYnPbaPx7ZfFK6PiIxQ4PfkGPyNyl2Ugx+a/umUonmKqjhM4DnfbMvdX6otXq83soQQ==}
     engines: {node: ^12.20 || >= 14.13}
+
+  fflate@0.4.8:
+    resolution: {integrity: sha512-FJqqoDBR00Mdj9ppamLa/Y7vxm+PRmNWA67N846RvsoYVMKB4q3y/de5PA7gUmRMYK/8CMz2GDZQmCRN1wBcWA==}
 
   fflate@0.8.2:
     resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
@@ -6074,11 +6086,11 @@ packages:
   markdown-table@3.0.4:
     resolution: {integrity: sha512-wiYz4+JrLyb/DqW2hkFJxP7Vd7JuTDm77fvbM8VfEQdmSMqcImWeeRbHwZjBjIFki/VaMK2BhFi7oUUZeM5bqw==}
 
-  mastra@0.17.0:
-    resolution: {integrity: sha512-PKFqD6toWiTcoBLa6B/9Pqb1SEQNptr+4SHTWNl27gTaprmad3ZSC/b2yvRNyNG25aDBeYs0YQGoeuD81mLhxg==}
+  mastra@0.18.9:
+    resolution: {integrity: sha512-ICdaHni5aDcCtrCSMqEmK+JgpWw9ZlHoUaseWk8RtoKTBOVu4z6YmZ4ZAk7i8+8kVNs12aQE+CY96lyNt/8HnQ==}
     hasBin: true
     peerDependencies:
-      '@mastra/core': '>=0.21.0-0 <0.22.0-0'
+      '@mastra/core': '>=0.24.0-0 <0.25.0-0'
       zod: ^3.25.0 || ^4.0.0
 
   math-intrinsics@1.1.0:
@@ -6678,9 +6690,15 @@ packages:
     resolution: {integrity: sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw==}
     engines: {node: '>=12'}
 
+  posthog-js@1.310.1:
+    resolution: {integrity: sha512-UkR6zzlWNtqHDXHJl2Yk062DOmZyVKTPL5mX4j4V+u3RiYbMHJe47+PpMMUsvK1R2e1r/m9uSlHaJMJRzyUjGg==}
+
   posthog-node@4.18.0:
     resolution: {integrity: sha512-XROs1h+DNatgKh/AlIlCtDxWzwrKdYDb2mOs58n4yN8BkGN9ewqeQwG5ApS4/IzwCb7HPttUkOVulkYatd2PIw==}
     engines: {node: '>=15.0.0'}
+
+  preact@10.28.1:
+    resolution: {integrity: sha512-u1/ixq/lVQI0CakKNvLDEcW5zfCjUQfZdK9qqWuIJtsezuyG6pk9TWj75GMuI/EzRSZB/VAE43sNWWZfiy8psw==}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -7726,6 +7744,9 @@ packages:
   web-streams-polyfill@3.3.3:
     resolution: {integrity: sha512-d2JWLCivmZYTSIoge9MsgFCZrt571BikcWGYkjC1khllbTeDlGqZ2D8vD8E/lJa8WGWbb7Plm8/XJYV7IJHZZw==}
     engines: {node: '>= 8'}
+
+  web-vitals@4.2.4:
+    resolution: {integrity: sha512-r4DIlprAGwJ7YM11VZp4R884m0Vmgr6EAKe3P+kO0PPj3Unqyvv59rczf6UiGcb9Z8QxZVcqKNwv/g0WNdWwsw==}
 
   webidl-conversions@3.0.1:
     resolution: {integrity: sha512-2JAn3z8AR6rjK8Sm8orRC0h/bcl/DqL7tRPdGZ4I1CjdF+EaMLmYxBHyXuKL849eucPFhvBoxMsflfOb8kxaeQ==}
@@ -9049,13 +9070,13 @@ snapshots:
       - valibot
       - zod-openapi
 
-  '@mastra/deployer@0.21.1(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))(typescript@5.9.2)(zod@4.1.11)':
+  '@mastra/deployer@0.24.9(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))(typescript@5.9.2)(zod@4.1.11)':
     dependencies:
       '@babel/core': 7.28.4
       '@babel/helper-module-imports': 7.27.1
       '@babel/preset-typescript': 7.27.1(@babel/core@7.28.4)
       '@mastra/core': 0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11)
-      '@mastra/server': 0.21.1(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))(zod@4.1.11)
+      '@mastra/server': 0.24.9(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))(zod@4.1.11)
       '@neon-rs/load': 0.1.82
       '@optimize-lodash/rollup-plugin': 5.0.2(rollup@4.50.2)
       '@rollup/plugin-alias': 5.1.1(rollup@4.50.2)
@@ -9079,6 +9100,7 @@ snapshots:
       rollup: 4.50.2
       rollup-plugin-esbuild: 6.2.1(esbuild@0.25.10)(rollup@4.50.2)
       rollup-plugin-node-externals: 8.1.1(rollup@4.50.2)
+      strip-json-comments: 5.0.3
       tinyglobby: 0.2.15
       typescript-paths: 1.5.1(typescript@5.9.2)
       zod: 4.1.11
@@ -9106,7 +9128,7 @@ snapshots:
       - bufferutil
       - utf-8-validate
 
-  '@mastra/loggers@0.10.16(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))':
+  '@mastra/loggers@0.10.19(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))':
     dependencies:
       '@mastra/core': 0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11)
       pino: 9.13.1
@@ -9183,7 +9205,7 @@ snapshots:
       zod-from-json-schema-v3: zod-from-json-schema@0.0.5
       zod-to-json-schema: 3.24.6(zod@4.1.11)
 
-  '@mastra/server@0.21.1(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))(zod@4.1.11)':
+  '@mastra/server@0.24.9(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))(zod@4.1.11)':
     dependencies:
       '@mastra/core': 0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11)
       zod: 4.1.11
@@ -10749,6 +10771,10 @@ snapshots:
     optional: true
 
   '@polka/url@1.0.0-next.29': {}
+
+  '@posthog/core@1.9.0':
+    dependencies:
+      cross-spawn: 7.0.6
 
   '@protobufjs/aspromise@1.1.2': {}
 
@@ -12657,6 +12683,8 @@ snapshots:
 
   cookie@0.7.2: {}
 
+  core-js@3.47.0: {}
+
   cors@2.8.5:
     dependencies:
       object-assign: 4.1.1
@@ -13446,6 +13474,8 @@ snapshots:
     dependencies:
       node-domexception: 1.0.0
       web-streams-polyfill: 3.3.3
+
+  fflate@0.4.8: {}
 
   fflate@0.8.2: {}
 
@@ -14285,13 +14315,13 @@ snapshots:
 
   markdown-table@3.0.4: {}
 
-  mastra@0.17.0(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))(@opentelemetry/api@1.9.0)(typescript@5.9.2)(zod@4.1.11):
+  mastra@0.18.9(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))(@opentelemetry/api@1.9.0)(typescript@5.9.2)(zod@4.1.11):
     dependencies:
       '@clack/prompts': 0.11.0
       '@expo/devcert': 1.2.0
       '@mastra/core': 0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11)
-      '@mastra/deployer': 0.21.1(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))(typescript@5.9.2)(zod@4.1.11)
-      '@mastra/loggers': 0.10.16(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))
+      '@mastra/deployer': 0.24.9(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))(typescript@5.9.2)(zod@4.1.11)
+      '@mastra/loggers': 0.10.19(@mastra/core@0.20.0(openapi-types@12.1.3)(react@19.1.1)(zod@4.1.11))
       '@opentelemetry/auto-instrumentations-node': 0.62.2(@opentelemetry/api@1.9.0)(@opentelemetry/core@2.1.0(@opentelemetry/api@1.9.0))
       '@opentelemetry/core': 2.1.0(@opentelemetry/api@1.9.0)
       '@opentelemetry/exporter-trace-otlp-grpc': 0.203.0(@opentelemetry/api@1.9.0)
@@ -15182,11 +15212,21 @@ snapshots:
 
   postgres@3.4.7: {}
 
+  posthog-js@1.310.1:
+    dependencies:
+      '@posthog/core': 1.9.0
+      core-js: 3.47.0
+      fflate: 0.4.8
+      preact: 10.28.1
+      web-vitals: 4.2.4
+
   posthog-node@4.18.0:
     dependencies:
       axios: 1.12.2
     transitivePeerDependencies:
       - debug
+
+  preact@10.28.1: {}
 
   prelude-ls@1.2.1: {}
 
@@ -16451,6 +16491,8 @@ snapshots:
       - yaml
 
   web-streams-polyfill@3.3.3: {}
+
+  web-vitals@4.2.4: {}
 
   webidl-conversions@3.0.1: {}
 

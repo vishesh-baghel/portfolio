@@ -4,10 +4,13 @@ const AboutSection = () => {
   return (
     <section className="py-6 font-mono">
       <h2 className="text-base sm:text-lg font-bold cursor-default text-text-primary mt-0 mb-2">about</h2>
-      <p className="text-sm sm:text-base">
+      <p className="text-sm sm:text-base mb-3">
         i write typescript for a living. i work with agents, vector systems, and orchestration. i like clean apis, small
-        building blocks, and code that survives refactors. i also take on selective freelance—shipping mvp, hardening
-        infra, or integrating ai in real products.
+        building blocks, and code that survives refactors.
+      </p>
+      <p className="text-sm sm:text-base">
+        i ship daily. backend-heavy work, ai integration, infra setup. 
+        personal ai tools and productivity systems for devs like myself.
       </p>
     </section>
   );
