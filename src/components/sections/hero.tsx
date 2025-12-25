@@ -16,13 +16,13 @@ const HeroSection = () => {
         i build agents, infra, and tools for developers. i contribute to frameworks i rely on and ship pragmatic ai products.
       </p>
       <p className="text-sm sm:text-base">
-        <span className="text-accent-red font-semibold">open for consulting</span> — i help founders ship their first mvp or upgrade vibe-coded prototypes into production-ready products.
+        <span className="text-accent-red font-semibold">taking on clients.</span> $500 for your mvp. 20 hours. if it's subpar, walk away.
       </p>
       <Link
         href="/pitch"
-        className="inline-flex items-center gap-2 text-sm text-accent-red no-underline hover:underline"
+        className="inline-flex items-center justify-center gap-2 border border-accent-red bg-accent-red text-white px-4 py-2 text-sm font-medium no-underline hover:opacity-90 transition-opacity"
       >
-        learn more about working together <ArrowRight className="size-4" />
+        see how it works <ArrowRight className="size-4" />
       </Link>
     </div>
   );

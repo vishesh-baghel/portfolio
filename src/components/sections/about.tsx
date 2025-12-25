@@ -9,8 +9,8 @@ const AboutSection = () => {
         building blocks, and code that survives refactors.
       </p>
       <p className="text-sm sm:text-base">
-        i take on selective freelance work — shipping mvps, hardening infra, or integrating ai into existing products. 
-        $500 for 20 hours of work. if my output is subpar, walk away.
+        i'm new to consulting but i ship daily. backend-heavy work, ai integration, infra setup. 
+        you get working code and someone who can explain how it works.
       </p>
     </section>
   );
