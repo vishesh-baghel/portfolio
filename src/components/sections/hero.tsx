@@ -1,6 +1,9 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
+import { trackCTAClick } from '@/lib/analytics';
 
 const HeroSection = () => {
   return (
@@ -20,6 +23,7 @@ const HeroSection = () => {
       </p>
       <Link
         href="/pitch"
+        onClick={() => trackCTAClick('see_how_it_works', 'hero')}
         className="inline-flex items-center justify-center gap-2 border border-accent-red bg-accent-red text-white px-4 py-2 text-sm font-medium no-underline hover:opacity-90 transition-opacity"
       >
         see how it works <ArrowRight className="size-4" />

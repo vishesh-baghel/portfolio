@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { Linkedin, Github, Code2, Menu } from 'lucide-react';
 import { FaXTwitter } from 'react-icons/fa6';
 import { twitterUsername, linkedinUrl, githubUsername } from '@/lib/site-config';
+import { trackNavClick, trackMobileMenuOpen, trackMobileMenuClose, trackCommitsModalOpen, trackSocialClick, trackHireMeClick } from '@/lib/analytics';
 
 /**
  * A minimalist header component for the website.
@@ -42,7 +43,11 @@ const Header = () => {
           {/* Mobile: menu trigger */}
           <button
             type="button"
-            onClick={() => setDrawerOpen(!drawerOpen)}
+            onClick={() => {
+              if (!drawerOpen) trackMobileMenuOpen();
+              else trackMobileMenuClose();
+              setDrawerOpen(!drawerOpen);
+            }}
             className="sm:hidden inline-flex items-center justify-center rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)]"
             title="Menu"
           >
@@ -62,42 +67,42 @@ const Header = () => {
                 <div className="p-4 space-y-3">
                   <Link
                     href="/"
-                    onClick={() => setDrawerOpen(false)}
+                    onClick={() => { trackNavClick('about', 'header_mobile'); setDrawerOpen(false); }}
                     className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
                   >
                     about
                   </Link>
                   <Link
                     href="/work"
-                    onClick={() => setDrawerOpen(false)}
+                    onClick={() => { trackNavClick('work', 'header_mobile'); setDrawerOpen(false); }}
                     className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
                   >
                     work
                   </Link>
                   <button
                     type="button"
-                    onClick={() => { setOpenCommits(true); setDrawerOpen(false); }}
+                    onClick={() => { trackNavClick('commits', 'header_mobile'); trackCommitsModalOpen(); setOpenCommits(true); setDrawerOpen(false); }}
                     className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] text-left cursor-pointer"
                   >
                     commits
                   </button>
                   <Link
                     href="/experiments"
-                    onClick={() => setDrawerOpen(false)}
+                    onClick={() => { trackNavClick('experiments', 'header_mobile'); setDrawerOpen(false); }}
                     className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
                   >
                     experiments
                   </Link>
                   <Link
                     href="/mcp"
-                    onClick={() => setDrawerOpen(false)}
+                    onClick={() => { trackNavClick('mcp', 'header_mobile'); setDrawerOpen(false); }}
                     className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
                   >
                     mcp
                   </Link>
                   <Link
                     href="/pitch"
-                    onClick={() => setDrawerOpen(false)}
+                    onClick={() => { trackNavClick('hire_me', 'header_mobile'); trackHireMeClick('mobile_menu'); setDrawerOpen(false); }}
                     className="flex w-full items-center font-mono text-sm text-accent-red rounded-lg border border-accent-red px-3 py-2 hover:bg-accent-red hover:text-white no-underline transition-colors"
                   >
                     hire me
@@ -117,6 +122,7 @@ const Header = () => {
             <Link
               href="/"
               aria-label="About"
+              onClick={() => trackNavClick('about', 'header_desktop')}
               className="inline-flex items-center justify-center rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
               title="About"
             >
@@ -124,13 +130,14 @@ const Header = () => {
             </Link>
             <Link
               href="/work"
+              onClick={() => trackNavClick('work', 'header_desktop')}
               className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
             >
               work
             </Link>
             <button
               type="button"
-              onClick={() => setOpenCommits(true)}
+              onClick={() => { trackNavClick('commits', 'header_desktop'); trackCommitsModalOpen(); setOpenCommits(true); }}
               className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] cursor-pointer"
               aria-label="Open commits modal"
             >
@@ -138,18 +145,21 @@ const Header = () => {
             </button>
             <Link
               href="/experiments"
+              onClick={() => trackNavClick('experiments', 'header_desktop')}
               className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
             >
               experiments
             </Link>
             <Link
               href="/mcp"
+              onClick={() => trackNavClick('mcp', 'header_desktop')}
               className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
             >
               mcp
             </Link>
             <Link
               href="/pitch"
+              onClick={() => { trackNavClick('hire_me', 'header_desktop'); trackHireMeClick('header'); }}
               className="inline-flex items-center justify-center font-mono text-xs text-accent-red rounded-lg border border-accent-red h-8 px-3 hover:bg-accent-red hover:text-white no-underline hover:no-underline transition-colors"
             >
               hire me
@@ -163,6 +173,7 @@ const Header = () => {
             href={`https://github.com/${githubUsername}`}
             target="_blank"
             rel="noreferrer"
+            onClick={() => trackSocialClick('github')}
             className="inline-flex items-center justify-center rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)]"
             aria-label="GitHub"
             title="GitHub"
@@ -174,6 +185,7 @@ const Header = () => {
               href={`https://x.com/${twitterUsername}`}
               target="_blank"
               rel="noreferrer"
+              onClick={() => trackSocialClick('twitter')}
               className="inline-flex items-center justify-center rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)]"
               aria-label="X (Twitter)"
               title="X"
@@ -186,6 +198,7 @@ const Header = () => {
               href={linkedinUrl}
               target="_blank"
               rel="noreferrer"
+              onClick={() => trackSocialClick('linkedin')}
               className="inline-flex items-center justify-center rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)]"
               aria-label="LinkedIn"
               title="LinkedIn"

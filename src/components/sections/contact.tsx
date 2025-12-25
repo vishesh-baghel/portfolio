@@ -1,7 +1,10 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
 import { ArrowRight } from 'lucide-react';
 import { calendlyUrl, email } from '@/lib/site-config';
+import { trackBookCallClick, trackEmailClick, trackSeeDetailsClick } from '@/lib/analytics';
 
 const ContactSection = () => {
   return (
@@ -17,12 +20,14 @@ const ContactSection = () => {
           href={calendlyUrl}
           target="_blank"
           rel="noreferrer"
+          onClick={() => trackBookCallClick('contact')}
           className="inline-flex items-center justify-center gap-2 border border-accent-red bg-accent-red text-white px-4 py-2 text-sm font-medium no-underline hover:opacity-90 transition-opacity"
         >
           book a 15-min call <ArrowRight className="size-4" />
         </a>
         <Link
           href="/pitch"
+          onClick={() => trackSeeDetailsClick('contact')}
           className="inline-flex items-center justify-center gap-2 border border-border px-4 py-2 text-sm font-medium no-underline hover:bg-secondary transition-colors"
         >
           see full details
@@ -33,6 +38,7 @@ const ContactSection = () => {
         or{' '}
         <a
           href={`mailto:${email}?subject=${encodeURIComponent('project inquiry')}`}
+          onClick={() => trackEmailClick('contact')}
           className="underline"
         >
           email me
