@@ -9,8 +9,8 @@ const AboutSection = () => {
         building blocks, and code that survives refactors.
       </p>
       <p className="text-sm sm:text-base">
-        i'm new to consulting but i ship daily. backend-heavy work, ai integration, infra setup. 
-        you get working code and someone who can explain how it works.
+        i ship daily. backend-heavy work, ai integration, infra setup. 
+        personal ai tools and productivity systems for devs like myself.
       </p>
     </section>
   );
