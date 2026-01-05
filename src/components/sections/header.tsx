@@ -5,11 +5,8 @@ import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { CommitsModal } from '@/components/commits/commits-modal';
 import ThemeToggle from '@/components/ui/theme-toggle';
-import { useRouter } from 'next/navigation';
-import { Linkedin, Github, Code2, Menu } from 'lucide-react';
-import { FaXTwitter } from 'react-icons/fa6';
-import { twitterUsername, linkedinUrl, githubUsername } from '@/lib/site-config';
-import { trackNavClick, trackMobileMenuOpen, trackMobileMenuClose, trackCommitsModalOpen, trackSocialClick, trackHireMeClick } from '@/lib/analytics';
+import { Menu } from 'lucide-react';
+import { trackNavClick, trackMobileMenuOpen, trackMobileMenuClose, trackCommitsModalOpen, trackHireMeClick } from '@/lib/analytics';
 
 /**
  * A minimalist header component for the website.
@@ -18,7 +15,6 @@ import { trackNavClick, trackMobileMenuOpen, trackMobileMenuClose, trackCommitsM
  */
 const Header = () => {
   const [openCommits, setOpenCommits] = useState(false);
-  const router = useRouter();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
@@ -94,11 +90,11 @@ const Header = () => {
                     experiments
                   </Link>
                   <Link
-                    href="/mcp"
-                    onClick={() => { trackNavClick('mcp', 'header_mobile'); setDrawerOpen(false); }}
+                    href="/partners"
+                    onClick={() => { trackNavClick('partners', 'header_mobile'); setDrawerOpen(false); }}
                     className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
                   >
-                    mcp
+                    partners
                   </Link>
                   <Link
                     href="/pitch"
@@ -151,11 +147,11 @@ const Header = () => {
               experiments
             </Link>
             <Link
-              href="/mcp"
-              onClick={() => trackNavClick('mcp', 'header_desktop')}
+              href="/partners"
+              onClick={() => trackNavClick('partners', 'header_desktop')}
               className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
             >
-              mcp
+              partners
             </Link>
             <Link
               href="/pitch"
@@ -167,45 +163,8 @@ const Header = () => {
           </div>
         </div>
 
-        {/* Right: socials + theme toggle */}
-        <div className="flex h-full items-center gap-2 sm:gap-3">
-          <a
-            href={`https://github.com/${githubUsername}`}
-            target="_blank"
-            rel="noreferrer"
-            onClick={() => trackSocialClick('github')}
-            className="inline-flex items-center justify-center rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)]"
-            aria-label="GitHub"
-            title="GitHub"
-          >
-            <Github className="size-4" />
-          </a>
-          {twitterUsername && (
-            <a
-              href={`https://x.com/${twitterUsername}`}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => trackSocialClick('twitter')}
-              className="inline-flex items-center justify-center rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)]"
-              aria-label="X (Twitter)"
-              title="X"
-            >
-              <FaXTwitter className="size-4" />
-            </a>
-          )}
-          {linkedinUrl && (
-            <a
-              href={linkedinUrl}
-              target="_blank"
-              rel="noreferrer"
-              onClick={() => trackSocialClick('linkedin')}
-              className="inline-flex items-center justify-center rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)]"
-              aria-label="LinkedIn"
-              title="LinkedIn"
-            >
-              <Linkedin className="size-4" />
-            </a>
-          )}
+        {/* Right: theme toggle */}
+        <div className="flex h-full items-center">
           <ThemeToggle />
         </div>
       </div>

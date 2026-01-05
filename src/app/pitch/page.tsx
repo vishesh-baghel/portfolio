@@ -200,7 +200,7 @@ const PitchPage = () => {
 
           {/* Honest Background */}
           <section className="space-y-4">
-            <h2 className="text-lg sm:text-xl font-bold mt-0 mb-4">the honest version</h2>
+            <h2 className="text-lg sm:text-xl font-bold mt-0 mb-4">full transparency</h2>
             <div className="border-l-4 border-accent-red pl-4 sm:pl-6 py-2 space-y-4">
               <p className="text-sm sm:text-base m-0">
                 i'm a software engineer but new to consulting. i don't have a portfolio of 50 clients. 
@@ -336,6 +336,12 @@ const PitchPage = () => {
                 prefer email? reach out
               </Link>
             </div>
+            <p className="text-xs text-muted-foreground pt-2 m-0">
+              have clients but don't build?{' '}
+              <Link href="/partners" className="text-accent-red underline hover:opacity-80">
+                become a referral partner
+              </Link>
+            </p>
           </section>
         </main>
 
