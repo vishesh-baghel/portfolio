@@ -2,35 +2,64 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { ArrowUp } from 'lucide-react';
+import { Github, Linkedin } from 'lucide-react';
+import { FaXTwitter } from 'react-icons/fa6';
+import { twitterUsername, linkedinUrl, githubUsername } from '@/lib/site-config';
+import { trackSocialClick } from '@/lib/analytics';
 
 const Footer = () => {
   const year = new Date().getFullYear();
 
   return (
     <footer className="mx-auto px-0 py-0 font-mono">
-      {/* Quick links removed as requested */}
-
       {/* Divider */}
       <div className="my-6 h-px bg-border" />
 
-      {/* Bottom row */}
-      <div className="flex items-center justify-between text-xs text-muted-foreground">
-        <div className="flex items-center gap-2">
-          <span>© {year} vishesh baghel</span>
-          <span>•</span>
-          <Link href="/llms.txt" className="text-muted-foreground no-underline cursor-pointer text-xs">
+      {/* Single row footer */}
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <span>© {year} vishesh baghel</span>
+
+        {/* Social links - minimal style */}
+        <div className="flex items-center gap-4">
+          <a
+            href={`https://github.com/${githubUsername}`}
+            target="_blank"
+            rel="noreferrer"
+            onClick={() => trackSocialClick('github')}
+            className="text-muted-foreground hover:text-foreground transition-colors"
+            aria-label="GitHub"
+          >
+            <Github className="size-4" />
+          </a>
+          {twitterUsername && (
+            <a
+              href={`https://x.com/${twitterUsername}`}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => trackSocialClick('twitter')}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="X (Twitter)"
+            >
+              <FaXTwitter className="size-4" />
+            </a>
+          )}
+          {linkedinUrl && (
+            <a
+              href={linkedinUrl}
+              target="_blank"
+              rel="noreferrer"
+              onClick={() => trackSocialClick('linkedin')}
+              className="text-muted-foreground hover:text-foreground transition-colors"
+              aria-label="LinkedIn"
+            >
+              <Linkedin className="size-4" />
+            </a>
+          )}
+          <span className="text-border">|</span>
+          <Link href="/llms.txt" className="text-muted-foreground hover:text-foreground no-underline transition-colors">
             llms.txt
           </Link>
         </div>
-        <button
-          type="button"
-          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className="inline-flex items-center justify-center gap-1 rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)]"
-          aria-label="Back to top"
-        >
-          <ArrowUp className="size-3.5" /> top
-        </button>
       </div>
     </footer>
   );

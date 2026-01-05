@@ -68,7 +68,7 @@ describe('Header Component Analytics', () => {
         { item: 'work', location: 'header_desktop' },
         { item: 'commits', location: 'header_desktop' },
         { item: 'experiments', location: 'header_desktop' },
-        { item: 'mcp', location: 'header_desktop' },
+        { item: 'partners', location: 'header_desktop' },
         { item: 'hire_me', location: 'header_desktop' },
       ] as const;
 
@@ -81,7 +81,7 @@ describe('Header Component Analytics', () => {
       expect(trackNavClick).toHaveBeenCalledWith('work', 'header_desktop');
       expect(trackNavClick).toHaveBeenCalledWith('commits', 'header_desktop');
       expect(trackNavClick).toHaveBeenCalledWith('experiments', 'header_desktop');
-      expect(trackNavClick).toHaveBeenCalledWith('mcp', 'header_desktop');
+      expect(trackNavClick).toHaveBeenCalledWith('partners', 'header_desktop');
       expect(trackNavClick).toHaveBeenCalledWith('hire_me', 'header_desktop');
     });
 
@@ -91,7 +91,7 @@ describe('Header Component Analytics', () => {
         { item: 'work', location: 'header_mobile' },
         { item: 'commits', location: 'header_mobile' },
         { item: 'experiments', location: 'header_mobile' },
-        { item: 'mcp', location: 'header_mobile' },
+        { item: 'partners', location: 'header_mobile' },
         { item: 'hire_me', location: 'header_mobile' },
       ] as const;
 
@@ -101,6 +101,7 @@ describe('Header Component Analytics', () => {
 
       expect(trackNavClick).toHaveBeenCalledTimes(6);
       expect(trackNavClick).toHaveBeenCalledWith('about', 'header_mobile');
+      expect(trackNavClick).toHaveBeenCalledWith('partners', 'header_mobile');
       expect(trackNavClick).toHaveBeenCalledWith('hire_me', 'header_mobile');
     });
   });
@@ -317,6 +318,53 @@ describe('TrackedLink Component', () => {
   });
 });
 
+describe('Partners Page Analytics', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should track partners page navigation from header', () => {
+    trackNavClick('partners', 'header_desktop');
+    expect(trackNavClick).toHaveBeenCalledWith('partners', 'header_desktop');
+  });
+
+  it('should track partners page navigation from mobile menu', () => {
+    trackNavClick('partners', 'header_mobile');
+    expect(trackNavClick).toHaveBeenCalledWith('partners', 'header_mobile');
+  });
+
+  it('should track book call CTA from partners page', () => {
+    trackBookCallClick('partners');
+    expect(trackBookCallClick).toHaveBeenCalledWith('partners');
+  });
+
+  it('should track email CTA from partners page', () => {
+    trackEmailClick('partners');
+    expect(trackEmailClick).toHaveBeenCalledWith('partners');
+  });
+});
+
+describe('Footer Analytics', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  it('should track GitHub click from footer', () => {
+    trackSocialClick('github');
+    expect(trackSocialClick).toHaveBeenCalledWith('github');
+  });
+
+  it('should track Twitter click from footer', () => {
+    trackSocialClick('twitter');
+    expect(trackSocialClick).toHaveBeenCalledWith('twitter');
+  });
+
+  it('should track LinkedIn click from footer', () => {
+    trackSocialClick('linkedin');
+    expect(trackSocialClick).toHaveBeenCalledWith('linkedin');
+  });
+});
+
 describe('Analytics Integration', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -340,23 +388,15 @@ describe('Analytics Integration', () => {
     expect(trackBookCallClick).toHaveBeenCalledWith('pitch_hero');
   });
 
-  it('should track complete user journey: homepage -> experiments -> MCP', () => {
+  it('should track complete user journey: homepage -> experiments -> partners', () => {
     // User clicks experiments in nav
     trackNavClick('experiments', 'header_desktop');
-    
-    // User clicks MCP in nav
-    trackNavClick('mcp', 'header_desktop');
-    
-    // User selects IDE
-    trackMcpIdeSelect('cursor');
-    
-    // User copies config
-    trackMcpConfigCopy('cursor');
+
+    // User clicks partners in nav
+    trackNavClick('partners', 'header_desktop');
 
     expect(trackNavClick).toHaveBeenCalledWith('experiments', 'header_desktop');
-    expect(trackNavClick).toHaveBeenCalledWith('mcp', 'header_desktop');
-    expect(trackMcpIdeSelect).toHaveBeenCalledWith('cursor');
-    expect(trackMcpConfigCopy).toHaveBeenCalledWith('cursor');
+    expect(trackNavClick).toHaveBeenCalledWith('partners', 'header_desktop');
   });
 
   it('should track mobile user journey', () => {
