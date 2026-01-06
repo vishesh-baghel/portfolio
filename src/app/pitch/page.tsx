@@ -337,9 +337,9 @@ const PitchPage = () => {
               </Link>
             </div>
             <p className="text-xs text-muted-foreground pt-2 m-0">
-              have clients but don't build?{' '}
-              <Link href="/partners" className="text-accent-red underline hover:opacity-80">
-                become a referral partner
+              agencies: i also white-label for client projects.{' '}
+              <Link href={`mailto:${email}?subject=${encodeURIComponent('agency partnership')}`} className="text-accent-red underline hover:opacity-80">
+                let's talk
               </Link>
             </p>
           </section>

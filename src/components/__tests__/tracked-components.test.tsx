@@ -68,7 +68,6 @@ describe('Header Component Analytics', () => {
         { item: 'work', location: 'header_desktop' },
         { item: 'commits', location: 'header_desktop' },
         { item: 'experiments', location: 'header_desktop' },
-        { item: 'partners', location: 'header_desktop' },
         { item: 'hire_me', location: 'header_desktop' },
       ] as const;
 
@@ -76,12 +75,11 @@ describe('Header Component Analytics', () => {
         trackNavClick(item, location);
       });
 
-      expect(trackNavClick).toHaveBeenCalledTimes(6);
+      expect(trackNavClick).toHaveBeenCalledTimes(5);
       expect(trackNavClick).toHaveBeenCalledWith('about', 'header_desktop');
       expect(trackNavClick).toHaveBeenCalledWith('work', 'header_desktop');
       expect(trackNavClick).toHaveBeenCalledWith('commits', 'header_desktop');
       expect(trackNavClick).toHaveBeenCalledWith('experiments', 'header_desktop');
-      expect(trackNavClick).toHaveBeenCalledWith('partners', 'header_desktop');
       expect(trackNavClick).toHaveBeenCalledWith('hire_me', 'header_desktop');
     });
 
@@ -91,7 +89,6 @@ describe('Header Component Analytics', () => {
         { item: 'work', location: 'header_mobile' },
         { item: 'commits', location: 'header_mobile' },
         { item: 'experiments', location: 'header_mobile' },
-        { item: 'partners', location: 'header_mobile' },
         { item: 'hire_me', location: 'header_mobile' },
       ] as const;
 
@@ -99,9 +96,9 @@ describe('Header Component Analytics', () => {
         trackNavClick(item, location);
       });
 
-      expect(trackNavClick).toHaveBeenCalledTimes(6);
+      expect(trackNavClick).toHaveBeenCalledTimes(5);
       expect(trackNavClick).toHaveBeenCalledWith('about', 'header_mobile');
-      expect(trackNavClick).toHaveBeenCalledWith('partners', 'header_mobile');
+      expect(trackNavClick).toHaveBeenCalledWith('experiments', 'header_mobile');
       expect(trackNavClick).toHaveBeenCalledWith('hire_me', 'header_mobile');
     });
   });
@@ -318,31 +315,6 @@ describe('TrackedLink Component', () => {
   });
 });
 
-describe('Partners Page Analytics', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-  });
-
-  it('should track partners page navigation from header', () => {
-    trackNavClick('partners', 'header_desktop');
-    expect(trackNavClick).toHaveBeenCalledWith('partners', 'header_desktop');
-  });
-
-  it('should track partners page navigation from mobile menu', () => {
-    trackNavClick('partners', 'header_mobile');
-    expect(trackNavClick).toHaveBeenCalledWith('partners', 'header_mobile');
-  });
-
-  it('should track book call CTA from partners page', () => {
-    trackBookCallClick('partners');
-    expect(trackBookCallClick).toHaveBeenCalledWith('partners');
-  });
-
-  it('should track email CTA from partners page', () => {
-    trackEmailClick('partners');
-    expect(trackEmailClick).toHaveBeenCalledWith('partners');
-  });
-});
 
 describe('Footer Analytics', () => {
   beforeEach(() => {
@@ -388,15 +360,15 @@ describe('Analytics Integration', () => {
     expect(trackBookCallClick).toHaveBeenCalledWith('pitch_hero');
   });
 
-  it('should track complete user journey: homepage -> experiments -> partners', () => {
+  it('should track complete user journey: homepage -> experiments -> work', () => {
     // User clicks experiments in nav
     trackNavClick('experiments', 'header_desktop');
 
-    // User clicks partners in nav
-    trackNavClick('partners', 'header_desktop');
+    // User clicks work in nav
+    trackNavClick('work', 'header_desktop');
 
     expect(trackNavClick).toHaveBeenCalledWith('experiments', 'header_desktop');
-    expect(trackNavClick).toHaveBeenCalledWith('partners', 'header_desktop');
+    expect(trackNavClick).toHaveBeenCalledWith('work', 'header_desktop');
   });
 
   it('should track mobile user journey', () => {
