@@ -7,7 +7,7 @@ import { calendlyUrl, email } from '@/lib/site-config';
 
 export const metadata = {
   title: 'Work With Me | Vishesh Baghel',
-  description: 'Ship your MVP in 20 hours. $500. Backend-heavy development, AI integration, and infrastructure hardening.',
+  description: 'AI integrations and MVPs for startups. I help founders add AI to their products using cutting-edge typescript tools. OSS contributor to Mastra.',
 };
 
 const PitchPage = () => {
@@ -20,10 +20,10 @@ const PitchPage = () => {
           {/* Hero Section */}
           <section className="py-6 space-y-4">
             <h1 className="text-2xl sm:text-3xl font-bold leading-tight">
-              i help founders ship their first mvp
+              i help startups add ai to their products
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground">
-              or upgrade their vibe-coded prototype into something that actually scales.
+              agents, integrations, or full ai-powered mvps. using cutting-edge typescript tools i actually contribute to.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
               <Link
@@ -52,17 +52,17 @@ const PitchPage = () => {
                 <span className="text-muted-foreground">for 20 hours of work</span>
               </div>
               <p className="text-sm sm:text-base">
-                that's your mvp. after 20 hours, you'll know if i'm worth keeping around or not. 
+                that's your ai integration or mvp kickstart. after 20 hours, you'll know if i'm worth keeping around.
                 if my work is subpar, walk away. no hard feelings.
               </p>
               <div className="grid gap-2 text-sm pt-2">
                 <div className="flex items-center gap-2">
                   <Check className="size-4 text-accent-red shrink-0" />
-                  <span>working product, not a prototype</span>
+                  <span>production-ready ai features, not toy demos</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="size-4 text-accent-red shrink-0" />
-                  <span>clean codebase you can extend</span>
+                  <span>clean typescript codebase you can extend</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Check className="size-4 text-accent-red shrink-0" />
@@ -78,45 +78,45 @@ const PitchPage = () => {
             <div className="grid gap-4 sm:grid-cols-2">
               <article className="border border-border p-4 sm:p-5 space-y-2">
                 <div className="flex items-center gap-2">
-                  <Zap className="size-5 text-accent-red shrink-0" />
-                  <h3 className="font-semibold text-base m-0 leading-none">mvp development</h3>
+                  <Target className="size-5 text-accent-red shrink-0" />
+                  <h3 className="font-semibold text-base m-0 leading-none">ai agents & integrations</h3>
                 </div>
                 <p className="text-sm text-muted-foreground m-0">
-                  build your first version from scratch. backend-heavy, production-ready, 
-                  with proper error handling and observability baked in.
+                  add agents, llm routing, rag, or any ai capability to your existing product.
+                  i contribute to mastra and work with vercel ai sdk, openai apis daily.
+                </p>
+              </article>
+
+              <article className="border border-border p-4 sm:p-5 space-y-2">
+                <div className="flex items-center gap-2">
+                  <Zap className="size-5 text-accent-red shrink-0" />
+                  <h3 className="font-semibold text-base m-0 leading-none">ai-powered mvps</h3>
+                </div>
+                <p className="text-sm text-muted-foreground m-0">
+                  build your ai product from scratch. chatbots, automation tools, ai-native apps.
+                  production-ready with proper error handling and observability.
                 </p>
               </article>
 
               <article className="border border-border p-4 sm:p-5 space-y-2">
                 <div className="flex items-center gap-2">
                   <Code2 className="size-5 text-accent-red shrink-0" />
-                  <h3 className="font-semibold text-base m-0 leading-none">vibe code rescue</h3>
+                  <h3 className="font-semibold text-base m-0 leading-none">tool adoption</h3>
                 </div>
                 <p className="text-sm text-muted-foreground m-0">
-                  upgrade your ai-generated prototype into something reliable. 
-                  add tests, fix the architecture, make it scale-ready.
-                </p>
-              </article>
-
-              <article className="border border-border p-4 sm:p-5 space-y-2">
-                <div className="flex items-center gap-2">
-                  <Target className="size-5 text-accent-red shrink-0" />
-                  <h3 className="font-semibold text-base m-0 leading-none">ai integration</h3>
-                </div>
-                <p className="text-sm text-muted-foreground m-0">
-                  add agents, llm routing, rag, or any ai capability to your existing product. 
-                  i work with mastra, langchain, and raw openai apis daily.
+                  migrate to cutting-edge ai frameworks. i learn new tools fast and ship
+                  production integrations, not toy examples.
                 </p>
               </article>
 
               <article className="border border-border p-4 sm:p-5 space-y-2">
                 <div className="flex items-center gap-2">
                   <Clock className="size-5 text-accent-red shrink-0" />
-                  <h3 className="font-semibold text-base m-0 leading-none">infra hardening</h3>
+                  <h3 className="font-semibold text-base m-0 leading-none">vibe code rescue</h3>
                 </div>
                 <p className="text-sm text-muted-foreground m-0">
-                  observability, monitoring, ci/cd, proper deployments. 
-                  make your product reliable before you scale.
+                  upgrade your ai-generated prototype into something reliable.
+                  add tests, fix the architecture, make it scale-ready.
                 </p>
               </article>
             </div>
@@ -192,7 +192,7 @@ const PitchPage = () => {
                   <span className="font-semibold text-sm leading-none">one introduction</span>
                 </div>
                 <p className="text-xs sm:text-sm text-muted-foreground m-0">
-                  if you liked my work, introduce me to one founder friend who's building something.
+                  if you liked my work, introduce me to one founder friend who's adding ai to their product.
                 </p>
               </div>
             </div>
@@ -203,17 +203,16 @@ const PitchPage = () => {
             <h2 className="text-lg sm:text-xl font-bold mt-0 mb-4">full transparency</h2>
             <div className="border-l-4 border-accent-red pl-4 sm:pl-6 py-2 space-y-4">
               <p className="text-sm sm:text-base m-0">
-                i'm a software engineer but new to consulting. i don't have a portfolio of 50 clients. 
-                i'm building that from scratch.
+                i'm a software engineer with 3+ years of experience, but new to consulting.
+                i don't have a portfolio of 50 clients — i'm building that from scratch.
               </p>
               <p className="text-sm sm:text-base m-0">
-                what i do have: 3+ years writing production software, daily work with cutting-edge ai tooling, 
-                contributions to open source frameworks i actually use, and an ability to figure things out fast.
+                what i do have: active contributions to mastra (ai agent framework), daily work with
+                cutting-edge ai tooling, and referrals from tool creators who trust my code quality.
               </p>
               <p className="text-sm sm:text-base m-0">
-                my strongest skill isn't any specific technology — it's learning. 
-                give me something vague, and i'll deliver something concrete. 
-                you can trust that the work gets done.
+                my edge: i learn new tools fast. i'm usually working with frameworks before they go mainstream,
+                which means i can help you adopt them while others are still figuring them out.
               </p>
             </div>
           </section>
@@ -223,20 +222,20 @@ const PitchPage = () => {
             <h2 className="text-lg sm:text-xl font-bold mt-0 mb-4">technical background</h2>
             <div className="grid gap-2 text-sm border border-border p-4 sm:p-5">
               <div className="flex flex-wrap gap-x-1">
-                <span className="font-semibold shrink-0">strong:</span>
-                <span className="text-muted-foreground">typescript, node.js, postgres, ai agents, backend systems</span>
+                <span className="font-semibold shrink-0">ai tools:</span>
+                <span className="text-muted-foreground">mastra, vercel ai sdk, openai apis, langchain, rag pipelines</span>
               </div>
               <div className="flex flex-wrap gap-x-1">
-                <span className="font-semibold shrink-0">solid:</span>
-                <span className="text-muted-foreground">react, next.js, aws, docker, observability</span>
+                <span className="font-semibold shrink-0">core stack:</span>
+                <span className="text-muted-foreground">typescript, node.js, postgres, next.js, react</span>
               </div>
               <div className="flex flex-wrap gap-x-1">
-                <span className="font-semibold shrink-0">enough to ship:</span>
-                <span className="text-muted-foreground">frontend design, css, tailwind</span>
+                <span className="font-semibold shrink-0">infra:</span>
+                <span className="text-muted-foreground">aws, docker, ci/cd, observability, monitoring</span>
               </div>
               <div className="flex flex-wrap gap-x-1">
                 <span className="font-semibold shrink-0">learning:</span>
-                <span className="text-muted-foreground">whatever your project needs</span>
+                <span className="text-muted-foreground">whatever cutting-edge tool your project needs</span>
               </div>
             </div>
           </section>
@@ -249,23 +248,23 @@ const PitchPage = () => {
               <ul className="space-y-2 list-none p-0">
                 <li className="flex items-center gap-2 before:content-none">
                   <span className="text-accent-red shrink-0">—</span>
-                  <span>vibe-coded apps break in production. i've seen it. i've fixed it.</span>
+                  <span>i contribute to frameworks. i understand the internals, not just the docs.</span>
                 </li>
                 <li className="flex items-center gap-2 before:content-none">
                   <span className="text-accent-red shrink-0">—</span>
-                  <span>you'll spend $200+ on ai tools and still need to debug the output.</span>
+                  <span>vibe-coded ai apps break in production. i've seen it. i've fixed it.</span>
                 </li>
                 <li className="flex items-center gap-2 before:content-none">
                   <span className="text-accent-red shrink-0">—</span>
-                  <span>i write software daily. i know what scales and what doesn't.</span>
+                  <span>ai tools generate code. i make relevant architectural decisions they can't.</span>
                 </li>
                 <li className="flex items-center gap-2 before:content-none">
                   <span className="text-accent-red shrink-0">—</span>
-                  <span>you get a person who can answer questions, not a chat window.</span>
+                  <span>you get someone who can debug edge cases and explain what went wrong.</span>
                 </li>
               </ul>
               <p className="text-muted-foreground">
-                $500 gets you a working product and someone who can explain how it works.
+                $500 gets you production ai features and someone who can explain how they work.
               </p>
             </div>
           </section>
@@ -316,9 +315,9 @@ const PitchPage = () => {
 
           {/* Final CTA */}
           <section className="border-2 border-border p-6 sm:p-8 space-y-4 text-center">
-            <h2 className="text-lg sm:text-xl font-bold mt-0 mb-2">ready to ship something?</h2>
+            <h2 className="text-lg sm:text-xl font-bold mt-0 mb-2">ready to add ai to your product?</h2>
             <p className="text-sm sm:text-base text-muted-foreground max-w-md mx-auto">
-              15 minutes is enough to know if we're a fit. no sales pitch, just a conversation about what you're building.
+              15 minutes is enough to know if we're a fit. no sales pitch, just a conversation about your ai needs.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
               <Link
