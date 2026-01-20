@@ -52,9 +52,9 @@ export async function GET(req: NextRequest) {
     return new Response(JSON.stringify(cached.payload), { headers: { 'Content-Type': 'application/json' } });
   }
 
-  // Build query: open OR merged PRs limited to public repositories when possible
+  // Build query: PRs limited to public repositories
   const qualifier = scope === 'involves' ? `involves:${user}` : `author:${user}`;
-  const qFast = `is:pr ${qualifier} (is:open OR is:merged) is:public`;
+  const qFast = `is:pr ${qualifier} is:public`;
   const fastUrl = new URL('https://api.github.com/search/issues');
   fastUrl.searchParams.set('q', qFast);
   fastUrl.searchParams.set('sort', 'updated');
@@ -68,8 +68,8 @@ export async function GET(req: NextRequest) {
     'User-Agent': 'portfolio-prs-widget'
   };
 
-  const token = process.env.GITHUB_TOKEN;
-  if (token) headers['Authorization'] = `Bearer ${token}`;
+  // Note: Don't use GITHUB_TOKEN for search - scoped tokens limit results to repos they have access to.
+  // Public repo searches work better unauthenticated (60 req/hour vs token-scoped results).
 
   // Simple retry with timeout to mitigate transient network issues.
   async function fetchWithTimeout(input: string, init: RequestInit & { timeoutMs?: number } = {}) {
