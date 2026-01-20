@@ -15,8 +15,8 @@ const Footer = () => {
       {/* Divider */}
       <div className="my-6 h-px bg-border" />
 
-      {/* Single row footer */}
-      <div className="flex items-center justify-between text-sm text-muted-foreground">
+      {/* Footer content - stacked on mobile, row on larger screens */}
+      <div className="flex flex-col-reverse items-center gap-4 sm:flex-row sm:justify-between text-sm text-muted-foreground">
         <span>© {year} vishesh baghel</span>
 
         {/* Social links - minimal style */}
