@@ -62,7 +62,7 @@ const OpenSourceSection = () => {
       <div className="flex items-center justify-between">
         <h2 className="text-base sm:text-lg font-bold cursor-default text-text-primary mt-0 mb-2">recent contributions</h2>
         <button
-          className="text-xs sm:text-sm underline disabled:opacity-50"
+          className="text-xs sm:text-sm underline disabled:opacity-50 cursor-pointer"
           onClick={() => { trackPRRefresh(); setPage(1); setRefreshTick((t) => t + 1); }}
           disabled={loading}
           aria-label="Refresh PRs"
@@ -72,11 +72,19 @@ const OpenSourceSection = () => {
       </div>
       <div className="grid gap-3">
         {loading && (
-          <article className="border border-border bg-card/60 p-3 sm:p-4">
-            <p className="text-xs sm:text-sm">loading pull requests…</p>
-          </article>
+          <>
+            {[0, 1, 2].map((i) => (
+              <article key={i} className="border border-border bg-card/60 p-3 sm:p-4">
+                <header className="mb-1 flex items-center gap-2">
+                  <span className="text-sm sm:text-base bg-border/50 rounded animate-pulse text-transparent select-none">vishesh-baghel/experiments#00</span>
+                  <span className="text-xs sm:text-sm bg-border/50 rounded animate-pulse text-transparent select-none">• merged</span>
+                </header>
+                <p className="text-xs sm:text-sm bg-border/50 rounded animate-pulse text-transparent select-none">Loading pull request title placeholder text here</p>
+              </article>
+            ))}
+          </>
         )}
-        {error && (
+        {!loading && error && (
           <article className="border border-border bg-card/60 p-3 sm:p-4">
             <p className="text-xs sm:text-sm text-red-500">{error}</p>
           </article>
@@ -89,10 +97,10 @@ const OpenSourceSection = () => {
         {!loading && !error && data?.items?.map((it) => (
           <article key={`${it.repo}#${it.number}`} className="border border-border bg-card/60 hover:bg-card transition-colors p-3 sm:p-4">
             <header className="mb-1 flex items-center gap-2">
-              <a 
-                className="underline text-accent-red text-sm sm:text-base" 
-                href={it.html_url} 
-                target="_blank" 
+              <a
+                className="underline text-accent-red text-sm sm:text-base"
+                href={it.html_url}
+                target="_blank"
                 rel="noreferrer"
                 onClick={() => trackPRClick(it.repo || '', it.html_url, it.title)}
               >
@@ -106,14 +114,14 @@ const OpenSourceSection = () => {
       </div>
       <div className="mt-3 flex items-center gap-3">
         <button
-          className="text-xs sm:text-sm underline disabled:opacity-50"
+          className="text-xs sm:text-sm underline disabled:opacity-50 cursor-pointer"
           onClick={() => { trackPRPagination('prev', page); setPage((p) => Math.max(1, p - 1)); }}
           disabled={!hasPrev || loading}
         >
           previous
         </button>
         <button
-          className="text-xs sm:text-sm underline disabled:opacity-50"
+          className="text-xs sm:text-sm underline disabled:opacity-50 cursor-pointer"
           onClick={() => { trackPRPagination('next', page); setPage((p) => p + 1); }}
           disabled={!hasNext || loading}
         >

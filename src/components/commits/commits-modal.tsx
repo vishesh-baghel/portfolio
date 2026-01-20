@@ -184,13 +184,13 @@ export const CommitsModal: React.FC<CommitsModalProps> = ({ open, onClose, usern
           </div>
           <div className="flex items-center gap-2 sm:gap-3">
             <button
-              className="font-mono text-xs sm:text-sm underline text-[var(--color-accent-red)] hover:opacity-80"
+              className="font-mono text-xs sm:text-sm underline text-[var(--color-accent-red)] hover:opacity-80 cursor-pointer"
               onClick={fetchCommits}
               title="Refresh (Cmd/Ctrl+R)"
             >
               refresh
             </button>
-            <button className="px-2 text-lg" onClick={onClose} aria-label="Close commits modal">
+            <button className="px-2 text-lg cursor-pointer" onClick={onClose} aria-label="Close commits modal">
               ×
             </button>
           </div>

@@ -217,6 +217,23 @@ const PitchPage = () => {
             </div>
           </section>
 
+          {/* Past Work */}
+          <section className="space-y-4">
+            <h2 className="text-lg sm:text-xl font-bold mt-0 mb-4">proof of work</h2>
+            <div className="border border-border p-4 sm:p-5 space-y-3">
+              <div className="flex items-center gap-2">
+                <div className="w-2 h-2 bg-accent-red shrink-0" />
+                <Link href="https://artifact.engineer" target="_blank" rel="noreferrer" className="font-semibold text-base m-0 hover:text-accent-red transition-colors">
+                  artifact.engineer
+                </Link>
+              </div>
+              <p className="text-sm text-muted-foreground m-0">
+                built an ai agent for real-time diagram editing. natural language prompts to canvas mutations,
+                with tool calls, safety checks, and audit logs. shipped as an mvp into their product.
+              </p>
+            </div>
+          </section>
+
           {/* Skills Breakdown */}
           <section className="space-y-4">
             <h2 className="text-lg sm:text-xl font-bold mt-0 mb-4">technical background</h2>
