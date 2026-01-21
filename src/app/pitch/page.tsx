@@ -282,11 +282,11 @@ const PitchPage = () => {
                 expertise at early-stage prices.
               </p>
               <p className="text-sm sm:text-base m-0">
-                what you're getting: 10 merged prs to mastra (ai agent
-                framework), focused on memory systems and integrations. when you
-                hit a weird bug, i can read the source code and fix it — not
-                just google the error message. the mastra team refers clients to
-                me when they need implementation help.
+                what you're getting: when your ai feature hits a weird bug, i
+                can read the framework source code and fix it — not just google
+                the error message. i'm a mastra contributor, so i know how it
+                works under the hood. the mastra team refers clients to me when
+                they need implementation help.
               </p>
               <p className="text-sm sm:text-base m-0">
                 my edge: i shipped production mastra code within 2 months of the
