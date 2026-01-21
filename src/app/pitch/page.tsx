@@ -34,12 +34,14 @@ const PitchPage = () => {
               i help startups add ai to their products
             </h1>
             <p className="text-base sm:text-lg text-muted-foreground">
-              agents, integrations, or full ai-powered mvps — using typescript
-              tools i contribute to, not just use.
+              agents, integrations, or full ai-powered mvps. i contribute to the
+              typescript tools i use — so when things break, i can actually fix
+              them.
             </p>
             <p className="text-base sm:text-lg text-muted-foreground">
-              most founders spend their first month fighting llm hallucinations,
-              broken tool calls, and frameworks that changed last week. i've
+              most founders spend their first month watching demos break because
+              the llm hallucinated, debugging tool calls that worked yesterday,
+              and rewriting code for frameworks that changed last week. i've
               already shipped through all of that.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 pt-2">
@@ -116,9 +118,9 @@ const PitchPage = () => {
                   </h3>
                 </div>
                 <p className="text-sm text-muted-foreground m-0">
-                  add agents, llm routing, or rag to your existing product. i
-                  contribute to mastra (ai agent framework) and use vercel ai
-                  sdk in production daily.
+                  add agents, smart model switching, or knowledge retrieval to
+                  your existing product. i contribute to mastra (ai agent
+                  framework) and use vercel ai sdk in production daily.
                 </p>
               </article>
 
@@ -181,9 +183,9 @@ const PitchPage = () => {
                     a framework, not a dependency
                   </h3>
                   <p className="text-sm text-muted-foreground m-0">
-                    i'll teach you how to build on your own. you won't need me
-                    for every feature. the goal is to make you independent, not
-                    to create recurring revenue for myself.
+                    you'll stop being dependent on contractors for every ai
+                    feature. i'll teach you how to build on your own — that's
+                    freedom, not a subscription.
                   </p>
                 </div>
               </div>
@@ -281,9 +283,9 @@ const PitchPage = () => {
               </p>
               <p className="text-sm sm:text-base m-0">
                 what you're getting: 10 merged prs to mastra (ai agent
-                framework), focused on memory systems and integrations. i know
-                the internals well enough to debug issues that would stump
-                someone just reading the docs. the mastra team refers clients to
+                framework), focused on memory systems and integrations. when you
+                hit a weird bug, i can read the source code and fix it — not
+                just google the error message. the mastra team refers clients to
                 me when they need implementation help.
               </p>
               <p className="text-sm sm:text-base m-0">
@@ -314,10 +316,10 @@ const PitchPage = () => {
                   </Link>
                 </div>
                 <p className="text-sm text-muted-foreground m-0">
-                  built an ai agent for real-time diagram editing. natural
-                  language prompts to canvas mutations, with tool calls, safety
-                  checks, and audit logs. shipped to production — now used by
-                  their customers daily.
+                  built an ai agent for this yc-backed startup's real-time
+                  diagram editor. natural language prompts to canvas mutations,
+                  with tool calls, safety checks, and audit logs. shipped to
+                  production — now handling customer requests daily.
                 </p>
               </div>
               <div className="border border-border p-4 sm:p-5 space-y-3">
@@ -592,9 +594,9 @@ const PitchPage = () => {
                 <p className="text-sm text-muted-foreground m-0">
                   you're paying for ai expertise, not just code. i contribute to
                   the frameworks i use, debug issues others can't, and ship
-                  production-ready features — not prototypes that break. most ai
-                  consultants charge $100-200/hr. i'm building my portfolio, so
-                  you get that expertise at a fraction of the cost.
+                  production-ready features — not prototypes that break. i'm
+                  building my consulting practice, so you get senior-level ai
+                  work while i build my client base.
                 </p>
               </div>
               <div className="border border-border p-4">
@@ -631,7 +633,8 @@ const PitchPage = () => {
             </p>
             <p className="text-sm text-muted-foreground">
               worst case: you lose 15 minutes. best case: your ai feature ships
-              next month instead of next quarter.
+              next month instead of next quarter. and if you're not satisfied
+              with my work — full refund, no questions asked.
             </p>
             <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
               <Link
