@@ -1,4 +1,5 @@
 import { unstable_cache } from 'next/cache';
+import { createGateway, generateText } from 'ai';
 
 // --- Types ---
 
@@ -28,15 +29,18 @@ export interface WeeklyHighlight {
 
 interface MemoryDocument {
   path: string;
-  metadata: {
-    public: boolean;
-    summary: string;
+  title?: string;
+  content?: string;
+  tags?: string[];
+  metadata?: {
+    public?: boolean;
+    summary?: string;
     decision?: string;
     problem?: string;
-    entryTags?: string[];
-    project: string;
-    date: string;
-    links?: {
+    entryTags?: string | string[];
+    project?: string;
+    date?: string;
+    links?: string | {
       commit?: string;
       pr?: string;
       related?: string[];
@@ -61,51 +65,84 @@ export const fetchWorklogEntries = async (
   endDate: string
 ): Promise<WorklogEntry[]> => {
   if (!MEMORY_URL || !MEMORY_KEY) {
-    if (process.env.NODE_ENV === 'development') {
-      return getSampleEntries(startDate, endDate);
-    }
     return [];
   }
 
-  const metadataFilter = JSON.stringify({
-    public: true,
-    date: { $gte: startDate, $lte: endDate },
-  });
-
-  const params = new URLSearchParams({
+  // First, get the document index
+  const indexParams = new URLSearchParams({
     folder: '/worklog',
-    recursive: 'true',
     tags: 'worklog',
-    metadata: metadataFilter,
-    fields: 'path,metadata',
-    sort: 'metadata.date',
-    order: 'desc',
-    limit: '50',
+    limit: '100',
   });
 
-  const res = await fetch(`${MEMORY_URL}/api/documents?${params}`, {
+  const indexRes = await fetch(`${MEMORY_URL}/api/index?${indexParams}`, {
     headers: { Authorization: `Bearer ${MEMORY_KEY}` },
     next: { revalidate: isToday(endDate) ? 300 : 3600 },
   });
 
-  if (!res.ok) return [];
+  if (!indexRes.ok) return [];
 
-  const { documents } = await res.json();
-  if (!Array.isArray(documents)) return [];
+  const { documents: indexDocs } = await indexRes.json();
+  if (!Array.isArray(indexDocs) || indexDocs.length === 0) return [];
 
-  return documents.map(docToEntry);
+  // Fetch full documents to get metadata
+  const docPromises = indexDocs.map(async (doc: { path: string }) => {
+    const docRes = await fetch(`${MEMORY_URL}/api/documents${doc.path}`, {
+      headers: { Authorization: `Bearer ${MEMORY_KEY}` },
+      next: { revalidate: isToday(endDate) ? 300 : 3600 },
+    });
+    if (!docRes.ok) return null;
+    return docRes.json();
+  });
+
+  const fullDocs = await Promise.all(docPromises);
+  const validDocs = fullDocs.filter(
+    (doc): doc is MemoryDocument => doc !== null
+  );
+
+  // Filter by date range and public flag
+  const filtered = validDocs.filter((doc) => {
+    const docDate = doc.metadata?.date;
+    const isPublic = doc.metadata?.public;
+    if (!docDate || !isPublic) return false;
+    return docDate >= startDate && docDate <= endDate;
+  });
+
+  // Sort by date descending
+  filtered.sort((a, b) => {
+    const dateA = a.metadata?.date || '';
+    const dateB = b.metadata?.date || '';
+    return dateB.localeCompare(dateA);
+  });
+
+  return filtered.slice(0, 50).map(docToEntry);
 };
 
 const docToEntry = (doc: MemoryDocument): WorklogEntry => {
-  const { metadata } = doc;
+  const metadata = doc.metadata || {};
+
+  // Handle entryTags which might be a comma-separated string or array
+  let tags: string[] = [];
+  if (typeof metadata.entryTags === 'string') {
+    tags = metadata.entryTags.split(',').map((t) => t.trim());
+  } else if (Array.isArray(metadata.entryTags)) {
+    tags = metadata.entryTags;
+  }
+
+  // Handle links which might be a string (empty) or object
+  let links: WorklogEntry['links'] | undefined;
+  if (typeof metadata.links === 'object' && metadata.links !== null) {
+    links = metadata.links;
+  }
+
   return {
-    summary: metadata.summary,
+    summary: metadata.summary || doc.title || 'Untitled',
     decision: metadata.decision,
     problem: metadata.problem,
-    tags: metadata.entryTags || [],
-    project: metadata.project,
-    date: metadata.date,
-    links: metadata.links,
+    tags,
+    project: metadata.project || 'unknown',
+    date: metadata.date || '',
+    links,
   };
 };
 
@@ -181,7 +218,7 @@ export const getWeeklyHighlights = unstable_cache(
   async (entries: WorklogEntry[]): Promise<WeeklyHighlight[]> => {
     if (entries.length === 0) return [];
 
-    const apiKey = process.env.OPENAI_API_KEY;
+    const apiKey = process.env.AI_GATEWAY_API_KEY;
     if (!apiKey) {
       // Fallback: use top entries by decision length
       return entries
@@ -192,164 +229,46 @@ export const getWeeklyHighlights = unstable_cache(
     }
 
     const prompt = buildHighlightsPrompt(entries);
+    const gateway = createGateway({ apiKey });
 
-    const res = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [{ role: 'user', content: prompt }],
+    try {
+      const { text } = await generateText({
+        model: gateway('anthropic/claude-3-5-haiku-latest'),
+        prompt,
         temperature: 0.3,
-        response_format: { type: 'json_object' },
-      }),
-    });
+      });
 
-    if (!res.ok) {
-      // Fallback on error
-      return entries
-        .filter(e => e.decision)
-        .slice(0, 3)
-        .map(e => ({ text: e.summary }));
+      if (!text) {
+        return getFallbackHighlights(entries);
+      }
+
+      // Strip markdown code blocks if present
+      let jsonText = text.trim();
+      if (jsonText.startsWith('```json')) {
+        jsonText = jsonText.slice(7);
+      } else if (jsonText.startsWith('```')) {
+        jsonText = jsonText.slice(3);
+      }
+      if (jsonText.endsWith('```')) {
+        jsonText = jsonText.slice(0, -3);
+      }
+      jsonText = jsonText.trim();
+
+      const parsed = JSON.parse(jsonText);
+      return (parsed.highlights || []).map((h: { text: string }) => ({ text: h.text }));
+    } catch {
+      return getFallbackHighlights(entries);
     }
-
-    const data = await res.json();
-    const content = data.choices?.[0]?.message?.content;
-    if (!content) return [];
-
-    const parsed = JSON.parse(content);
-    return (parsed.highlights || []).map((h: { text: string }) => ({ text: h.text }));
   },
   ['weekly-highlights'],
   { revalidate: 86400 }
 );
 
-// --- Sample Data (dev only) ---
-
-const getSampleEntries = (startDate: string, endDate: string): WorklogEntry[] => {
-  const today = new Date();
-  const daysAgo = (n: number) => {
-    const d = new Date(today);
-    d.setDate(d.getDate() - n);
-    return d.toISOString().split('T')[0];
-  };
-
-  const all: WorklogEntry[] = [
-    {
-      summary: 'Implemented two-tier ISR caching for worklog page',
-      decision: 'Used 5min TTL for today\'s entries and 1hr for past days. On-demand revalidation was overkill since the worklog CLI runs at most once per day.',
-      problem: 'Worklog page was hitting the Memory API on every request, adding ~400ms latency.',
-      tags: ['performance', 'frontend'],
-      project: 'portfolio',
-      date: daysAgo(0),
-      links: { pr: 'https://github.com/vishesh-baghel/portfolio/pull/21' },
-    },
-    {
-      summary: 'Added expandable entry cards with decision/problem details',
-      tags: ['feature', 'frontend'],
-      project: 'portfolio',
-      date: daysAgo(0),
-    },
-    {
-      summary: 'Migrated worklog enrichment from OpenAI to Vercel AI Gateway',
-      decision: 'Using createGateway with anthropic/claude-3-5-haiku-latest. Single gateway key eliminates per-provider key management.',
-      tags: ['refactor', 'ai'],
-      project: 'experiments',
-      date: daysAgo(1),
-      links: { commit: 'https://github.com/vishesh-baghel/experiments/commit/051481a' },
-    },
-    {
-      summary: 'Built session normalization pipeline for Claude Code JSONL transcripts',
-      decision: 'Extract only text content from assistant messages, skip thinking/tool_use blocks. Truncate at 500 chars per turn to keep enrichment prompts focused.',
-      problem: 'Raw JSONL entries have nested content blocks and sidechain conversations that pollute the context.',
-      tags: ['architecture', 'tooling'],
-      project: 'experiments',
-      date: daysAgo(1),
-    },
-    {
-      summary: 'Designed sanitization layer to redact secrets and filter blocked projects',
-      decision: 'Applied regex-based redaction for API keys, IPs, and internal URLs before LLM enrichment. Allowlist approach for projects — only portfolio and experiments pass through.',
-      tags: ['architecture', 'tooling'],
-      project: 'experiments',
-      date: daysAgo(2),
-    },
-    {
-      summary: 'Fixed race condition in pitch page analytics tracking',
-      problem: 'PostHog events were firing before the page view was registered, causing attribution to be lost.',
-      tags: ['fix', 'frontend'],
-      project: 'portfolio',
-      date: daysAgo(2),
-    },
-    {
-      summary: 'Added comprehensive test suite for worklog pipeline (181 tests)',
-      decision: 'Mocked all external boundaries (fs, fetch, AI SDK) to keep tests fast and deterministic. Each module has its own test file with edge cases.',
-      tags: ['testing', 'tooling'],
-      project: 'experiments',
-      date: daysAgo(3),
-    },
-    {
-      summary: 'Refactored Mastra agent to use structured tool outputs',
-      decision: 'Switched from freeform text responses to zod-validated tool results. Reduces hallucination in agent responses and makes downstream parsing reliable.',
-      tags: ['refactor', 'ai'],
-      project: 'portfolio',
-      date: daysAgo(4),
-    },
-    {
-      summary: 'Implemented tag-priority sorting for worklog timeline',
-      decision: 'Architecture entries surface first, docs last. Caps at 5 entries per day to keep the timeline scannable.',
-      tags: ['feature', 'frontend'],
-      project: 'portfolio',
-      date: daysAgo(5),
-    },
-    {
-      summary: 'Set up MCP server package with npm publishing pipeline',
-      decision: 'Used tsup for building with ESM output. Package exposes experiment content via MCP tools for Claude Code integration.',
-      tags: ['architecture', 'tooling'],
-      project: 'experiments',
-      date: daysAgo(5),
-      links: { pr: 'https://github.com/vishesh-baghel/portfolio/pull/18' },
-    },
-    {
-      summary: 'Optimized bundle size by lazy-loading framer-motion',
-      problem: 'Initial JS bundle was 180KB gzipped, causing poor LCP on mobile.',
-      decision: 'Dynamic imports for animation-heavy components reduced initial bundle by 40KB.',
-      tags: ['performance', 'frontend'],
-      project: 'portfolio',
-      date: daysAgo(7),
-    },
-    {
-      summary: 'Added weekly highlights generation with GPT-4o-mini',
-      decision: 'Generate 3-5 narrative highlights from the week\'s entries. Cache for 24hrs since highlights don\'t change intra-day.',
-      tags: ['feature', 'ai'],
-      project: 'portfolio',
-      date: daysAgo(8),
-    },
-    {
-      summary: 'Configured CI workflow with build and test gates for all PRs',
-      tags: ['DX', 'tooling'],
-      project: 'portfolio',
-      date: daysAgo(10),
-      links: { commit: 'https://github.com/vishesh-baghel/portfolio/commit/d1440a0' },
-    },
-    {
-      summary: 'Evaluated vector store options for Memory API semantic search',
-      decision: 'Chose pgvector over Pinecone — simpler ops since we already run Postgres, and latency is acceptable for the worklog query volume (~50 docs/week).',
-      tags: ['architecture', 'backend'],
-      project: 'experiments',
-      date: daysAgo(11),
-    },
-    {
-      summary: 'Fixed hydration mismatch in dark mode toggle',
-      problem: 'Server render used system preference but client read localStorage, causing a flash.',
-      tags: ['fix', 'frontend'],
-      project: 'portfolio',
-      date: daysAgo(12),
-    },
-  ];
-
-  return all.filter(e => e.date >= startDate && e.date <= endDate);
+const getFallbackHighlights = (entries: WorklogEntry[]): WeeklyHighlight[] => {
+  return entries
+    .filter(e => e.decision)
+    .slice(0, 3)
+    .map(e => ({ text: e.summary }));
 };
 
 const buildHighlightsPrompt = (entries: WorklogEntry[]): string => {
@@ -357,22 +276,24 @@ const buildHighlightsPrompt = (entries: WorklogEntry[]): string => {
     .map(e => `- [${e.project}] ${e.summary}${e.decision ? ` (Decision: ${e.decision})` : ''}`)
     .join('\n');
 
-  return `You are summarizing a software engineer's weekly work for their portfolio page.
+  return `Summarize a developer's weekly work into 2-4 brief highlights.
 
-Given these worklog entries from the past week:
-
+Entries:
 ${entrySummaries}
 
-Generate 3-5 highlights that showcase the most significant engineering work. Rules:
-- Prioritize architectural decisions and novel solutions over routine fixes
-- Frame each highlight as an outcome, not a task
-- Connect related entries across days when they form a larger narrative
-- Each highlight should be 1-2 sentences
+Rules:
+- Be factual and concise - state what was done, not what it "enabled" or "achieved"
+- No marketing language, no superlatives, no exaggeration
+- Skip minor fixes and routine tasks - only include meaningful work
+- Each highlight: 1 short sentence, max 15 words
+- If fewer than 2 entries are significant, return fewer highlights
 
-Respond in JSON format:
-{
-  "highlights": [
-    { "text": "highlight text here" }
-  ]
-}`;
+Bad: "Revolutionized the CI pipeline with a robust workflow solution"
+Good: "Fixed CI pipeline by adding MCP build step before tests"
+
+Bad: "Implemented comprehensive lead generation system"
+Good: "Added Twitter API integration for lead tracking"
+
+JSON format:
+{ "highlights": [{ "text": "..." }] }`;
 };

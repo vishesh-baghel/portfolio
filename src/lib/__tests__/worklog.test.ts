@@ -23,18 +23,35 @@ const createEntry = (overrides: Partial<WorklogEntry> = {}): WorklogEntry => ({
   ...overrides,
 });
 
-const createMemoryDoc = (entry: WorklogEntry) => ({
-  path: `/worklog/${entry.date}/session-${Math.random().toString(36).slice(2)}`,
+const createIndexDoc = (entry: WorklogEntry) => ({
+  path: `/worklog/${entry.date}/session-${entry.summary.replace(/\s+/g, '-').slice(0, 10)}`,
+  title: entry.summary,
+  tags: ['worklog', ...entry.tags],
+  source: 'worklog-cli',
+  type: null,
+  updatedAt: new Date().toISOString(),
+});
+
+const createFullDoc = (entry: WorklogEntry, path: string) => ({
+  path,
+  title: entry.summary,
+  content: `# ${entry.summary}`,
+  tags: ['worklog', ...entry.tags],
   metadata: {
     public: true,
     summary: entry.summary,
     decision: entry.decision,
     problem: entry.problem,
-    entryTags: entry.tags,
+    entryTags: entry.tags.join(','),
     project: entry.project,
     date: entry.date,
-    links: entry.links,
+    links: entry.links || '',
   },
+  source: 'worklog-cli',
+  type: null,
+  version: 1,
+  createdAt: new Date().toISOString(),
+  updatedAt: new Date().toISOString(),
 });
 
 describe('worklog data utilities', () => {
@@ -54,9 +71,7 @@ describe('worklog data utilities', () => {
       const { fetchWorklogEntries } = await import('../worklog');
       const result = await fetchWorklogEntries('2025-01-15', '2025-01-22');
 
-      // In dev mode, returns sample data; in test it may return empty
-      // The actual behavior depends on NODE_ENV
-      expect(Array.isArray(result)).toBe(true);
+      expect(result).toEqual([]);
     });
 
     it('fetches entries from Memory API with correct params', async () => {
@@ -68,22 +83,33 @@ describe('worklog data utilities', () => {
         createEntry({ summary: 'Entry 2', date: '2025-01-21' }),
       ];
 
+      const indexDocs = entries.map(createIndexDoc);
+
+      // Mock index fetch
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          documents: entries.map(createMemoryDoc),
-        }),
+        json: async () => ({ documents: indexDocs }),
       });
+
+      // Mock individual document fetches
+      for (let i = 0; i < entries.length; i++) {
+        mockFetch.mockResolvedValueOnce({
+          ok: true,
+          json: async () => createFullDoc(entries[i], indexDocs[i].path),
+        });
+      }
 
       const { fetchWorklogEntries } = await import('../worklog');
       const result = await fetchWorklogEntries('2025-01-15', '2025-01-22');
 
-      expect(mockFetch).toHaveBeenCalledTimes(1);
-      const [url] = mockFetch.mock.calls[0];
+      // First call should be to index endpoint
+      const [indexUrl] = mockFetch.mock.calls[0];
+      expect(indexUrl).toContain('memory.test.com');
+      expect(indexUrl).toContain('/api/index');
+      expect(indexUrl).toContain('folder=%2Fworklog');
+      expect(indexUrl).toContain('tags=worklog');
 
-      expect(url).toContain('memory.test.com');
-      expect(url).toContain('folder=%2Fworklog');
-      expect(url).toContain('tags=worklog');
+      expect(result).toHaveLength(2);
     });
 
     it('returns empty array on API error', async () => {
@@ -115,11 +141,18 @@ describe('worklog data utilities', () => {
         links: { pr: 'https://github.com/example/pr/1' },
       });
 
+      const indexDoc = createIndexDoc(entry);
+
+      // Mock index fetch
       mockFetch.mockResolvedValueOnce({
         ok: true,
-        json: async () => ({
-          documents: [createMemoryDoc(entry)],
-        }),
+        json: async () => ({ documents: [indexDoc] }),
+      });
+
+      // Mock document fetch
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => createFullDoc(entry, indexDoc.path),
       });
 
       const { fetchWorklogEntries } = await import('../worklog');
@@ -280,8 +313,8 @@ describe('worklog data utilities', () => {
       expect(highlights).toEqual([]);
     });
 
-    it('uses fallback when OPENAI_API_KEY is not set', async () => {
-      vi.stubEnv('OPENAI_API_KEY', '');
+    it('uses fallback when AI_GATEWAY_API_KEY is not set', async () => {
+      vi.stubEnv('AI_GATEWAY_API_KEY', '');
 
       const { getWeeklyHighlights } = await import('../worklog');
 
@@ -341,12 +374,21 @@ describe('worklog integration: data flow', () => {
       }),
     ];
 
+    const indexDocs = entries.map(createIndexDoc);
+
+    // Mock index fetch
     mockFetch.mockResolvedValueOnce({
       ok: true,
-      json: async () => ({
-        documents: entries.map(createMemoryDoc),
-      }),
+      json: async () => ({ documents: indexDocs }),
     });
+
+    // Mock individual document fetches
+    for (let i = 0; i < entries.length; i++) {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        json: async () => createFullDoc(entries[i], indexDocs[i].path),
+      });
+    }
 
     const { fetchWorklogEntries, groupByDate, formatDisplayDate } = await import('../worklog');
 
