@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+
+  "permissions": {
+    "allow": [
+      "Read",
+      "Write",
+      "Edit",
+      "Bash(npm:*)",
+      "Bash(pnpm:*)",
+      "Bash(bun:*)"
+    ],
+    "deny": [
+      "Write(node_modules/*)",
+      "Write(package-lock.json)",
+      "Write(pnpm-lock.yaml)",
+      "Write(bun.lockb)"
+    ]
+  },
+
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write:*.ts|Edit:*.ts|Write:*.tsx|Edit:*.tsx",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | xargs -I {} sh -c 'npx prettier --write \"{}\" 2>/dev/null || true'"
+          },
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | xargs -I {} sh -c 'npx eslint --fix \"{}\" 2>/dev/null || true'"
+          },
+          {
+            "type": "command",
+            "command": "npx tsc --noEmit"
+          }
+        ]
+      },
+      {
+        "matcher": "Write:*.test.ts|Edit:*.test.ts|Write:*.test.tsx|Edit:*.test.tsx",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | xargs -I {} sh -c 'npm test -- {} --passWithNoTests 2>/dev/null || true'"
+          }
+        ]
+      }
+    ],
+
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx tsc --noEmit && echo 'TypeScript compilation check passed' || echo 'Warning: TypeScript errors found'"
+          },
+          {
+            "type": "command",
+            "command": "worklog ingest --project $(pwd) 2>&1 || echo 'Worklog ingest skipped'"
+          }
+        ]
+      }
+    ]
+  }
+}

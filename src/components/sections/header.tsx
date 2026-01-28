@@ -90,6 +90,13 @@ const Header = () => {
                     experiments
                   </Link>
                   <Link
+                    href="/worklog"
+                    onClick={() => { trackNavClick('worklog', 'header_mobile'); setDrawerOpen(false); }}
+                    className="flex w-full items-center font-mono text-sm text-foreground rounded-lg border px-3 py-2 hover:bg-[var(--color-secondary)] no-underline"
+                  >
+                    worklog
+                  </Link>
+                  <Link
                     href="/pitch"
                     onClick={() => { trackNavClick('hire_me', 'header_mobile'); trackHireMeClick('mobile_menu'); setDrawerOpen(false); }}
                     className="flex w-full items-center font-mono text-sm text-accent-red rounded-lg border border-accent-red px-3 py-2 hover:bg-accent-red hover:text-white no-underline transition-colors"
@@ -138,6 +145,13 @@ const Header = () => {
               className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
             >
               experiments
+            </Link>
+            <Link
+              href="/worklog"
+              onClick={() => trackNavClick('worklog', 'header_desktop')}
+              className="inline-flex items-center justify-center font-mono text-xs text-foreground rounded-lg border h-8 px-3 hover:bg-[var(--color-secondary)] no-underline hover:no-underline"
+            >
+              worklog
             </Link>
             <Link
               href="/pitch"
