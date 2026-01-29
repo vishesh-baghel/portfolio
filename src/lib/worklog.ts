@@ -1,5 +1,5 @@
 import { unstable_cache } from 'next/cache';
-import { createGateway, generateText } from 'ai';
+import { generateText } from 'ai';
 
 // --- Types ---
 
@@ -218,8 +218,9 @@ export const getWeeklyHighlights = unstable_cache(
   async (entries: WorklogEntry[]): Promise<WeeklyHighlight[]> => {
     if (entries.length === 0) return [];
 
-    const apiKey = process.env.AI_GATEWAY_API_KEY;
-    if (!apiKey) {
+    // Check if AI generation is enabled (requires ANTHROPIC_API_KEY for the AI Gateway)
+    const hasAnthropicKey = !!process.env.ANTHROPIC_API_KEY;
+    if (!hasAnthropicKey) {
       // Fallback: use top entries by decision length
       return entries
         .filter(e => e.decision)
@@ -229,11 +230,11 @@ export const getWeeklyHighlights = unstable_cache(
     }
 
     const prompt = buildHighlightsPrompt(entries);
-    const gateway = createGateway({ apiKey });
 
     try {
+      // Uses Vercel AI Gateway - automatically routes to Anthropic
       const { text } = await generateText({
-        model: gateway('anthropic/claude-3-5-haiku-latest'),
+        model: 'anthropic/claude-3-5-haiku-latest',
         prompt,
         temperature: 0.3,
       });

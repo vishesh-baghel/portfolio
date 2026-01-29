@@ -67,6 +67,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/otel": "^2.0.1",
     "@vercel/speed-insights": "^1.2.0",
+    "ai": "^6.0.57",
     "atmn": "^0.0.24",
     "autumn-js": "^0.1.34",
     "bcrypt": "^6.0.0",
