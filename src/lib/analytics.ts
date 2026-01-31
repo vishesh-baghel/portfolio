@@ -126,7 +126,7 @@ export const trackHireMeClick = (location: CTALocation) => {
 // Navigation Events
 // ============================================================================
 
-export type NavItem = "about" | "work" | "commits" | "experiments" | "mcp" | "hire_me" | "home";
+export type NavItem = "about" | "work" | "commits" | "experiments" | "worklog" | "mcp" | "hire_me" | "home";
 export type NavLocation = "header_desktop" | "header_mobile" | "footer";
 
 export const trackNavClick = (item: NavItem, location: NavLocation) => {
