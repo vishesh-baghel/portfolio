@@ -256,7 +256,7 @@ export const getWeeklyHighlights = unstable_cache(
       return getFallbackHighlights(entries);
     }
   },
-  ['weekly-highlights-v2'],
+  ['weekly-highlights'],
   { revalidate: 86400 }
 );
 
