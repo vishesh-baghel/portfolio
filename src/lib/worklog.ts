@@ -202,7 +202,7 @@ export const formatDisplayDate = (dateStr: string): string => {
 
 export const getDateRange = (offsetDays: number, rangeDays: number) => {
   const end = new Date();
-  end.setDate(end.getDate() - offsetDays);
+  end.setDate(end.getDate() - offsetDays + 1); // +1 day buffer to cover timezone differences
   const start = new Date(end);
   start.setDate(start.getDate() - rangeDays);
 
@@ -221,12 +221,7 @@ export const getWeeklyHighlights = unstable_cache(
     // Check if AI generation is enabled (requires ANTHROPIC_API_KEY for the AI Gateway)
     const hasAnthropicKey = !!process.env.ANTHROPIC_API_KEY;
     if (!hasAnthropicKey) {
-      // Fallback: use top entries by decision length
-      return entries
-        .filter(e => e.decision)
-        .sort((a, b) => (b.decision?.length || 0) - (a.decision?.length || 0))
-        .slice(0, 3)
-        .map(e => ({ text: `${e.summary}${e.decision ? ` — ${e.decision}` : ''}` }));
+      return getFallbackHighlights(entries);
     }
 
     const prompt = buildHighlightsPrompt(entries);
@@ -261,7 +256,7 @@ export const getWeeklyHighlights = unstable_cache(
       return getFallbackHighlights(entries);
     }
   },
-  ['weekly-highlights'],
+  ['weekly-highlights-v2'],
   { revalidate: 86400 }
 );
 
@@ -277,7 +272,7 @@ const buildHighlightsPrompt = (entries: WorklogEntry[]): string => {
     .map(e => `- [${e.project}] ${e.summary}${e.decision ? ` (Decision: ${e.decision})` : ''}`)
     .join('\n');
 
-  return `Summarize a developer's weekly work into 2-4 brief highlights.
+  return `Summarize a developer's weekly work into 2-4 highlights. Each highlight should be 1-2 short sentences covering what was done and the key decision or trade-off.
 
 Entries:
 ${entrySummaries}
@@ -286,14 +281,14 @@ Rules:
 - Be factual and concise - state what was done, not what it "enabled" or "achieved"
 - No marketing language, no superlatives, no exaggeration
 - Skip minor fixes and routine tasks - only include meaningful work
-- Each highlight: 1 short sentence, max 15 words
+- Each highlight: max 3 sentences
 - If fewer than 2 entries are significant, return fewer highlights
 
-Bad: "Revolutionized the CI pipeline with a robust workflow solution"
-Good: "Fixed CI pipeline by adding MCP build step before tests"
+Bad: "Implemented granular permission model with explicit allow/deny rules instead of blanket access. Moved worklog capture from Stop hook to SessionEnd to avoid redundant execution after every response. Used space-based patterns for bash commands per Claude Code documentation standards."
+Good: "Configured project permissions with allow/deny rules. Moved worklog capture to SessionEnd hook to avoid redundant execution."
 
-Bad: "Implemented comprehensive lead generation system"
-Good: "Added Twitter API integration for lead tracking"
+Bad: "Revolutionized the CI pipeline with a robust workflow solution"
+Good: "Fixed CI pipeline by adding MCP build step before tests."
 
 JSON format:
 { "highlights": [{ "text": "..." }] }`;

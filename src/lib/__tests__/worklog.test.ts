@@ -292,14 +292,17 @@ describe('worklog data utilities', () => {
     it('applies offset correctly', async () => {
       const { getDateRange } = await import('../worklog');
 
-      const today = new Date().toISOString().split('T')[0];
+      // endDate has +1 day buffer to cover timezone differences
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      const expectedEnd = tomorrow.toISOString().split('T')[0];
       const { endDate: noOffset } = getDateRange(0, 7);
-      const { endDate: withOffset } = getDateRange(7, 7);
 
-      expect(noOffset).toBe(today);
+      expect(noOffset).toBe(expectedEnd);
 
       const offsetDate = new Date();
-      offsetDate.setDate(offsetDate.getDate() - 7);
+      offsetDate.setDate(offsetDate.getDate() - 7 + 1); // -7 offset + 1 buffer
+      const { endDate: withOffset } = getDateRange(7, 7);
       expect(withOffset).toBe(offsetDate.toISOString().split('T')[0]);
     });
   });
