@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { openai } from '@ai-sdk/openai';
+import { gateway } from '@ai-sdk/gateway';
+import type { MastraLanguageModel } from '@mastra/core/agent';
 import {
   AnswerRelevancyMetric,
   BiasMetric,
@@ -12,7 +13,7 @@ import { portfolioAgent } from '../portfolio-agent';
 import { TEST_CASES, EXPECTED_BEHAVIORS } from './test-data';
 
 // Configure evaluation model
-const evalModel = openai('gpt-4o-mini');
+const evalModel = gateway('openai/gpt-4o-mini') as unknown as MastraLanguageModel;
 
 // Define score thresholds for production readiness
 // Note: These are adjusted based on real-world performance with gpt-4o-mini

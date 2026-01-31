@@ -1,4 +1,3 @@
-import { openai } from "@ai-sdk/openai";
 import { Agent } from "@mastra/core/agent";
 import { listExperimentsTool } from "../../../packages/experiments-mcp/src/tools/list-experiments";
 import { getExperimentTool } from "../../../packages/experiments-mcp/src/tools/get-experiment";
@@ -33,7 +32,7 @@ Available categories:
 - typescript-patterns: Advanced TypeScript and design patterns
 
 Always be helpful, concise, and provide actionable code examples.`,
-  model: openai("gpt-4o-mini"),
+  model: "vercel/openai/gpt-4o-mini",
   tools: {
     listExperiments: listExperimentsTool,
     getExperiment: getExperimentTool,
